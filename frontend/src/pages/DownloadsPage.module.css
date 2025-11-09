@@ -325,8 +325,12 @@
 
 .lectureGrid {
   display: grid;
-  gap: 0.85rem;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lectureGrid > * {
+  min-width: 0;
 }
 
 .lectureCard {
@@ -335,9 +339,19 @@
   border: 1px solid rgba(148, 163, 184, 0.18);
   padding: clamp(0.9rem, 2.1vw, 1.1rem);
   display: grid;
-  grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1fr);
-  gap: clamp(0.9rem, 2vw, 1.2rem);
+  grid-template-columns: minmax(160px, 0.75fr) minmax(200px, 1fr);
+  gap: clamp(0.8rem, 1.8vw, 1.1rem);
   box-shadow: 0 18px 44px -32px rgba(15, 23, 42, 0.25);
+}
+
+@media (max-width: 960px) {
+  .lectureGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lectureCard {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .lectureInfo {
