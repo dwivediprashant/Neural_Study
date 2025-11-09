@@ -1,0 +1,139 @@
+.page {
+  padding: clamp(2rem, 5vw, 3.5rem) 0;
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 252, 0.98) 0%,
+    #ffffff 100%
+  );
+}
+
+.pageHeader {
+  width: min(960px, 92vw);
+  margin: 0 auto clamp(1.5rem, 4vw, 2.5rem);
+  display: grid;
+  gap: 0.85rem;
+  text-align: center;
+}
+
+.pageEyebrow {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-inline: auto;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1d4ed8;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  color: #0f172a;
+}
+
+.pageSubtitle {
+  margin: 0;
+  color: #475569;
+  font-size: clamp(1rem, 2.6vw, 1.1rem);
+  line-height: 1.6;
+}
+
+.grid {
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.card {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1.5rem;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #0f172a;
+}
+
+.cardMeta {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: rgba(16, 185, 129, 0.16);
+  color: #047857;
+}
+
+.badgeNeutral {
+  background: rgba(120, 113, 198, 0.18);
+  color: #4338ca;
+}
+
+.cardDescription {
+  margin: 0;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cardButton {
+  border: none;
+  border-radius: 14px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cardButton:hover,
+.cardButton:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(99, 102, 241, 0.4);
+}
+
+.stateCard {
+  width: min(480px, 90vw);
+  margin: 0 auto;
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: rgba(148, 163, 184, 0.16);
+  color: #334155;
+  text-align: center;
+  font-weight: 600;
+}

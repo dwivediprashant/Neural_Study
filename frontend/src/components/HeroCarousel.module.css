@@ -1,0 +1,297 @@
+.carousel {
+  position: relative;
+  margin: 0 calc(50% - 50vw) clamp(1rem, 3vw, 1.5rem);
+  width: 100vw;
+  max-width: none;
+  height: 350px;
+  border-radius: 0;
+  overflow: hidden;
+  background: #101828;
+  box-shadow: 0 18px 45px rgba(16, 24, 56, 0.18);
+}
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: clamp(1.8rem, 4vw, 2.65rem);
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0.65rem 0 1.5rem;
+  max-width: 540px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: clamp(0.95rem, 2.6vw, 1.05rem);
+  line-height: 1.55;
+}
+
+.viewport {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transform: translateX(calc(var(--active-index, 0) * -100%));
+  transition: transform 480ms ease;
+}
+
+.slide {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: clamp(1.25rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.75rem);
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.slideActive {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  z-index: 1;
+}
+
+.slideAdaptive {
+  background: linear-gradient(
+      135deg,
+      rgba(46, 58, 89, 0.65),
+      rgba(96, 165, 250, 0.35)
+    ),
+    url('/8d9b4a0e-04d4-4dd3-b7b6-c722eb977a5f.webp') center/cover no-repeat;
+}
+
+.slideConcept {
+  background: linear-gradient(
+      135deg,
+      rgba(15, 118, 110, 0.65),
+      rgba(6, 182, 212, 0.35)
+    ),
+    url('/d6fce5e5-6507-4cab-a40e-a0bba9492e07.webp') center/cover no-repeat;
+}
+
+.slideCommunity {
+  background: linear-gradient(
+      135deg,
+      rgba(79, 70, 229, 0.6),
+      rgba(14, 165, 233, 0.38)
+    ),
+    url("/WhatsApp Image 2025-11-08 at 00.35.18_727a2475.jpg") center/cover
+      no-repeat;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.35) 60%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+  max-width: min(420px, 78%);
+  color: #ffffff;
+  display: grid;
+  gap: 0.75rem;
+  padding: clamp(0.85rem, 3vw, 1.5rem);
+  background: rgba(16, 24, 56, 0.58);
+  border-radius: 18px;
+  box-shadow: 0 18px 38px rgba(16, 24, 56, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.slideTitle {
+  margin: 0;
+  font-size: clamp(1.45rem, 3.5vw, 2.1rem);
+  font-weight: 700;
+}
+
+.slideText {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.5;
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.25rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffb74d 0%, #ff9c35 100%);
+  color: #ffffff;
+  font-weight: 600;
+  transition: transform 180ms ease, box-shadow 220ms ease;
+  box-shadow: 0 12px 28px rgba(255, 183, 77, 0.3);
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px rgba(255, 183, 77, 0.32);
+}
+
+.controls {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: clamp(0.75rem, 3vw, 1.5rem);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(90%, 1100px);
+  padding: 0.65rem clamp(1rem, 3vw, 1.5rem);
+  background: rgba(16, 24, 56, 0.45);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+}
+
+.indicators {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.indicator {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.indicator:hover {
+  transform: scale(1.1);
+}
+
+.indicatorActive {
+  background: #ffb74d;
+  transform: scale(1.2);
+}
+
+.navButtons {
+  display: inline-flex;
+  gap: 0.6rem;
+}
+
+.arrowButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.arrowButton:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.arrowButton:focus-visible,
+.indicator:focus-visible {
+  outline: 3px solid rgba(255, 183, 77, 0.35);
+  outline-offset: 2px;
+}
+
+.sideControls {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+.sideButton {
+  pointer-events: auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(16, 24, 56, 0.45);
+  color: #ffffff;
+  font-size: 1.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.sideButton:hover {
+  background: rgba(16, 24, 56, 0.65);
+  transform: translateY(-1px);
+}
+
+.sideButtonPrev {
+  margin-right: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.sideButtonNext {
+  margin-left: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.sideButton:focus-visible {
+  outline: 3px solid rgba(255, 183, 77, 0.35);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sideControls {
+    padding: 0 clamp(0.5rem, 6vw, 1.5rem);
+  }
+
+  .sideButton {
+    width: 38px;
+    height: 38px;
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .carousel {
+    height: 350px;
+  }
+
+  .slide {
+    padding: clamp(1rem, 4vw, 1.6rem);
+  }
+
+  .content {
+    max-width: 100%;
+  }
+}

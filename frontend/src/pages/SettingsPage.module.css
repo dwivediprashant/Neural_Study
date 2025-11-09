@@ -1,0 +1,218 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.statusCard {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.92) 100%);
+  color: #f8fafc;
+  border-radius: 18px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.28);
+  flex-wrap: wrap;
+}
+
+.statusHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.statusOnline {
+  background: rgba(74, 222, 128, 0.2);
+  color: #22c55e;
+}
+
+.statusOnline .statusDot {
+  background: #22c55e;
+}
+
+.statusOffline {
+  background: rgba(248, 113, 113, 0.2);
+  color: #ef4444;
+}
+
+.statusOffline .statusDot {
+  background: #ef4444;
+}
+
+.statusTimestamp {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(226, 232, 240, 0.85);
+  white-space: nowrap;
+}
+
+.syncButton {
+  border: none;
+  border-radius: 12px;
+  padding: 0.6rem 1.3rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ffb74d 0%, #ff9c35 100%);
+  color: #0f172a;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 12px 24px rgba(255, 183, 77, 0.3);
+}
+
+.syncButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(255, 183, 77, 0.35);
+}
+
+.syncButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.heading {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #0a0a0a;
+}
+
+.subheading {
+  margin: 0.4rem 0 0;
+  color: #6b7280;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #0a0a0a;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.label {
+  margin: 0;
+  font-weight: 600;
+  color: #0a0a0a;
+}
+
+.description {
+  margin: 0.35rem 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #d1d5db;
+  transition: 0.2s;
+  border-radius: 999px;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+  background-color: #d62828;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+.languagePicker {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.languageButton,
+.languageButtonActive {
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(214, 40, 40, 0.25);
+  background-color: transparent;
+  color: #d62828;
+}
+
+.languageButtonActive {
+  background-color: #d62828;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .statusCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .switch {
+    align-self: flex-start;
+  }
+}

@@ -1,0 +1,352 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  box-shadow: 0 10px 30px rgba(15, 23, 36, 0.08);
+  border-bottom: 1px solid rgba(15, 23, 36, 0.06);
+  overflow: hidden;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  height: 150px;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.svg {
+  width: 100%;
+  height: 150px;
+  display: block;
+}
+
+.svg path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: float 9s ease-in-out infinite;
+}
+
+.svg path:nth-of-type(2) {
+  animation-duration: 12s;
+  animation-direction: reverse;
+}
+
+.node {
+  transform-origin: center;
+  animation: pulse 3s ease-in-out infinite;
+  fill: #a78bfa;
+}
+
+.node:nth-of-type(2) {
+  animation-delay: 0.3s;
+}
+
+.node:nth-of-type(3) {
+  animation-delay: 0.6s;
+}
+
+.node:nth-of-type(4) {
+  animation-delay: 0.9s;
+}
+
+.node:nth-of-type(5) {
+  animation-delay: 1.2s;
+}
+
+.node:nth-of-type(6) {
+  animation-delay: 1.5s;
+}
+
+.node:nth-of-type(7) {
+  animation-delay: 1.8s;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.85rem 1.75rem 1.1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo img {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  color: #ffffff;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 10px 30px rgba(46, 58, 89, 0.15);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.brandName {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.3px;
+}
+
+.brandTagline {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.toggle:hover,
+.toggle:focus-visible {
+  background: rgba(46, 58, 89, 0.08);
+}
+
+.toggleBar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: var(--color-primary);
+  border-radius: 999px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.toggleBar + .toggleBar {
+  margin-top: 5px;
+}
+
+.toggleOpen .toggleBar:first-child {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.toggleOpen .toggleBar:nth-child(2) {
+  opacity: 0;
+}
+
+.toggleOpen .toggleBar:last-child {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.collapsible {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  flex: 1;
+}
+
+.collapsibleOpen {
+  display: flex;
+}
+
+.nav {
+  flex: 1 1 auto;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navItem {
+  margin: 0;
+  position: relative;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  position: relative;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 183, 77, 0.16);
+  color: var(--color-primary);
+}
+
+.navLinkActive {
+  background: var(--color-accent);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(255, 183, 77, 0.28);
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  inset-inline: 20%;
+  bottom: 0.2rem;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 183, 77, 0.2),
+    rgba(255, 183, 77, 0.6)
+  );
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.navLink:hover::after,
+.navLinkActive::after {
+  transform: scaleX(1);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.4rem, 1vw, 0.75rem);
+  padding: 0;
+}
+
+.navProfileIcon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+@media (max-width: 900px) {
+  .inner {
+    padding: 0.75rem 1.25rem 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    border-bottom: none;
+    box-shadow: 0 6px 20px rgba(15, 23, 36, 0.1);
+  }
+
+  .background {
+    height: 180px;
+  }
+
+  .svg {
+    height: 180px;
+  }
+
+  .inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .collapsible {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .collapsibleOpen {
+    display: flex;
+  }
+
+  .navLinks {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .navLink {
+    width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .statusGroup {
+    text-align: left;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+}

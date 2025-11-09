@@ -1,0 +1,381 @@
+.page {
+  padding: clamp(2rem, 5vw, 3.25rem) 0;
+  background: linear-gradient(180deg, rgba(240, 249, 255, 0.6) 0%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+.shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 3rem);
+  display: grid;
+  gap: 1.75rem;
+}
+
+.backLink {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  color: #2563eb;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 2.6rem);
+  color: #0f172a;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.metaBadge,
+.metaBadgeNeutral {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.metaBadge {
+  background: rgba(37, 99, 235, 0.16);
+  color: #2563eb;
+}
+
+.metaBadgeNeutral {
+  background: rgba(217, 119, 6, 0.16);
+  color: #b45309;
+}
+
+.metaLabel {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.questionCard,
+.resultCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.questionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.questionIndex {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.questionPrompt {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #0f172a;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.optionButton {
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 16px;
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  background: #f8fafc;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.optionButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.optionButtonSelected {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(129, 140, 248, 0.18));
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #1d4ed8;
+}
+
+.optionLabel {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.validation {
+  margin: 0;
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(248, 113, 113, 0.16);
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #ffffff;
+  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.28);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.secondaryButton {
+  background: rgba(15, 23, 42, 0.05);
+  color: #1f2937;
+}
+
+.progressPanel {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: clamp(1.5rem, 4vw, 2rem);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.progressTitle {
+  margin: 0;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.progressDots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+  gap: 0.6rem;
+}
+
+.progressDot {
+  border: none;
+  border-radius: 12px;
+  height: 32px;
+  cursor: pointer;
+  background: rgba(148, 163, 184, 0.18);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.progressDot:hover {
+  transform: translateY(-1px);
+}
+
+.progressDotActive {
+  outline: 2px solid rgba(37, 99, 235, 0.35);
+}
+
+.progressDot_answered {
+  background: rgba(34, 197, 94, 0.24);
+}
+
+.progressDot_pending {
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.resultCard {
+  gap: 1.75rem;
+}
+
+.resultSummary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.resultLabel {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #475569;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.resultValue {
+  margin: 0;
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.resultPercent {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.resultMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  color: #475569;
+}
+
+.resultMetaLine {
+  margin: 0;
+}
+
+.resultActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.resultDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.resultDetailsTitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.resultList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.resultItem {
+  border-radius: 16px;
+  padding: 1.25rem;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.resultPromptRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.resultIndex {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.resultTag {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.resultTagCorrect {
+  background: rgba(34, 197, 94, 0.2);
+  color: #15803d;
+}
+
+.resultTagIncorrect {
+  background: rgba(248, 113, 113, 0.2);
+  color: #b91c1c;
+}
+
+.resultPrompt,
+.resultAnswer,
+.resultExplanation {
+  margin: 0;
+  color: #475569;
+}
+
+.resultExplanation {
+  font-style: italic;
+}
+
+@media (max-width: 960px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .progressDots {
+    grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  }
+}

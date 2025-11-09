@@ -1,0 +1,153 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  z-index: 10000;
+}
+
+.modalCard {
+  width: min(960px, 100%);
+  max-height: min(90vh, 720px);
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+.title {
+  margin: 0.45rem 0 0;
+  font-size: 1.35rem;
+  color: #f8fafc;
+}
+
+.assetMeta {
+  margin: 0.4rem 0 0;
+  font-size: 0.9rem;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+.closeButton {
+  border: none;
+  background: rgba(15, 23, 42, 0.55);
+  color: #f8fafc;
+  font-size: 1.6rem;
+  line-height: 1;
+  border-radius: 999px;
+  width: 2.25rem;
+  height: 2.25rem;
+  cursor: pointer;
+}
+
+.closeButton:hover,
+.closeButton:focus-visible {
+  background: rgba(148, 163, 184, 0.25);
+}
+
+.previewBody {
+  flex: 1;
+  padding: 1.5rem;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.videoPlayer {
+  width: 100%;
+  max-height: 70vh;
+  border-radius: 12px;
+  background: #000;
+}
+
+.documentFrame {
+  width: 100%;
+  height: min(70vh, 640px);
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.imagePreview {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 12px;
+  object-fit: contain;
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.jsonPreview {
+  width: 100%;
+  max-height: 65vh;
+  overflow: auto;
+  background: rgba(15, 23, 42, 0.85);
+  color: #d9f99d;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.fallbackBlock {
+  text-align: center;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.fallbackMessage {
+  margin: 0;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.downloadLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.2rem;
+  border-radius: 999px;
+  background: #facc15;
+  color: #1f2937;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.downloadLink:hover,
+.downloadLink:focus-visible {
+  background: #fde047;
+}
+
+@media (max-width: 640px) {
+  .modalCard {
+    max-height: 92vh;
+  }
+
+  .previewBody {
+    padding: 1rem;
+  }
+
+  .documentFrame {
+    height: min(65vh, 520px);
+  }
+}

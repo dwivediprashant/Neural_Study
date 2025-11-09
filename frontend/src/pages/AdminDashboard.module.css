@@ -1,0 +1,96 @@
+.page {
+  min-height: 100vh;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1.5rem, 5vw, 3rem);
+  background: linear-gradient(180deg, rgba(15, 118, 110, 0.14) 0%, #ffffff 60%);
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  color: #0f766e;
+}
+
+.title {
+  margin: 0.2rem 0 0;
+  font-size: clamp(2.2rem, 5vw, 2.8rem);
+  color: #0f172a;
+}
+
+.subtitle {
+  margin: 0.75rem 0 0;
+  color: #334155;
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.primaryButton {
+  border: none;
+  border-radius: 16px;
+  padding: 0.75rem 1.4rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #f97316 0%, #facc15 100%);
+  color: #0f172a;
+  cursor: pointer;
+  box-shadow: 0 18px 36px rgba(249, 115, 22, 0.25);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1rem, 4vw, 2rem);
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: clamp(1.5rem, 4vw, 2rem);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0f172a;
+}
+
+.card p {
+  margin: 0;
+  color: #475569;
+}
+
+.card button {
+  justify-self: flex-start;
+  border: none;
+  border-radius: 12px;
+  padding: 0.6rem 1.1rem;
+  background: rgba(14, 116, 144, 0.12);
+  color: #0e7490;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.footerNote {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}

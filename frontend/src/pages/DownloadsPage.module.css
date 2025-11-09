@@ -1,0 +1,421 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.heroCopy {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 520px;
+}
+
+.heroEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: #2563eb;
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: #0f172a;
+}
+
+.subheading {
+  margin: 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.storageCard {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  min-width: 220px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.storageTitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.storageValue {
+  margin: 0.5rem 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #0a0a0a;
+}
+
+.storageHint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.notice {
+  padding: 0.75rem 1rem;
+  background-color: rgba(214, 40, 40, 0.12);
+  border-radius: 10px;
+  color: #b82121;
+  font-size: 0.95rem;
+}
+
+.emptyState {
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.emptyHint {
+  color: #6b7280;
+}
+
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.card {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.85fr) minmax(280px, 1fr);
+  gap: clamp(1rem, 2vw, 1.4rem);
+  background: #ffffff;
+  border-radius: 20px;
+  padding: clamp(1rem, 2.5vw, 1.35rem);
+  box-shadow: 0 20px 48px -32px rgba(15, 23, 42, 0.28);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  align-items: stretch;
+}
+
+.cardVisual {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.thumbShell {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.32), rgba(59, 130, 246, 0.12));
+  display: grid;
+  place-items: center;
+}
+
+.mediaPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lectureThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mediaPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+}
+
+.badge,
+.badgeSecondary {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badge {
+  background: rgba(59, 130, 246, 0.92);
+  color: #eff6ff;
+}
+
+.badgeSecondary {
+  background: rgba(15, 23, 42, 0.68);
+  color: #e2e8f0;
+}
+
+.visualFooter {
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.82rem;
+  color: #475569;
+}
+
+.visualFooter span {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.cardDetails {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.detailHeader {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.3vw, 1.35rem);
+  color: #0f172a;
+}
+
+.meta {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.92rem;
+}
+
+.metaSecondary {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.progressLabel {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2563eb;
+}
+
+.description {
+  margin: 0;
+  color: #334155;
+  line-height: 1.55;
+}
+
+.moduleList {
+  margin: 0.5rem 0 0;
+  padding: 0.65rem;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.moduleHeading {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.moduleList ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.moduleItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.88rem;
+}
+
+.moduleName {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.moduleMeta {
+  color: #2563eb;
+}
+
+.actionsRow {
+  margin-top: auto;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.removeButton {
+  align-self: flex-start;
+  border: none;
+  background-color: #d62828;
+  color: #ffffff;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.removeButton:hover {
+  background-color: #b82121;
+}
+
+.queueBanner {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.queueBanner strong {
+  font-size: 0.95rem;
+}
+
+.queueBanner span {
+  font-size: 0.85rem;
+}
+
+.lectureDownloads {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.lectureDownloadsHeader {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.lectureDownloadsHeader h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #0f172a;
+}
+
+.lectureDownloadsHeader p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.lectureGrid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.lectureCard {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  padding: clamp(0.9rem, 2.1vw, 1.1rem);
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1fr);
+  gap: clamp(0.9rem, 2vw, 1.2rem);
+  box-shadow: 0 18px 44px -32px rgba(15, 23, 42, 0.25);
+}
+
+.lectureInfo {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.lectureTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0f172a;
+}
+
+.lectureMeta {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.lectureDescription {
+  margin: 0;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.lectureProgressLabel {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.lectureActionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.lectureOpenButton {
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-weight: 600;
+  background: rgba(59, 130, 246, 0.18);
+  color: #1d4ed8;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.lectureOpenButton:hover,
+.lectureOpenButton:focus-visible {
+  background: rgba(59, 130, 246, 0.28);
+  transform: translateY(-1px);
+}
+
+.lectureRemoveButton {
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-weight: 600;
+  background: rgba(248, 113, 113, 0.2);
+  color: #b91c1c;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.lectureRemoveButton:hover,
+.lectureRemoveButton:focus-visible {
+  background: rgba(248, 113, 113, 0.3);
+  transform: translateY(-1px);
+}
+
+.lectureRemoveButton:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+}

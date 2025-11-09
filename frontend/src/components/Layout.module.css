@@ -1,0 +1,44 @@
+.appShell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background);
+}
+
+.errorBanner {
+  margin: 0 2rem;
+  margin-top: 1rem;
+  background-color: rgba(229, 57, 53, 0.1);
+  color: var(--color-error);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.signOut {
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 14px 28px -18px rgba(37, 99, 235, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.signOut:hover,
+.signOut:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px -18px rgba(37, 99, 235, 0.55);
+  filter: brightness(1.05);
+}
+
+.content {
+  flex: 1;
+  padding: 0 clamp(1.5rem, 2vw + 1rem, 2.5rem);
+  max-width: 1100px;
+  margin: 0 auto;
+  margin-top: 0;
+  width: 100%;
+}

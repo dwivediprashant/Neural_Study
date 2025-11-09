@@ -1,0 +1,353 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.heroPanel {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(360px, 1.1fr);
+  gap: 1.75rem;
+  align-items: stretch;
+}
+
+.mediaColumn {
+  background: #000;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.35);
+}
+
+.mediaPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mediaPlaceholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, #1f2937, #111827);
+}
+
+.mediaHint {
+  margin: 0;
+  padding: 0.9rem 1.2rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, rgba(22, 163, 74, 0.9), rgba(15, 118, 110, 0.9));
+}
+
+.headerCard {
+  background-color: #ffffff;
+  border-radius: 18px;
+  padding: 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+}
+
+.exam {
+  display: inline-block;
+  font-weight: 700;
+  color: #d62828;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  color: #0a0a0a;
+}
+
+.meta {
+  margin: 0.75rem 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-end;
+  min-width: 180px;
+}
+
+.primaryButton {
+  border: none;
+  background-color: #0a0a0a;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0.65rem 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  background-color: #1f1f1f;
+}
+
+.secondaryLink {
+  color: #d62828;
+  font-weight: 600;
+}
+
+.progressLabel {
+  margin: 0;
+  color: #1e293b;
+}
+
+.moduleList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.moduleCard {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.moduleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.moduleTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #0a0a0a;
+}
+
+.moduleMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.moduleAssetSummary {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.moduleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.moduleBadgeSuccess {
+  background: rgba(16, 185, 129, 0.16);
+  color: #047857;
+}
+
+.moduleBadgeActive {
+  background: rgba(59, 130, 246, 0.18);
+  color: #1d4ed8;
+}
+
+.moduleBadgeNeutral {
+  background: rgba(148, 163, 184, 0.18);
+  color: #475569;
+}
+
+.outlineButton {
+  border: 1px solid #d62828;
+  color: #d62828;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lessonList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.lessonItem {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.85rem;
+}
+
+.lessonItem:last-child {
+  border-bottom: none;
+}
+
+.lessonType {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #d62828;
+  letter-spacing: 0.08em;
+}
+
+.lessonTitle {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+  color: #0a0a0a;
+}
+
+.lessonDescription {
+  margin: 0.3rem 0 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.lessonMetaBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.lessonMetaBlock button {
+  margin-top: 0.25rem;
+}
+
+.previewButton {
+  border: none;
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.previewButton:hover,
+.previewButton:focus-visible {
+  background: #1f2937;
+}
+
+.emptyWrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.heading {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.description {
+  margin: 0.75rem 0;
+  color: #6b7280;
+}
+
+.downloadSummaryRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.summaryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: rgba(15, 23, 42, 0.06);
+  color: #1e293b;
+}
+
+.summaryChipPrimary {
+  background: rgba(16, 185, 129, 0.18);
+  color: #047857;
+}
+
+.summaryChipInfo {
+  background: rgba(59, 130, 246, 0.18);
+  color: #1d4ed8;
+}
+
+.summaryChipWarning {
+  background: rgba(250, 204, 21, 0.22);
+  color: #92400e;
+}
+
+.backLink {
+  color: #d62828;
+  font-weight: 600;
+}
+
+@media (max-width: 992px) {
+  .heroPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .mediaColumn {
+    min-height: 220px;
+  }
+
+  .headerCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .moduleItem {
+    flex-direction: column;
+  }
+
+  .lessonItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lessonMetaBlock {
+    flex-direction: row;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+}

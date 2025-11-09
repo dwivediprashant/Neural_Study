@@ -1,0 +1,11 @@
+{
+  "title": "Sample Quiz",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "Placeholder question?",
+      "options": ["A", "B", "C", "D"],
+      "answer": 0
+    }
+  ]
+}
