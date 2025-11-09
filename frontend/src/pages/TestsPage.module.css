@@ -52,13 +52,53 @@
 }
 
 .card {
+  --card-border: rgba(15, 23, 42, 0.08);
+  --card-background: #ffffff;
+  --badge-primary-bg: rgba(79, 70, 229, 0.14);
+  --badge-primary-color: #4338ca;
+  --secondary-border: rgba(15, 23, 42, 0.12);
+
   display: grid;
   gap: 0.85rem;
-  padding: 1.5rem;
+  padding: 1.65rem;
   border-radius: 20px;
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--card-background);
+  border: 2px solid var(--card-border);
   box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover,
+.card:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 42px rgba(15, 23, 42, 0.12);
+}
+
+.cardTheme_indigo {
+  --card-border: #3730a3;
+  --card-background: rgba(99, 102, 241, 0.12);
+  --badge-primary-bg: rgba(79, 70, 229, 0.18);
+  --badge-primary-color: #312e81;
+}
+
+.cardTheme_violet {
+  --card-border: #6d28d9;
+  --card-background: rgba(167, 139, 250, 0.16);
+  --badge-primary-bg: rgba(139, 92, 246, 0.22);
+  --badge-primary-color: #4c1d95;
+}
+
+.cardTheme_amber {
+  --card-border: #b45309;
+  --card-background: rgba(251, 191, 36, 0.18);
+  --badge-primary-bg: rgba(251, 191, 36, 0.26);
+  --badge-primary-color: #78350f;
+}
+
+.cardDummy {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.95) 100%),
+    var(--card-background);
+  border-style: dashed;
 }
 
 .cardHeader {
@@ -89,13 +129,36 @@
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
-  background: rgba(16, 185, 129, 0.16);
-  color: #047857;
+  border: 1px solid var(--secondary-border);
 }
 
-.badgeNeutral {
-  background: rgba(120, 113, 198, 0.18);
-  color: #4338ca;
+.badgePrimary {
+  background: var(--badge-primary-bg);
+  color: var(--badge-primary-color);
+  border-color: transparent;
+}
+
+.badge_neutral {
+  background: rgba(148, 163, 184, 0.26);
+  color: #334155;
+}
+
+.badge_violet {
+  background: rgba(139, 92, 246, 0.18);
+  color: #5b21b6;
+  border-color: rgba(124, 58, 237, 0.5);
+}
+
+.badge_amber {
+  background: rgba(245, 158, 11, 0.18);
+  color: #92400e;
+  border-color: rgba(217, 119, 6, 0.5);
+}
+
+.badge_emerald {
+  background: rgba(16, 185, 129, 0.18);
+  color: #047857;
+  border-color: rgba(5, 150, 105, 0.45);
 }
 
 .cardDescription {
@@ -125,6 +188,13 @@
 .cardButton:focus-visible {
   transform: translateY(-1px);
   box-shadow: 0 16px 32px rgba(99, 102, 241, 0.4);
+}
+
+.cardButtonDisabled {
+  background: rgba(15, 23, 42, 0.12);
+  color: rgba(15, 23, 42, 0.55);
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .stateCard {

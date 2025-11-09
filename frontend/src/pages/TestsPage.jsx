@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import styles from './TestsPage.module.css';
@@ -9,6 +9,29 @@ const formatDuration = (minutes) => {
   if (!minutes || Number.isNaN(Number(minutes))) return '15 min';
   return `${minutes} min`;
 };
+
+const DUMMY_FLASH_CARDS = [
+  {
+    slug: 'concept-sprint-mini-deck',
+    title: 'Concept Sprint Mini Deck',
+    description: 'Preview key formulas and rapid-fire prompts to warm up before a lecture quiz.',
+    durationLabel: '5 min burst',
+    secondaryLabel: 'Preview deck',
+    secondaryTone: 'violet',
+    theme: 'violet',
+    isDummy: true,
+  },
+  {
+    slug: 'strategy-snapshot-pack',
+    title: 'Strategy Snapshot Pack',
+    description: 'Glance through quick tactics to improve accuracy during timed assessments.',
+    durationLabel: '8 min focus',
+    secondaryLabel: 'Tactics',
+    secondaryTone: 'amber',
+    theme: 'amber',
+    isDummy: true,
+  },
+];
 
 const TestsPage = () => {
   const [tests, setTests] = useState([]);
@@ -38,6 +61,16 @@ const TestsPage = () => {
     load();
   }, []);
 
+  const displayCards = useMemo(() => {
+    const enriched = tests.map((topic) => ({
+      ...topic,
+      theme: topic.theme ?? 'indigo',
+      secondaryLabel: topic.secondaryLabel ?? topic.difficulty,
+      secondaryTone: topic.secondaryTone ?? 'neutral',
+    }));
+    return [...enriched, ...DUMMY_FLASH_CARDS];
+  }, [tests]);
+
   return (
     <section className={styles.page}>
       <header className={styles.pageHeader}>
@@ -53,29 +86,44 @@ const TestsPage = () => {
         <div className={styles.stateCard}>Loading tests…</div>
       ) : error ? (
         <div className={styles.stateCard}>{error}</div>
-      ) : tests.length === 0 ? (
-        <div className={styles.stateCard}>No tests available right now. Please check back soon.</div>
       ) : (
         <div className={styles.grid}>
-          {tests.map((topic) => (
-            <article key={topic.slug} className={styles.card}>
-              <header className={styles.cardHeader}>
-                <h2 className={styles.cardTitle}>{topic.title}</h2>
-                <div className={styles.cardMeta}>
-                  <span className={styles.badge}>{formatDuration(topic.durationMinutes)}</span>
-                  {topic.difficulty ? (
-                    <span className={`${styles.badge} ${styles.badgeNeutral}`}>{topic.difficulty}</span>
-                  ) : null}
+          {displayCards.map((topic) => {
+            const isDummy = Boolean(topic.isDummy);
+            const durationText = topic.durationLabel ?? formatDuration(topic.durationMinutes);
+            const secondaryLabel = topic.secondaryLabel;
+            const secondaryTone = topic.secondaryTone ?? 'neutral';
+            const themeClassName = topic.theme ? styles[`cardTheme_${topic.theme}`] : '';
+
+            return (
+              <article
+                key={topic.slug}
+                className={`${styles.card} ${themeClassName} ${isDummy ? styles.cardDummy : ''}`}
+              >
+                <header className={styles.cardHeader}>
+                  <h2 className={styles.cardTitle}>{topic.title}</h2>
+                  <div className={styles.cardMeta}>
+                    <span className={`${styles.badge} ${styles.badgePrimary}`}>{durationText}</span>
+                    {secondaryLabel ? (
+                      <span className={`${styles.badge} ${styles[`badge_${secondaryTone}`]}`}>{secondaryLabel}</span>
+                    ) : null}
+                  </div>
+                </header>
+                <p className={styles.cardDescription}>{topic.description}</p>
+                <div className={styles.cardActions}>
+                  {isDummy ? (
+                    <button type="button" className={`${styles.cardButton} ${styles.cardButtonDisabled}`} disabled>
+                      Coming soon
+                    </button>
+                  ) : (
+                    <Link to={`/tests/${topic.slug}`} className={styles.cardButton}>
+                      Start test
+                    </Link>
+                  )}
                 </div>
-              </header>
-              <p className={styles.cardDescription}>{topic.description}</p>
-              <div className={styles.cardActions}>
-                <Link to={`/tests/${topic.slug}`} className={styles.cardButton}>
-                  Start test
-                </Link>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       )}
     </section>

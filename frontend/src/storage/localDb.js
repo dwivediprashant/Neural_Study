@@ -1,7 +1,7 @@
 import { openDB } from 'idb';
 
 const DB_NAME = 'neural-study';
-const DB_VERSION = 2;
+const DB_VERSION = 4;
 const COURSE_STORE = 'courses';
 const META_STORE = 'metadata';
 const ACTION_QUEUE_STORE = 'actions';

@@ -1,0 +1,369 @@
+.page {
+  padding: clamp(2rem, 6vw, 3.5rem) 0;
+  background: linear-gradient(180deg, rgba(247, 249, 252, 0.95) 0%, #ffffff 100%);
+}
+
+.container {
+  width: min(1080px, 92vw);
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.searchRow {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.searchForm {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: nowrap;
+}
+
+.searchFieldWrap {
+  position: relative;
+  flex: 1;
+}
+
+.searchInput {
+  width: 100%;
+  border: 1px solid rgba(46, 58, 89, 0.12);
+  border-radius: 16px;
+  padding: 0.85rem 3.2rem 0.85rem 1.1rem;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.18);
+}
+
+.clearButton {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.45rem 0.75rem;
+  border-radius: 12px;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.12);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.clearButton:hover {
+  background: rgba(59, 130, 246, 0.18);
+}
+
+.searchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 1.4rem;
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  cursor: pointer;
+  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px rgba(37, 99, 235, 0.32);
+}
+
+.searchButton:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.searchHint,
+.searchStatus {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.searchStatusError {
+  color: #b91c1c;
+}
+
+.pageHeader {
+  text-align: center;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  color: #0f172a;
+}
+
+.pageSubtitle {
+  margin: 0;
+  max-width: 720px;
+  margin-inline: auto;
+  color: #52607a;
+  font-size: clamp(1rem, 2.6vw, 1.1rem);
+  line-height: 1.6;
+}
+
+.stateCard {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  text-align: center;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border-radius: 20px;
+  border: 1px dashed rgba(46, 58, 89, 0.18);
+  color: #4b5563;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.stateCard h2 {
+  margin: 0;
+  color: #2563eb;
+  font-size: 1.2rem;
+}
+
+.lectureGrid {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.lectureCard {
+  display: grid;
+  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid rgba(46, 58, 89, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 16px 34px -24px rgba(15, 23, 42, 0.22);
+  overflow: hidden;
+}
+
+.lectureMedia {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.lectureThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lecturePlaceholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(15, 23, 42, 0.65);
+  text-transform: uppercase;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(99, 102, 241, 0.28));
+}
+
+.lectureBody {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0 1.35rem 1.35rem;
+}
+
+.lectureHeader {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.lectureTitle {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.6vw, 1.3rem);
+  color: #1e293b;
+}
+
+.lectureBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.lectureBadge,
+.lectureBadgeSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lectureBadge {
+  background: rgba(56, 189, 248, 0.18);
+  color: #0369a1;
+}
+
+.lectureBadgeSecondary {
+  background: rgba(148, 163, 184, 0.2);
+  color: rgba(30, 41, 59, 0.8);
+}
+
+.lectureDescription {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.55;
+}
+
+.lectureMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(30, 41, 59, 0.7);
+}
+
+.lectureTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lectureTags li {
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.14);
+  color: #312e81;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.lectureFooter {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.lectureLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1rem;
+  border-radius: 12px;
+  background: rgba(56, 189, 248, 0.2);
+  color: #0f172a;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.lectureLink:hover,
+.lectureLink:focus-visible {
+  background: rgba(56, 189, 248, 0.3);
+  transform: translateY(-1px);
+}
+
+.lectureActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: flex-end;
+  margin-left: auto;
+}
+
+.lectureProgress {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.lectureDownloadButton,
+.lectureRemoveButton {
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.lectureDownloadButton {
+  background: rgba(59, 130, 246, 0.18);
+  color: #1d4ed8;
+  box-shadow: 0 10px 20px -16px rgba(59, 130, 246, 0.5);
+}
+
+.lectureDownloadButton:hover:not(:disabled),
+.lectureDownloadButton:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(59, 130, 246, 0.24);
+}
+
+.lectureRemoveButton {
+  background: rgba(248, 113, 113, 0.18);
+  color: #b91c1c;
+  box-shadow: 0 10px 18px -16px rgba(248, 113, 113, 0.45);
+}
+
+.lectureRemoveButton:hover:not(:disabled),
+.lectureRemoveButton:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(248, 113, 113, 0.24);
+}
+
+.lectureDownloadButton:disabled,
+.lectureRemoveButton:disabled {
+  opacity: 0.65;
+  cursor: progress;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 640px) {
+  .searchForm {
+    flex-direction: column;
+  }
+
+  .lectureFooter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lectureActions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .lectureDownloadButton,
+  .lectureRemoveButton {
+    width: 100%;
+  }
+}
