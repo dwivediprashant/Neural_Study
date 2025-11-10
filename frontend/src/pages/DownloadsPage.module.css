@@ -119,10 +119,42 @@
   place-items: center;
 }
 
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .mediaPlayer {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.mediaEmbed {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.previewButton {
+  margin-top: 0.6rem;
+  align-self: flex-start;
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  background: rgba(59, 130, 246, 0.18);
+  color: #1d4ed8;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.previewButton:hover,
+.previewButton:focus-visible {
+  outline: none;
+  background: rgba(59, 130, 246, 0.28);
+  transform: translateY(-1px);
 }
 
 .lectureThumb {

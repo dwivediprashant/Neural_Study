@@ -96,7 +96,11 @@
 }
 
 .cardDummy {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.95) 100%),
+  background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.65) 0%,
+      rgba(255, 255, 255, 0.95) 100%
+    ),
     var(--card-background);
   border-style: dashed;
 }
@@ -174,20 +178,21 @@
 
 .cardButton {
   border: none;
-  border-radius: 14px;
-  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  padding: 0.65rem 0.65rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-  color: #ffffff;
+  background: #2563eb;
+  color: #f8fafc;
   cursor: pointer;
-  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.28);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
 .cardButton:hover,
 .cardButton:focus-visible {
   transform: translateY(-1px);
-  box-shadow: 0 16px 32px rgba(99, 102, 241, 0.4);
+  background: #1d4ed8;
+  box-shadow: 0 16px 28px rgba(29, 78, 216, 0.32);
 }
 
 .cardButtonDisabled {

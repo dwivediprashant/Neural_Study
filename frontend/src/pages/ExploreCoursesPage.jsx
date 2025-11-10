@@ -4,6 +4,8 @@ import { Link, useOutletContext } from "react-router-dom";
 import styles from "./ExploreCoursesPage.module.css";
 import { formatProgressLabel, makeCourseProgressKey, makeLectureProgressKey } from "../utils/downloads";
 import { fetchCourses } from "../api/client";
+import { resolveMedia } from "../utils/media";
+import MediaModal from "../components/MediaModal";
 
 const BANNER_BY_EXAM = {
   JEE: "/b75e0c1a-6893-4b31-8d79-f37a1c72115a.webp",
@@ -27,13 +29,8 @@ const Badge = ({ label, tone }) => (
 );
 
 const CourseCard = ({ course, downloadsState }) => {
-  const {
-    downloads,
-    saveCourse,
-    removeCourse,
-    pendingDownloadIds,
-    progress,
-  } = downloadsState;
+  const { downloads, saveCourse, removeCourse, pendingDownloadIds, progress } =
+    downloadsState;
 
   const courseId = course.raw._id ?? course.raw.id ?? course.id;
   const downloadRecord = downloads.find((item) => item.id === courseId);
@@ -49,12 +46,14 @@ const CourseCard = ({ course, downloadsState }) => {
       ? `Caching ${progressState.completed}/${progressState.total}`
       : "Caching…"
     : isDownloaded
-      ? "Remove offline"
-      : "Save offline";
+    ? "Remove offline"
+    : "Save offline";
 
   const progressLabel =
     formatProgressLabel(progressState) ||
-    (isDownloaded && totalAssets ? `Cached ${cachedAssets}/${totalAssets}` : null);
+    (isDownloaded && totalAssets
+      ? `Cached ${cachedAssets}/${totalAssets}`
+      : null);
 
   const handleToggle = () => {
     if (isDownloaded) {
@@ -132,14 +131,17 @@ const CourseCard = ({ course, downloadsState }) => {
             {downloadLabel}
           </Link>
         </div>
-        {progressLabel ? <p className={styles.progressText}>{progressLabel}</p> : null}
+        {progressLabel ? (
+          <p className={styles.progressText}>{progressLabel}</p>
+        ) : null}
       </div>
     </article>
   );
 };
 
-const LectureCard = ({ lecture, downloadsState }) => {
-  const { downloads, saveLecture, removeLecture, pendingLectureIds, progress } = downloadsState;
+const LectureCard = ({ lecture, downloadsState, onPreview }) => {
+  const { downloads, saveLecture, removeLecture, pendingLectureIds, progress } =
+    downloadsState;
 
   const hasThumbnail = Boolean(lecture.thumbnail);
   const lectureId = lecture.raw?._id ?? lecture.raw?.id ?? lecture.id;
@@ -149,16 +151,29 @@ const LectureCard = ({ lecture, downloadsState }) => {
   const progressState = progress?.get?.(progressKey);
   const isPending = pendingLectureIds?.has?.(lectureId);
   const cachedAssets = downloadRecord?.cachedAssets?.length ?? 0;
-  const totalAssets = downloadRecord?.assets?.length ?? (cachedAssets || (lecture.assetCount ?? 0));
+  const totalAssets =
+    downloadRecord?.assets?.length ??
+    (cachedAssets || (lecture.assetCount ?? 0));
 
-  const downloadLabel = isPending ? 'Caching…' : isDownloaded ? 'Remove offline' : 'Save offline';
+  const downloadLabel = isPending
+    ? "Caching…"
+    : isDownloaded
+    ? "Remove offline"
+    : "Save offline";
   const progressLabel =
     formatProgressLabel(progressState) ||
     (isDownloaded
       ? cachedAssets && totalAssets
         ? `Cached ${cachedAssets}/${totalAssets}`
-        : 'Cached offline'
+        : "Cached offline"
       : null);
+
+  const previewCandidates = [
+    lecture.raw?.previewUrl,
+    ...(lecture.raw?.assets ?? []),
+    ...(lecture.raw?.cachedAssets ?? []),
+  ].filter((asset) => typeof asset === "string");
+  const lectureMedia = resolveMedia(previewCandidates);
 
   const handleToggle = () => {
     if (isDownloaded) {
@@ -169,7 +184,10 @@ const LectureCard = ({ lecture, downloadsState }) => {
   };
 
   return (
-    <article className={styles.lectureCard} aria-labelledby={`${lecture.id}-lecture-title`}>
+    <article
+      className={styles.lectureCard}
+      aria-labelledby={`${lecture.id}-lecture-title`}
+    >
       <div className={styles.lectureMedia}>
         {hasThumbnail ? (
           <img
@@ -186,25 +204,40 @@ const LectureCard = ({ lecture, downloadsState }) => {
 
       <div className={styles.lectureBody}>
         <header className={styles.lectureHeader}>
-          <h3 className={styles.lectureTitle} id={`${lecture.id}-lecture-title`}>
+          <h3
+            className={styles.lectureTitle}
+            id={`${lecture.id}-lecture-title`}
+          >
             {lecture.title}
           </h3>
           <div className={styles.lectureBadges}>
             <span className={styles.lectureBadge}>{lecture.exam}</span>
-            {lecture.subject ? <span className={styles.lectureBadgeSecondary}>{lecture.subject}</span> : null}
+            {lecture.subject ? (
+              <span className={styles.lectureBadgeSecondary}>
+                {lecture.subject}
+              </span>
+            ) : null}
             {lecture.duration ? (
-              <span className={styles.lectureBadgeSecondary}>{lecture.duration} mins</span>
+              <span className={styles.lectureBadgeSecondary}>
+                {lecture.duration} mins
+              </span>
             ) : null}
             {lecture.language ? (
-              <span className={styles.lectureBadgeSecondary}>{lecture.language}</span>
+              <span className={styles.lectureBadgeSecondary}>
+                {lecture.language}
+              </span>
             ) : null}
           </div>
         </header>
 
-        {lecture.description ? <p className={styles.lectureDescription}>{lecture.description}</p> : null}
+        {lecture.description ? (
+          <p className={styles.lectureDescription}>{lecture.description}</p>
+        ) : null}
 
         <div className={styles.lectureMeta}>
-          {lecture.publishedLabel ? <span>{lecture.publishedLabel}</span> : null}
+          {lecture.publishedLabel ? (
+            <span>{lecture.publishedLabel}</span>
+          ) : null}
           {lecture.tags.length ? (
             <ul className={styles.lectureTags}>
               {lecture.tags.map((tag) => (
@@ -215,21 +248,48 @@ const LectureCard = ({ lecture, downloadsState }) => {
         </div>
 
         <footer className={styles.lectureFooter}>
-          {lecture.resourceUrl ? (
-            <a
-              href={lecture.resourceUrl}
-              className={styles.lectureLink}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Open lecture resource
-            </a>
-          ) : null}
-          <div className={styles.lectureActions}>
-            {progressLabel ? <p className={styles.lectureProgress}>{progressLabel}</p> : null}
+          {lectureMedia ? (
             <button
               type="button"
-              className={isDownloaded ? styles.lectureRemoveButton : styles.lectureDownloadButton}
+              className={styles.previewButton}
+              onClick={() => {
+                const sourceLecture = {
+                  ...(lecture.raw ?? {}),
+                  id: lecture.raw?._id ?? lecture.raw?.id ?? lecture.id,
+                  title: lecture.title,
+                  exam: lecture.exam,
+                  subject: lecture.subject,
+                  tags: lecture.tags,
+                  durationMinutes:
+                    lecture.raw?.durationMinutes ??
+                    lecture.duration ??
+                    lecture.raw?.duration ??
+                    null,
+                  thumbnailUrl: lecture.thumbnail,
+                  viewedAt: new Date().toISOString(),
+                };
+
+                onPreview?.({
+                  title: lecture.title,
+                  media: { ...lectureMedia, poster: lecture.thumbnail || undefined },
+                  sourceLecture,
+                });
+              }}
+            >
+              See lecture
+            </button>
+          ) : null}
+          <div className={styles.lectureActions}>
+            {progressLabel ? (
+              <p className={styles.lectureProgress}>{progressLabel}</p>
+            ) : null}
+            <button
+              type="button"
+              className={
+                isDownloaded
+                  ? styles.lectureRemoveButton
+                  : styles.lectureDownloadButton
+              }
               onClick={handleToggle}
               disabled={isPending}
             >
@@ -258,14 +318,16 @@ const ExploreCoursesPage = () => {
     status,
     lectures = [],
     lecturesLoading,
+    registerLectureView,
   } = useOutletContext() ?? {};
   const [searchTerm, setSearchTerm] = useState("");
   const [remoteCourses, setRemoteCourses] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const baseCourses = useMemo(
-    () => (remoteCourses ?? courses),
+    () => remoteCourses ?? courses,
     [remoteCourses, courses]
   );
 
@@ -273,9 +335,12 @@ const ExploreCoursesPage = () => {
     () =>
       baseCourses.map((course) => {
         const primaryTag = course.tags?.[0] ?? course.exam;
-        const bannerSrc = BANNER_BY_EXAM[course.exam] ?? "/b75e0c1a-6893-4b31-8d79-f37a1c72115a.webp";
+        const bannerSrc =
+          BANNER_BY_EXAM[course.exam] ??
+          "/b75e0c1a-6893-4b31-8d79-f37a1c72115a.webp";
         const tagTone = TONE_BY_EXAM[course.exam] ?? "primary";
-        const languageBadge = languageBadgeMap[course.language] ?? course.language;
+        const languageBadge =
+          languageBadgeMap[course.language] ?? course.language;
 
         return {
           id: course._id ?? course.id,
@@ -287,14 +352,16 @@ const ExploreCoursesPage = () => {
           bannerSrc,
           badges: [
             { label: course.exam, tone: tagTone },
-            languageBadge
-              ? { label: languageBadge, tone: "neutral" }
-              : null,
+            languageBadge ? { label: languageBadge, tone: "neutral" } : null,
           ].filter(Boolean),
           highlight: course.description,
           schedule: {
-            start: course.createdAt ? new Date(course.createdAt).toLocaleDateString() : undefined,
-            end: course.updatedAt ? new Date(course.updatedAt).toLocaleDateString() : undefined,
+            start: course.createdAt
+              ? new Date(course.createdAt).toLocaleDateString()
+              : undefined,
+            end: course.updatedAt
+              ? new Date(course.updatedAt).toLocaleDateString()
+              : undefined,
           },
           tags: course.tags ?? [],
           modules: course.modules ?? [],
@@ -306,7 +373,9 @@ const ExploreCoursesPage = () => {
   const decoratedLectures = useMemo(
     () =>
       lectures.map((lecture) => {
-        const createdAt = lecture.createdAt ? new Date(lecture.createdAt) : null;
+        const createdAt = lecture.createdAt
+          ? new Date(lecture.createdAt)
+          : null;
         const assets = [];
         if (lecture.resourceUrl) assets.push(lecture.resourceUrl);
         (lecture.assets ?? []).forEach((asset) => {
@@ -319,10 +388,16 @@ const ExploreCoursesPage = () => {
           description: lecture.description ?? "",
           exam: lecture.exam ?? "GENERAL",
           subject: lecture.subject ?? null,
-          duration: lecture.durationMinutes ? `${lecture.durationMinutes}` : null,
-          language: languageBadgeMap[lecture.language] ?? lecture.language ?? null,
+          duration: lecture.durationMinutes
+            ? `${lecture.durationMinutes}`
+            : null,
+          language:
+            languageBadgeMap[lecture.language] ?? lecture.language ?? null,
           tags: (lecture.tags ?? []).filter(Boolean).slice(0, 5),
-          thumbnail: lecture.thumbnailUrl || BANNER_BY_EXAM[lecture.exam] || "/b75e0c1a-6893-4b31-8d79-f37a1c72115a.webp",
+          thumbnail:
+            lecture.thumbnailUrl ||
+            BANNER_BY_EXAM[lecture.exam] ||
+            "/b75e0c1a-6893-4b31-8d79-f37a1c72115a.webp",
           resourceUrl: lecture.resourceUrl ?? null,
           assetCount: assets.length,
           publishedLabel: createdAt
@@ -399,14 +474,19 @@ const ExploreCoursesPage = () => {
 
     if (status?.isOffline) {
       setRemoteCourses(null);
-      setSearchError("Online search is unavailable offline. Showing cached matches.");
+      setSearchError(
+        "Online search is unavailable offline. Showing cached matches."
+      );
       return;
     }
 
     try {
       setSearchLoading(true);
       setSearchError(null);
-      const data = await fetchCourses({ tag: submittedValue, q: submittedValue });
+      const data = await fetchCourses({
+        tag: submittedValue,
+        q: submittedValue,
+      });
       const results = data?.courses ?? [];
       setRemoteCourses(results);
       if (!results.length) {
@@ -415,7 +495,9 @@ const ExploreCoursesPage = () => {
     } catch (err) {
       setRemoteCourses(null);
       const message =
-        err?.response?.data?.message || err?.message || "Unable to fetch courses right now.";
+        err?.response?.data?.message ||
+        err?.message ||
+        "Unable to fetch courses right now.";
       setSearchError(message);
     } finally {
       setSearchLoading(false);
@@ -426,20 +508,47 @@ const ExploreCoursesPage = () => {
   const hasLectureResults = filteredLectures.length > 0;
 
   const courseDownloadsState = useMemo(
-    () => ({ downloads, saveCourse, removeCourse, pendingDownloadIds, progress }),
+    () => ({
+      downloads,
+      saveCourse,
+      removeCourse,
+      pendingDownloadIds,
+      progress,
+    }),
     [downloads, saveCourse, removeCourse, pendingDownloadIds, progress]
   );
 
   const lectureDownloadsState = useMemo(
-    () => ({ downloads, saveLecture, removeLecture, pendingLectureIds, progress }),
+    () => ({
+      downloads,
+      saveLecture,
+      removeLecture,
+      pendingLectureIds,
+      progress,
+    }),
     [downloads, saveLecture, removeLecture, pendingLectureIds, progress]
   );
+
+  const handleOpenPreview = (payload) => {
+    setPreview(payload);
+    if (payload?.sourceLecture) {
+      registerLectureView?.(payload.sourceLecture);
+    }
+  };
+
+  const handleClosePreview = () => {
+    setPreview(null);
+  };
 
   return (
     <section className={styles.page} id="courses">
       <div className={styles.container}>
         <div className={styles.searchRow}>
-          <form className={styles.searchForm} role="search" onSubmit={handleSubmit}>
+          <form
+            className={styles.searchForm}
+            role="search"
+            onSubmit={handleSubmit}
+          >
             <div className={styles.searchFieldWrap}>
               <input
                 id="explore-course-search"
@@ -452,67 +561,60 @@ const ExploreCoursesPage = () => {
                 disabled={searchLoading}
               />
               {searchTerm ? (
-                <button type="button" className={styles.clearButton} onClick={handleClear}>
+                <button
+                  type="button"
+                  className={styles.clearButton}
+                  onClick={handleClear}
+                >
                   Clear
                 </button>
               ) : null}
             </div>
-            <button type="submit" className={styles.searchButton} disabled={searchLoading}>
+            <button
+              type="submit"
+              className={styles.searchButton}
+              disabled={searchLoading}
+            >
               {searchLoading ? "Searching…" : "Search"}
             </button>
           </form>
-          <p className={styles.searchHint}>Filter batches by exam category or language tags.</p>
+          <p className={styles.searchHint}>
+            Filter batches by exam category or language tags.
+          </p>
           {searchError ? (
-            <p className={`${styles.searchStatus} ${styles.searchStatusError}`}>{searchError}</p>
+            <p className={`${styles.searchStatus} ${styles.searchStatusError}`}>
+              {searchError}
+            </p>
           ) : remoteCourses && !searchLoading ? (
             <p className={styles.searchStatus}>
-              Showing {filteredCourses.length} result{filteredCourses.length === 1 ? "" : "s"} from the server.
+              Showing {filteredCourses.length} result
+              {filteredCourses.length === 1 ? "" : "s"} from the server.
             </p>
           ) : null}
         </div>
 
         <header className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Courses designed for deep, personalised learning</h1>
+          <h1 className={styles.pageTitle}>
+            Courses designed for deep, personalised learning
+          </h1>
           <p className={styles.pageSubtitle}>
-            Browse high-impact programmes curated by mentors. Each batch combines interactive live sessions, structured
-            notes, offline-first practice, and guided doubt support.
+            Browse high-impact programmes curated by mentors. Each batch
+            combines interactive live sessions, structured notes, offline-first
+            practice, and guided doubt support.
           </p>
         </header>
 
-        {loading ? (
-          <div className={styles.emptyState} role="status">
-            <h2>Loading courses…</h2>
-            <p>Fetching the latest batches from the offline catalogue.</p>
-          </div>
-        ) : error ? (
-          <div className={styles.emptyState} role="alert">
-            <h2>We couldn’t load courses</h2>
-            <p>{error}</p>
-          </div>
-        ) : hasResults ? (
-          <div className={styles.grid}>
-            {filteredCourses.map((course) => (
-              <CourseCard key={course.id} course={course} downloadsState={courseDownloadsState} />
-            ))}
-          </div>
-        ) : (
-          <div className={styles.emptyState} role="status">
-            <h2>No batches match that tag yet</h2>
-            <p>Try another tag like NEET, UPSC, Hinglish, or Foundation.</p>
-            {hasLectureResults ? null : (
-              <p className={styles.emptyHint}>
-                Teachers are still authoring new lectures&mdash;check back soon!
-              </p>
-            )}
-          </div>
-        )}
-
-        <section className={styles.lectureSection} aria-labelledby="teacher-lectures-heading">
+        <section
+          className={styles.lectureSection}
+          aria-labelledby="teacher-lectures-heading"
+        >
           <header className={styles.lectureSectionHeader}>
-            <h2 id="teacher-lectures-heading">Fresh lectures from Neural mentors</h2>
+            <h2 id="teacher-lectures-heading">
+              Fresh lectures from Neural mentors
+            </h2>
             <p>
-              Browse individual lecture drops uploaded by teachers. Thumbnails and metadata are provided directly by the
-              mentor.
+              Browse individual lecture drops uploaded by teachers. Thumbnails
+              and metadata are provided directly by the mentor.
             </p>
           </header>
 
@@ -523,18 +625,29 @@ const ExploreCoursesPage = () => {
           ) : hasLectureResults ? (
             <div className={styles.lectureGrid}>
               {filteredLectures.map((lecture) => (
-                <LectureCard key={lecture.id} lecture={lecture} downloadsState={lectureDownloadsState} />
+                <LectureCard
+                  key={lecture.id}
+                  lecture={lecture}
+                  downloadsState={lectureDownloadsState}
+                  onPreview={handleOpenPreview}
+                />
               ))}
             </div>
           ) : (
             <div className={styles.lectureState} role="status">
               {lectures.length
-                ? 'No lectures match that search.'
-                : 'Teachers are preparing new lectures. Check back soon!'}
+                ? "No lectures match that search."
+                : "Teachers are preparing new lectures. Check back soon!"}
             </div>
           )}
         </section>
       </div>
+      <MediaModal
+        open={Boolean(preview)}
+        title={preview?.title}
+        media={preview?.media}
+        onClose={handleClosePreview}
+      />
     </section>
   );
 };

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import styles from './DownloadsPage.module.css';
@@ -7,8 +8,11 @@ import {
   makeLectureProgressKey,
   makeModuleProgressKey,
 } from '../utils/downloads';
+import { resolveMedia } from '../utils/media';
+import MediaModal from '../components/MediaModal';
 
 const DownloadsPage = () => {
+  const [preview, setPreview] = useState(null);
   const {
     downloads,
     status,
@@ -19,7 +23,14 @@ const DownloadsPage = () => {
     pendingDownloadKeys,
     progress,
     courses = [],
+    registerLectureView,
   } = useOutletContext();
+
+  const formatRetryMessage = (count) => {
+    if (!count) return null;
+    const label = count === 1 ? 'asset' : 'assets';
+    return `${count} ${label} pending retry`;
+  };
 
   const totalSizeMB = downloads.reduce((acc, item) => acc + (item.totalSizeMB || 0), 0);
   const totalSizeGB = (totalSizeMB / 1024).toFixed(2);
@@ -30,6 +41,17 @@ const DownloadsPage = () => {
   const lectureDownloads = downloads.filter((item) => item.type === 'lecture');
   const hasCourseDownloads = courseDownloads.length > 0;
   const hasLectureDownloads = lectureDownloads.length > 0;
+
+  const handleOpenPreview = (payload) => {
+    setPreview(payload);
+    if (payload?.sourceLecture) {
+      registerLectureView?.(payload.sourceLecture);
+    }
+  };
+
+  const handleClosePreview = () => {
+    setPreview(null);
+  };
 
   return (
     <section className={styles.wrapper}>
@@ -73,10 +95,14 @@ const DownloadsPage = () => {
                 const originalCourse = courses.find((item) => item._id === course.id);
                 const moduleSource = originalCourse?.modules ?? course.modules ?? [];
                 const preferredAssets = course.cachedAssets?.length ? course.cachedAssets : course.assets || [];
-                const videoAsset = preferredAssets.find((asset) => /\.mp4(\?|$)/.test(asset))
-                  || moduleSource.flatMap((module) => module?.lessons ?? [])
-                    .map((lesson) => lesson?.assetUrl)
-                    .find((url) => /\.mp4(\?|$)/.test(url));
+                const lessonAssets = moduleSource
+                  .flatMap((module) => module?.lessons ?? [])
+                  .map((lesson) => lesson?.assetUrl)
+                  .filter((asset) => typeof asset === 'string');
+                const mediaCandidates = [course.previewUrl, ...preferredAssets, ...lessonAssets].filter(
+                  (asset) => typeof asset === 'string'
+                );
+                const courseMedia = resolveMedia(mediaCandidates);
                 const description = originalCourse?.description || 'Offline copy ready for playback and revision.';
 
                 const moduleSummary = moduleSource.map((module, moduleIndex) => {
@@ -105,16 +131,8 @@ const DownloadsPage = () => {
                   <article key={course.id} className={styles.card}>
                     <div className={styles.cardVisual}>
                       <div className={styles.thumbShell}>
-                        {videoAsset ? (
-                          <video
-                            key={videoAsset}
-                            className={styles.mediaPlayer}
-                            src={videoAsset}
-                            controls
-                            preload="metadata"
-                          >
-                            Your browser does not support offline playback.
-                          </video>
+                        {course.thumbnailUrl ? (
+                          <img src={course.thumbnailUrl} alt="Course thumbnail" className={styles.thumbnailImage} />
                         ) : (
                           <div className={styles.mediaPlaceholder}>
                             <span>No video preview available</span>
@@ -125,9 +143,23 @@ const DownloadsPage = () => {
                       <div className={styles.visualFooter}>
                         <p>{course.cachedAssets?.length ? 'Offline ready' : 'Cache modules to study offline'}</p>
                         {course.failedAssets?.length ? (
-                          <span>{course.failedAssets.length} asset(s) pending retry</span>
+                          <span>{formatRetryMessage(course.failedAssets.length)}</span>
                         ) : null}
                       </div>
+                      {courseMedia ? (
+                        <button
+                          type="button"
+                          className={styles.previewButton}
+                          onClick={() =>
+                            handleOpenPreview({
+                              title: course.title,
+                              media: { ...courseMedia, poster: course.thumbnailUrl || undefined },
+                            })
+                          }
+                        >
+                          See lecture
+                        </button>
+                      ) : null}
                     </div>
 
                     <div className={styles.cardDetails}>
@@ -191,6 +223,16 @@ const DownloadsPage = () => {
                       ? 'Assets available'
                       : 'Cached offline');
 
+                  const lectureCandidates = [
+                    lecture.previewUrl,
+                    ...(lecture.cachedAssets || []),
+                    ...(lecture.assets || []),
+                    lecture.videoUrl,
+                    lecture.mediaUrl,
+                    lecture.resourceUrl,
+                  ].filter((asset) => typeof asset === 'string');
+                  const lectureMedia = resolveMedia(lectureCandidates);
+
                   return (
                     <article key={lecture.id} className={styles.lectureCard}>
                       <div className={styles.cardVisual}>
@@ -207,9 +249,36 @@ const DownloadsPage = () => {
                         <div className={styles.visualFooter}>
                           <p>{label || 'Assets cached'}</p>
                           {lecture.failedAssets?.length ? (
-                            <span>{lecture.failedAssets.length} asset(s) pending retry</span>
+                            <span>{formatRetryMessage(lecture.failedAssets.length)}</span>
                           ) : null}
                         </div>
+                        {lectureMedia ? (
+                          <button
+                            type="button"
+                            className={styles.previewButton}
+                            onClick={() => {
+                              const sourceLecture = {
+                                ...lecture,
+                                id: lecture.id,
+                                title: lecture.title,
+                                exam: lecture.exam,
+                                subject: lecture.subject,
+                                tags: lecture.tags,
+                                durationMinutes: lecture.durationMinutes,
+                                thumbnailUrl: lecture.thumbnailUrl,
+                                viewedAt: new Date().toISOString(),
+                              };
+
+                              handleOpenPreview({
+                                title: lecture.title,
+                                media: { ...lectureMedia, poster: lecture.thumbnailUrl || undefined },
+                                sourceLecture,
+                              });
+                            }}
+                          >
+                            See lecture
+                          </button>
+                        ) : null}
                       </div>
 
                       <div className={styles.cardDetails}>
@@ -225,11 +294,6 @@ const DownloadsPage = () => {
                         </p>
 
                         <div className={styles.lectureActionsRow}>
-                          {lecture.resourceUrl ? (
-                            <a className={styles.lectureOpenButton} href={lecture.resourceUrl} target="_blank" rel="noreferrer">
-                              Open resource
-                            </a>
-                          ) : null}
                           <button
                             type="button"
                             className={styles.lectureRemoveButton}
@@ -255,6 +319,7 @@ const DownloadsPage = () => {
           <span>We’ll retry them automatically once you’re back online.</span>
         </aside>
       ) : null}
+      <MediaModal open={Boolean(preview)} title={preview?.title} media={preview?.media} onClose={handleClosePreview} />
     </section>
   );
 };

@@ -96,6 +96,18 @@ const TeacherUploadsPage = () => {
                   ))}
                 </ul>
               ) : null}
+              <div className={styles.ratingRow}>
+                {typeof lecture.ratingAverage === 'number' ? (
+                  <span className={styles.ratingChip} aria-label="Average rating">
+                    ★ {lecture.ratingAverage.toFixed(1)} / 5
+                  </span>
+                ) : (
+                  <span className={styles.ratingChipMuted}>No ratings yet</span>
+                )}
+                <span className={styles.ratingCount}>
+                  {lecture.ratingCount ? `${lecture.ratingCount} vote${lecture.ratingCount === 1 ? '' : 's'}` : 'Awaiting feedback'}
+                </span>
+              </div>
               <footer className={styles.cardFooter}>
                 {lecture.resourceUrl ? (
                   <a href={lecture.resourceUrl} target="_blank" rel="noreferrer" className={styles.linkButton}>

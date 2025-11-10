@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import Lecture from '../models/Lecture.js';
+import LectureRating from '../models/LectureRating.js';
 import User from '../models/User.js';
 
 const sanitizeLecture = (lecture) => {
@@ -22,6 +23,60 @@ const sanitizeLecture = (lecture) => {
     createdAt: lecture.createdAt,
     updatedAt: lecture.updatedAt,
   };
+};
+
+const formatAverage = (value) => {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return null;
+  }
+  return Math.round(value * 100) / 100;
+};
+
+const collectLectureRatings = async (lectureIds, userId) => {
+  if (!Array.isArray(lectureIds) || lectureIds.length === 0) {
+    return { summaryMap: new Map(), userMap: new Map() };
+  }
+
+  const normalizedIds = lectureIds
+    .map((value) => (value instanceof mongoose.Types.ObjectId ? value : new mongoose.Types.ObjectId(value)))
+    .filter(Boolean);
+
+  if (!normalizedIds.length) {
+    return { summaryMap: new Map(), userMap: new Map() };
+  }
+
+  const summaries = await LectureRating.aggregate([
+    { $match: { lecture: { $in: normalizedIds } } },
+    {
+      $group: {
+        _id: '$lecture',
+        average: { $avg: '$rating' },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const summaryMap = new Map(
+    summaries.map(({ _id, average, count }) => [
+      _id.toString(),
+      {
+        average: formatAverage(average),
+        count,
+      },
+    ])
+  );
+
+  if (!userId) {
+    return { summaryMap, userMap: new Map() };
+  }
+
+  const userRatings = await LectureRating.find({ lecture: { $in: normalizedIds }, student: userId })
+    .select('lecture rating')
+    .lean();
+
+  const userMap = new Map(userRatings.map(({ lecture, rating }) => [lecture.toString(), rating]));
+
+  return { summaryMap, userMap };
 };
 
 const parseBoolean = (value) => {
@@ -74,7 +129,28 @@ export const listLectures = async (req, res) => {
     }
 
     const lectures = await query.lean();
-    res.json({ lectures: lectures.map(sanitizeLecture) });
+
+    const { summaryMap, userMap } = await collectLectureRatings(
+      lectures.map((lecture) => lecture._id),
+      req.user?.role === 'student' ? req.user.id : null
+    );
+
+    const response = lectures.map((lecture) => {
+      const base = sanitizeLecture(lecture);
+      const key = lecture._id.toString();
+      const summary = summaryMap.get(key);
+      const enriched = {
+        ...base,
+        ratingAverage: summary?.average ?? null,
+        ratingCount: summary?.count ?? 0,
+      };
+      if (userMap.has(key)) {
+        enriched.myRating = userMap.get(key);
+      }
+      return enriched;
+    });
+
+    res.json({ lectures: response });
   } catch (error) {
     console.error('Error fetching lectures:', error);
     res.status(500).json({ message: 'Failed to load lectures' });
@@ -137,10 +213,97 @@ export const getLecture = async (req, res) => {
       return res.status(403).json({ message: 'Insufficient permissions' });
     }
 
-    res.json({ lecture: sanitizeLecture(lecture) });
+    const { summaryMap, userMap } = await collectLectureRatings(
+      [lecture._id],
+      req.user?.role === 'student' ? req.user.id : null
+    );
+    const key = lecture._id.toString();
+    const summary = summaryMap.get(key);
+
+    const payload = {
+      ...sanitizeLecture(lecture),
+      ratingAverage: summary?.average ?? null,
+      ratingCount: summary?.count ?? 0,
+      myRating: userMap.get(key) ?? null,
+    };
+
+    res.json({ lecture: payload });
   } catch (error) {
     console.error('Error fetching lecture:', error);
     res.status(500).json({ message: 'Failed to load lecture' });
+  }
+};
+
+export const rateLecture = async (req, res) => {
+  try {
+    const { lectureId } = req.params;
+    const { rating } = req.body ?? {};
+
+    if (!mongoose.Types.ObjectId.isValid(lectureId)) {
+      return res.status(404).json({ message: 'Lecture not found' });
+    }
+
+    const numericRating = Number(rating);
+    if (!Number.isFinite(numericRating) || numericRating < 1 || numericRating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+    }
+
+    const lecture = await Lecture.findById(lectureId).select('_id owner isPublished');
+    if (!lecture) {
+      return res.status(404).json({ message: 'Lecture not found' });
+    }
+
+    if (!lecture.isPublished && lecture.owner.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Cannot rate unpublished lecture' });
+    }
+
+    await LectureRating.findOneAndUpdate(
+      { lecture: lecture._id, student: req.user.id },
+      { rating: numericRating },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    const { summaryMap, userMap } = await collectLectureRatings([lecture._id], req.user.id);
+    const key = lecture._id.toString();
+    const summary = summaryMap.get(key);
+
+    res.json({
+      average: summary?.average ?? numericRating,
+      count: summary?.count ?? 1,
+      rating: userMap.get(key) ?? numericRating,
+    });
+  } catch (error) {
+    console.error('Error saving lecture rating:', error);
+    res.status(500).json({ message: 'Failed to save rating' });
+  }
+};
+
+export const getLectureRatings = async (req, res) => {
+  try {
+    const { lectureId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(lectureId)) {
+      return res.status(404).json({ message: 'Lecture not found' });
+    }
+
+    const lectureExists = await Lecture.exists({ _id: lectureId });
+    if (!lectureExists) {
+      return res.status(404).json({ message: 'Lecture not found' });
+    }
+
+    const { summaryMap, userMap } = await collectLectureRatings(
+      [lectureId],
+      req.user?.role === 'student' ? req.user.id : null
+    );
+    const summary = summaryMap.get(lectureId) ?? { average: null, count: 0 };
+
+    res.json({
+      average: summary.average,
+      count: summary.count,
+      rating: userMap.get(lectureId) ?? null,
+    });
+  } catch (error) {
+    console.error('Error loading lecture ratings:', error);
+    res.status(500).json({ message: 'Failed to load ratings' });
   }
 };
 

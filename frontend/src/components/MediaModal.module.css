@@ -1,0 +1,87 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: clamp(1rem, 4vw, 2rem);
+}
+
+.modal {
+  width: min(1080px, 95vw);
+  max-height: 92vh;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 30px 80px -40px rgba(15, 23, 42, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0f172a;
+}
+
+.closeButton {
+  border: none;
+  background: rgba(15, 23, 42, 0.05);
+  color: #0f172a;
+  font-size: 1.25rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.closeButton:hover,
+.closeButton:focus-visible {
+  background: rgba(15, 23, 42, 0.12);
+}
+
+
+.body {
+  padding: 1rem 1.5rem 1.5rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playerWrap {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.player {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #000;
+}
+
+.fallback {
+  margin: 0;
+  color: rgba(15, 23, 42, 0.75);
+  font-size: 0.95rem;
+  place-self: center;
+}

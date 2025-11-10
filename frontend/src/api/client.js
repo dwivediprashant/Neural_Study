@@ -62,6 +62,18 @@ export const createLecture = async (payload) => {
   return data;
 };
 
+export const rateLecture = async (lectureId, rating) => {
+  if (!lectureId) throw new Error('Lecture ID is required');
+  const { data } = await api.post(`/lectures/${lectureId}/ratings`, { rating });
+  return data;
+};
+
+export const fetchLectureRatings = async (lectureId) => {
+  if (!lectureId) throw new Error('Lecture ID is required');
+  const { data } = await api.get(`/lectures/${lectureId}/ratings`);
+  return data;
+};
+
 export const deleteLecture = async (lectureId) => {
   if (!lectureId) throw new Error('Lecture ID is required');
   const { data } = await api.delete(`/lectures/${lectureId}`);

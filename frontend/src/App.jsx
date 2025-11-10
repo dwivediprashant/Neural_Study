@@ -26,6 +26,8 @@ import {
   fetchLectures,
   createLecture,
   deleteLecture,
+  rateLecture as rateLectureApi,
+  fetchLectureRatings,
 } from './api/client.js';
 import './App.css';
 
@@ -40,6 +42,7 @@ function App() {
   const [lectures, setLectures] = useState([]);
   const [lecturesLoading, setLecturesLoading] = useState(false);
   const [lecturesError, setLecturesError] = useState(null);
+  const [recentLectures, setRecentLectures] = useState([]);
   const lectureUploadRef = useRef(null);
 
   const { courses, loading, error, status, refresh } = useCourses({ userId: currentUser?.id });
@@ -154,9 +157,169 @@ function App() {
     [removeLecture, pushToast, lectures, downloads]
   );
 
+  const syncLectureRating = useCallback(
+    async (lectureId) => {
+      if (!lectureId) return;
+      try {
+        const { average, count, rating } = await fetchLectureRatings(lectureId);
+        setLectures((prev) =>
+          prev.map((item) =>
+            item.id === lectureId || item._id === lectureId
+              ? { ...item, ratingAverage: average, ratingCount: count, myRating: rating }
+              : item
+          )
+        );
+        setRecentLectures((prev) =>
+          prev.map((item) =>
+            item.id === lectureId
+              ? { ...item, ratingAverage: average, ratingCount: count, myRating: rating }
+              : item
+          )
+        );
+      } catch (error) {
+        console.warn('Failed to refresh lecture rating', lectureId, error);
+      }
+    },
+    []
+  );
+
+  const handleLectureViewed = useCallback(
+    (lecture) => {
+      if (!lecture) return;
+
+      const id =
+        lecture._id ??
+        lecture.id ??
+        lecture.lectureId ??
+        lecture.slug ??
+        `recent-${Date.now()}`;
+      const title = lecture.title ?? lecture.name ?? 'Untitled lecture';
+      const subject =
+        lecture.subject ??
+        lecture.exam ??
+        lecture.category ??
+        (Array.isArray(lecture.tags) && lecture.tags.length ? lecture.tags[0] : null) ??
+        'General';
+      const rawDuration =
+        lecture.durationMinutes ??
+        lecture.duration ??
+        lecture.length ??
+        lecture.runtime ??
+        lecture.time ??
+        null;
+
+      let normalizedDuration = null;
+      if (typeof rawDuration === 'number' && Number.isFinite(rawDuration)) {
+        normalizedDuration = Math.max(1, Math.round(rawDuration));
+      } else if (typeof rawDuration === 'string') {
+        const parsed = Number.parseFloat(rawDuration);
+        if (!Number.isNaN(parsed)) {
+          normalizedDuration = Math.max(1, Math.round(parsed));
+        }
+      }
+
+      const thumbnail =
+        lecture.thumbnailUrl ??
+        lecture.thumbnail ??
+        lecture.poster ??
+        lecture.image ??
+        lecture.banner ??
+        null;
+      const viewedAt =
+        lecture.viewedAt ??
+        lecture.lastViewedAt ??
+        lecture.updatedAt ??
+        lecture.completedAt ??
+        new Date().toISOString();
+
+      const knownLecture = lectures.find(
+        (item) => item.id === id || item._id === id || item.lectureId === id
+      );
+
+      const ratingAverage =
+        typeof lecture.ratingAverage === 'number'
+          ? lecture.ratingAverage
+          : typeof knownLecture?.ratingAverage === 'number'
+          ? knownLecture.ratingAverage
+          : null;
+      const ratingCount =
+        typeof lecture.ratingCount === 'number'
+          ? lecture.ratingCount
+          : typeof knownLecture?.ratingCount === 'number'
+          ? knownLecture.ratingCount
+          : 0;
+      const myRating =
+        lecture.myRating ??
+        knownLecture?.myRating ??
+        null;
+
+      const entry = {
+        id,
+        title,
+        subject,
+        duration: normalizedDuration,
+        thumbnail,
+        viewedAt,
+        ratingAverage,
+        ratingCount,
+        myRating,
+      };
+
+      setRecentLectures((prev) => {
+        const filtered = prev.filter((item) => item.id !== entry.id);
+        return [entry, ...filtered].slice(0, 8);
+      });
+      if ((entry.ratingAverage === null || Number.isNaN(entry.ratingAverage)) && entry.id) {
+        syncLectureRating(entry.id);
+      }
+    },
+    [lectures, syncLectureRating]
+  );
+
+  const handleLectureRated = useCallback(
+    async (lectureId, ratingValue) => {
+      if (!lectureId) return { success: false, error: 'Lecture ID is required' };
+      try {
+        const result = await rateLectureApi(lectureId, ratingValue);
+        setLectures((prev) =>
+          prev.map((item) =>
+            item.id === lectureId || item._id === lectureId
+              ? {
+                  ...item,
+                  ratingAverage: result.average,
+                  ratingCount: result.count,
+                  myRating: result.rating,
+                }
+              : item
+          )
+        );
+        setRecentLectures((prev) =>
+          prev.map((item) =>
+            item.id === lectureId
+              ? {
+                  ...item,
+                  ratingAverage: result.average,
+                  ratingCount: result.count,
+                  myRating: result.rating,
+                }
+              : item
+          )
+        );
+        pushToast('Thanks for the rating!', 'success');
+        return { success: true, data: result };
+      } catch (error) {
+        const message = error.response?.data?.message || 'Failed to save rating';
+        pushToast(message, 'danger');
+        return { success: false, error: message };
+      }
+    },
+    [pushToast]
+  );
+
   const handleSessionExpired = useCallback(() => {
     setCurrentUser(null);
     setTestAttempts([]);
+    setRecentLectures([]);
     pushToast('Session expired. Please sign in again.', 'warning');
   }, [pushToast]);
 
@@ -373,6 +536,7 @@ function App() {
     setCurrentUser(null);
     setTestAttempts([]);
     setLectures([]);
+    setRecentLectures([]);
     pushToast('Signed out successfully.', 'info');
   }, [pushToast]);
 
@@ -461,6 +625,10 @@ function App() {
       lecturesLoading,
       lecturesError,
       loadLectures,
+      recentLectures,
+      registerLectureView: handleLectureViewed,
+      rateLecture: handleLectureRated,
+      refreshLectureRating: syncLectureRating,
       handleLectureSubmit,
       handleLectureDeleted,
       handleLectureCreated,
@@ -506,7 +674,11 @@ function App() {
       handleLectureSubmit,
       handleLectureDeleted,
       handleLectureCreated,
+      handleLectureViewed,
+      handleLectureRated,
+      syncLectureRating,
       lectureUploadRef,
+      recentLectures,
     ]
   );
 

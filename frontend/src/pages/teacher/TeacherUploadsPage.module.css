@@ -141,6 +141,39 @@
   flex-wrap: wrap;
 }
 
+.ratingRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.85rem;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.ratingChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.18);
+  color: #92400e;
+  font-weight: 600;
+}
+
+.ratingChipMuted {
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.12);
+  color: rgba(71, 85, 105, 0.75);
+  font-weight: 600;
+}
+
+.ratingCount {
+  font-size: 0.8rem;
+  color: rgba(71, 85, 105, 0.75);
+}
+
 .linkButton {
   display: inline-flex;
   align-items: center;
