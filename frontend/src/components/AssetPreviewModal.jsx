@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import styles from "./AssetPreviewModal.module.css";
 
@@ -20,6 +21,7 @@ const inferAssetType = (assetUrl = "") => {
 const JsonPreview = ({ assetUrl }) => {
   const [content, setContent] = useState("");
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let mounted = true;
@@ -27,7 +29,7 @@ const JsonPreview = ({ assetUrl }) => {
 
     fetch(assetUrl, { signal: controller.signal })
       .then(async (response) => {
-        if (!response.ok) throw new Error("Unable to load JSON asset");
+        if (!response.ok) throw new Error(t("assetPreview.json.error"));
         const text = await response.text();
         if (mounted) {
           setContent(text);
@@ -35,21 +37,21 @@ const JsonPreview = ({ assetUrl }) => {
         }
       })
       .catch((err) => {
-        if (mounted) setError(err?.message || "Unable to load JSON asset");
+        if (mounted) setError(err?.message || t("assetPreview.json.error"));
       });
 
     return () => {
       mounted = false;
       controller.abort();
     };
-  }, [assetUrl]);
+  }, [assetUrl, t]);
 
   if (error) {
     return <p className={styles.fallbackMessage}>{error}</p>;
   }
 
   if (!content) {
-    return <p className={styles.fallbackMessage}>Loading preview…</p>;
+    return <p className={styles.fallbackMessage}>{t("assetPreview.json.loading")}</p>;
   }
 
   return (
@@ -61,6 +63,17 @@ const JsonPreview = ({ assetUrl }) => {
 
 const AssetPreviewModal = ({ open, assetUrl, title, lessonType, onClose }) => {
   const assetType = useMemo(() => inferAssetType(assetUrl), [assetUrl]);
+  const { t } = useTranslation();
+  const assetTypeLabel = useMemo(
+    () =>
+      t(`assetPreview.assetTypes.${assetType}`, {
+        defaultValue: t("assetPreview.assetTypes.unknown"),
+      }),
+    [assetType, t]
+  );
+  const assetMetaText = assetType === "unknown"
+    ? t("assetPreview.assetMeta.download")
+    : t("assetPreview.assetMeta.showing", { type: assetTypeLabel });
 
   if (!open) return null;
 
@@ -69,24 +82,20 @@ const AssetPreviewModal = ({ open, assetUrl, title, lessonType, onClose }) => {
       className={styles.backdrop}
       role="dialog"
       aria-modal="true"
-      aria-label={`Preview for ${title}`}
+      aria-label={t("assetPreview.ariaLabel", { title })}
     >
       <div className={styles.modalCard}>
         <header className={styles.header}>
           <div>
-            <p className={styles.eyebrow}>{lessonType || "Lesson asset"}</p>
+            <p className={styles.eyebrow}>{lessonType || t("assetPreview.lessonFallback")}</p>
             <h3 className={styles.title}>{title}</h3>
-            <p className={styles.assetMeta}>
-              {assetType === "unknown"
-                ? "Download to view"
-                : `Showing ${assetType} preview`}
-            </p>
+            <p className={styles.assetMeta}>{assetMetaText}</p>
           </div>
           <button
             type="button"
             className={styles.closeButton}
             onClick={onClose}
-            aria-label="Close asset preview"
+            aria-label={t("assetPreview.actions.close")}
           >
             ×
           </button>
@@ -100,13 +109,13 @@ const AssetPreviewModal = ({ open, assetUrl, title, lessonType, onClose }) => {
               preload="metadata"
               src={assetUrl}
             >
-              Your browser does not support embedded video playback.
+              {t("assetPreview.video.noSupport")}
             </video>
           )}
 
           {assetType === "pdf" && (
             <iframe
-              title={`${title} PDF preview`}
+              title={t("assetPreview.pdf.title", { title })}
               src={assetUrl}
               className={styles.documentFrame}
             />
@@ -125,11 +134,9 @@ const AssetPreviewModal = ({ open, assetUrl, title, lessonType, onClose }) => {
 
           {assetType === "unknown" && (
             <div className={styles.fallbackBlock}>
-              <p className={styles.fallbackMessage}>
-                Preview unavailable for this asset type.
-              </p>
+              <p className={styles.fallbackMessage}>{t("assetPreview.unknown.message")}</p>
               <a href={assetUrl} download className={styles.downloadLink}>
-                Download asset
+                {t("assetPreview.actions.download")}
               </a>
             </div>
           )}

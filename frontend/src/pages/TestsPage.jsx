@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import styles from './TestsPage.module.css';
@@ -10,26 +11,18 @@ const formatDuration = (minutes) => {
   return `${minutes} min`;
 };
 
-const DUMMY_FLASH_CARDS = [
+const FLASHCARD_CONFIG = [
   {
     slug: 'concept-sprint-mini-deck',
-    title: 'Concept Sprint Mini Deck',
-    description: 'Preview key formulas and rapid-fire prompts to warm up before a lecture quiz.',
-    durationLabel: '5 min burst',
-    secondaryLabel: 'Preview deck',
-    secondaryTone: 'violet',
     theme: 'violet',
-    isDummy: true,
+    secondaryTone: 'violet',
+    translationBase: 'tests.flashcards.concept',
   },
   {
     slug: 'strategy-snapshot-pack',
-    title: 'Strategy Snapshot Pack',
-    description: 'Glance through quick tactics to improve accuracy during timed assessments.',
-    durationLabel: '8 min focus',
-    secondaryLabel: 'Tactics',
-    secondaryTone: 'amber',
     theme: 'amber',
-    isDummy: true,
+    secondaryTone: 'amber',
+    translationBase: 'tests.flashcards.strategy',
   },
 ];
 
@@ -37,6 +30,7 @@ const TestsPage = () => {
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const load = async () => {
@@ -52,14 +46,14 @@ const TestsPage = () => {
         setError(null);
       } catch (err) {
         console.error('Failed to fetch tests', err);
-        setError('Unable to load tests right now. Please try again later.');
+        setError(t('tests.error'));
       } finally {
         setLoading(false);
       }
     };
 
     load();
-  }, []);
+  }, [t]);
 
   const displayCards = useMemo(() => {
     const enriched = tests.map((topic) => ({
@@ -68,22 +62,31 @@ const TestsPage = () => {
       secondaryLabel: topic.secondaryLabel ?? topic.difficulty,
       secondaryTone: topic.secondaryTone ?? 'neutral',
     }));
-    return [...enriched, ...DUMMY_FLASH_CARDS];
-  }, [tests]);
+
+    const flashCards = FLASHCARD_CONFIG.map(({ slug, theme, secondaryTone, translationBase }) => ({
+      slug,
+      theme,
+      secondaryTone,
+      isDummy: true,
+      title: t(`${translationBase}.title`),
+      description: t(`${translationBase}.description`),
+      durationLabel: t(`${translationBase}.duration`),
+      secondaryLabel: t(`${translationBase}.secondary`),
+    }));
+
+    return [...enriched, ...flashCards];
+  }, [tests, t]);
 
   return (
     <section className={styles.page}>
       <header className={styles.pageHeader}>
-        <span className={styles.pageEyebrow}>Practice Zone</span>
-        <h1 className={styles.pageTitle}>Test yourself with fast revision drills</h1>
-        <p className={styles.pageSubtitle}>
-          Choose a topic to launch a bite-sized assessment. Each test is optimised for offline-first practice
-          sessions with instant scoring once you reconnect.
-        </p>
+        <span className={styles.pageEyebrow}>{t('tests.practiceEyebrow')}</span>
+        <h1 className={styles.pageTitle}>{t('tests.practiceTitle')}</h1>
+        <p className={styles.pageSubtitle}>{t('tests.practiceSubtitle')}</p>
       </header>
 
       {loading ? (
-        <div className={styles.stateCard}>Loading tests…</div>
+        <div className={styles.stateCard}>{t('tests.loading')}</div>
       ) : error ? (
         <div className={styles.stateCard}>{error}</div>
       ) : (
@@ -113,11 +116,11 @@ const TestsPage = () => {
                 <div className={styles.cardActions}>
                   {isDummy ? (
                     <button type="button" className={`${styles.cardButton} ${styles.cardButtonDisabled}`} disabled>
-                      Coming soon
+                      {t('tests.comingSoon')}
                     </button>
                   ) : (
                     <Link to={`/tests/${topic.slug}`} className={styles.cardButton}>
-                      Start test
+                      {t('tests.startTest')}
                     </Link>
                   )}
                 </div>

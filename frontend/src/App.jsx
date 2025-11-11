@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Layout from './components/Layout.jsx';
+import CenteredLoader from './components/CenteredLoader.jsx';
 import HomePage from './pages/HomePage.jsx';
 import TestsPage from './pages/TestsPage.jsx';
 import TestsRunnerPage from './pages/TestsRunnerPage.jsx';
@@ -46,6 +48,7 @@ function App() {
   const lectureUploadRef = useRef(null);
 
   const { courses, loading, error, status, refresh } = useCourses({ userId: currentUser?.id });
+  const { t } = useTranslation();
   const {
     downloads,
     loading: downloadsLoading,
@@ -84,11 +87,14 @@ function App() {
     async (course) => {
       const success = await saveCourse(course);
       if (success) {
-        pushToast(`Cached "${course.title}" for offline learning.`, 'success');
+        pushToast(
+          t('toast.courseCached', { title: course.title ?? t('common.appName') }),
+          'success'
+        );
       }
       return success;
     },
-    [saveCourse, pushToast]
+    [saveCourse, pushToast, t]
   );
 
   const handleRemoveCourse = useCallback(
@@ -97,35 +103,37 @@ function App() {
       if (success) {
         const course = courses.find((item) => item._id === courseId);
         pushToast(
-          course ? `Removed "${course.title}" from offline storage.` : 'Removed offline course.',
+          course
+            ? t('toast.courseRemoved', { title: course.title })
+            : t('toast.courseRemovedFallback'),
           'info'
         );
       }
       return success;
     },
-    [removeCourse, pushToast, courses]
+    [removeCourse, pushToast, courses, t]
   );
 
   const handleSaveModule = useCallback(
     async (course, module, moduleKey) => {
       const success = await saveModule(course, module, moduleKey);
       if (success) {
-        pushToast(`Cached module "${module.name}" · ${course.title}`, 'success');
+        pushToast(t('toast.moduleCached', { module: module.name, course: course.title }), 'success');
       }
       return success;
     },
-    [saveModule, pushToast]
+    [saveModule, pushToast, t]
   );
 
   const handleRemoveModule = useCallback(
     async (course, module, moduleKey) => {
       const success = await removeModule(course, module, moduleKey);
       if (success) {
-        pushToast(`Removed module "${module.name}" from offline storage.`, 'info');
+        pushToast(t('toast.moduleRemoved', { module: module.name }), 'info');
       }
       return success;
     },
-    [removeModule, pushToast]
+    [removeModule, pushToast, t]
   );
 
   const handleSaveLectureDownload = useCallback(
@@ -134,11 +142,11 @@ function App() {
       const title = lecture.title ?? 'Lecture';
       const success = await saveLecture(lecture);
       if (success) {
-        pushToast(`Cached "${title}" for offline access.`, 'success');
+        pushToast(t('toast.lectureCached', { title }), 'success');
       }
       return success;
     },
-    [saveLecture, pushToast]
+    [saveLecture, pushToast, t]
   );
 
   const handleRemoveLectureDownload = useCallback(
@@ -150,11 +158,14 @@ function App() {
           lectures.find((item) => item._id === lectureId || item.id === lectureId) ||
           downloads.find((item) => item.id === lectureId);
         const title = lectureRecord?.title;
-        pushToast(title ? `Removed "${title}" from offline storage.` : 'Removed offline lecture.', 'info');
+        pushToast(
+          title ? t('toast.lectureRemoved', { title }) : t('toast.lectureRemovedFallback'),
+          'info'
+        );
       }
       return success;
     },
-    [removeLecture, pushToast, lectures, downloads]
+    [removeLecture, pushToast, lectures, downloads, t]
   );
 
   const syncLectureRating = useCallback(
@@ -305,23 +316,23 @@ function App() {
               : item
           )
         );
-        pushToast('Thanks for the rating!', 'success');
+        pushToast(t('toast.ratingThanks'), 'success');
         return { success: true, data: result };
       } catch (error) {
-        const message = error.response?.data?.message || 'Failed to save rating';
+        const message = error.response?.data?.message || t('toast.genericDanger');
         pushToast(message, 'danger');
         return { success: false, error: message };
       }
     },
-    [pushToast]
+    [pushToast, t]
   );
 
   const handleSessionExpired = useCallback(() => {
     setCurrentUser(null);
     setTestAttempts([]);
     setRecentLectures([]);
-    pushToast('Session expired. Please sign in again.', 'warning');
-  }, [pushToast]);
+    pushToast(t('toast.sessionExpired'), 'warning');
+  }, [pushToast, t]);
 
   useEffect(() => {
     window.addEventListener('auth:unauthorized', handleSessionExpired);
@@ -419,16 +430,16 @@ function App() {
       try {
         const { lecture } = await createLecture(payload);
         handleLectureCreated(lecture);
-        pushToast('Lecture uploaded successfully!', 'success');
+        pushToast(t('toast.lectureUploadSuccess'), 'success');
         return { success: true, lecture };
       } catch (error) {
-        const message = error.response?.data?.message || 'Failed to upload lecture';
+        const message = error.response?.data?.message || t('toast.genericDanger');
         setLecturesError(message);
         pushToast(message, 'danger');
         return { success: false, error: message };
       }
     },
-    [handleLectureCreated, pushToast]
+    [handleLectureCreated, pushToast, t]
   );
 
   const handleLectureDeleted = useCallback(
@@ -439,15 +450,15 @@ function App() {
       try {
         await deleteLecture(lectureId);
         setLectures((prev) => prev.filter((lecture) => lecture.id !== lectureId && lecture._id !== lectureId));
-        pushToast('Lecture removed successfully.', 'info');
+        pushToast(t('toast.lectureRemovedSuccess'), 'info');
         return { success: true };
       } catch (error) {
-        const message = error.response?.data?.message || 'Failed to delete lecture';
+        const message = error.response?.data?.message || t('toast.genericDanger');
         pushToast(message, 'danger');
         return { success: false, error: message };
       }
     },
-    [pushToast]
+    [pushToast, t]
   );
 
   useEffect(() => {
@@ -470,7 +481,8 @@ function App() {
         const { user } = await loginUser(credentials);
         setCurrentUser(user ?? null);
         setAuthError(null);
-        pushToast(`Welcome back, ${user?.name?.split(' ')[0] ?? 'leader'}!`, 'success');
+        const firstName = user?.name?.split(' ')[0] ?? t('common.appName');
+        pushToast(t('toast.welcomeBack', { name: firstName }), 'success');
         if (user?.role === 'student') {
           setTestAttemptsLoading(true);
           try {
@@ -489,7 +501,7 @@ function App() {
         }
         return { success: true };
       } catch (error) {
-        const message = error.response?.data?.message || 'Failed to sign in';
+        const message = error.response?.data?.message || t('toast.loginFailed');
         setAuthError(message);
         pushToast(message, 'danger');
         return { success: false, error: message };
@@ -507,7 +519,7 @@ function App() {
         const { user } = await registerUser(payload);
         setCurrentUser(user ?? null);
         setAuthError(null);
-        pushToast('Account created successfully!', 'success');
+        pushToast(t('toast.accountCreated'), 'success');
         setTestAttempts([]);
         if (user?.role === 'teacher') {
           loadLectures({ mine: true });
@@ -516,7 +528,7 @@ function App() {
         }
         return { success: true };
       } catch (error) {
-        const message = error.response?.data?.message || 'Failed to create account';
+        const message = error.response?.data?.message || t('toast.accountCreateFailed');
         setAuthError(message);
         pushToast(message, 'danger');
         return { success: false, error: message };
@@ -537,8 +549,8 @@ function App() {
     setTestAttempts([]);
     setLectures([]);
     setRecentLectures([]);
-    pushToast('Signed out successfully.', 'info');
-  }, [pushToast]);
+    pushToast(t('toast.signedOut'), 'info');
+  }, [pushToast, t]);
 
   const handleTestAttemptRecorded = useCallback((attemptSummary) => {
     if (!attemptSummary) return;
@@ -547,12 +559,13 @@ function App() {
       return [attemptSummary, ...filtered].slice(0, 5);
     });
     pushToast(
-      `Test finished: ${attemptSummary.title ?? attemptSummary.testId} · ${Math.round(
-        attemptSummary.percent ?? 0
-      )}%`,
+      t('toast.testFinished', {
+        title: attemptSummary.title ?? attemptSummary.testId,
+        percent: Math.round(attemptSummary.percent ?? 0),
+      }),
       'success'
     );
-  }, [pushToast]);
+  }, [pushToast, t]);
 
   const combinedStatus = useMemo(
     () => ({
@@ -683,11 +696,7 @@ function App() {
   );
 
   if (authLoading) {
-    return (
-      <div className="app-loading">
-        <p>Preparing your workspace…</p>
-      </div>
-    );
+    return <CenteredLoader />;
   }
 
   if (!currentUser) {

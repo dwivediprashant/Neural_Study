@@ -1,9 +1,16 @@
-export const formatProgressLabel = (progress) => {
+export const formatProgressLabel = (progress, t) => {
   if (!progress) return null;
   const { total = 0, success = 0, failed = 0 } = progress;
   if (!total) return null;
-  if (success === total) return 'Cached offline';
-  const failedSuffix = failed ? ` • ${failed} failed` : '';
+  if (success === total) {
+    return t ? t('downloads.progress.cachedOffline') : 'Cached offline';
+  }
+  const failedSuffix = failed
+    ? (t ? t('downloads.progress.failedSuffix', { count: failed }) : ` • ${failed} failed`)
+    : '';
+  if (t) {
+    return `${t('downloads.progress.caching', { success, total })}${failedSuffix}`;
+  }
   return `Caching ${success}/${total}${failedSuffix}`;
 };
 

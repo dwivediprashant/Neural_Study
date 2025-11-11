@@ -18,6 +18,29 @@
   max-width: 520px;
 }
 
+.heroHeading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.heroIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(59, 130, 246, 0.15);
+  color: rgba(37, 99, 235, 0.95);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 26px -20px rgba(37, 99, 235, 0.7);
+}
+
+.heroIcon svg {
+  width: 28px;
+  height: 28px;
+}
+
 .heroEyebrow {
   margin: 0;
   text-transform: uppercase;

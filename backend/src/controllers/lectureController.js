@@ -106,7 +106,7 @@ export const listLectures = async (req, res) => {
 
     if (parseBoolean(mine) || owner === 'me') {
       if (!req.user) {
-        return res.status(401).json({ message: 'Authentication required' });
+        return res.status(401).json({ message: req.t('errors.authRequired') });
       }
       filter.owner = req.user.id;
     } else if (owner && mongoose.Types.ObjectId.isValid(owner)) {
@@ -153,7 +153,7 @@ export const listLectures = async (req, res) => {
     res.json({ lectures: response });
   } catch (error) {
     console.error('Error fetching lectures:', error);
-    res.status(500).json({ message: 'Failed to load lectures' });
+    res.status(500).json({ message: req.t('errors.loadLectures') });
   }
 };
 
@@ -163,16 +163,16 @@ export const createLecture = async (req, res) => {
       req.body ?? {};
 
     if (!title?.trim?.()) {
-      return res.status(400).json({ message: 'Title is required' });
+      return res.status(400).json({ message: req.t('errors.titleRequired') });
     }
 
     if (!resourceUrl?.trim?.()) {
-      return res.status(400).json({ message: 'Resource URL is required' });
+      return res.status(400).json({ message: req.t('errors.resourceUrlRequired') });
     }
 
     const teacher = await User.findById(req.user.id).select('name');
     if (!teacher) {
-      return res.status(404).json({ message: 'Teacher account not found' });
+      return res.status(404).json({ message: req.t('errors.teacherNotFound') });
     }
 
     const lecture = await Lecture.create({
@@ -193,7 +193,7 @@ export const createLecture = async (req, res) => {
     res.status(201).json({ lecture: sanitizeLecture(lecture) });
   } catch (error) {
     console.error('Error creating lecture:', error);
-    res.status(400).json({ message: 'Failed to upload lecture', details: error.message });
+    res.status(400).json({ message: req.t('errors.uploadLecture'), details: error.message });
   }
 };
 
@@ -201,16 +201,16 @@ export const getLecture = async (req, res) => {
   try {
     const { lectureId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(lectureId)) {
-      return res.status(404).json({ message: 'Lecture not found' });
+      return res.status(404).json({ message: req.t('errors.lectureNotFound') });
     }
 
     const lecture = await Lecture.findById(lectureId).lean();
     if (!lecture) {
-      return res.status(404).json({ message: 'Lecture not found' });
+      return res.status(404).json({ message: req.t('errors.lectureNotFound') });
     }
 
     if (!lecture.isPublished && (!req.user || req.user.id !== lecture.owner.toString())) {
-      return res.status(403).json({ message: 'Insufficient permissions' });
+      return res.status(403).json({ message: req.t('errors.permissionDenied') });
     }
 
     const { summaryMap, userMap } = await collectLectureRatings(
@@ -230,7 +230,7 @@ export const getLecture = async (req, res) => {
     res.json({ lecture: payload });
   } catch (error) {
     console.error('Error fetching lecture:', error);
-    res.status(500).json({ message: 'Failed to load lecture' });
+    res.status(500).json({ message: req.t('errors.loadLecture') });
   }
 };
 
@@ -240,12 +240,12 @@ export const rateLecture = async (req, res) => {
     const { rating } = req.body ?? {};
 
     if (!mongoose.Types.ObjectId.isValid(lectureId)) {
-      return res.status(404).json({ message: 'Lecture not found' });
+      return res.status(404).json({ message: req.t('errors.lectureNotFound') });
     }
 
     const numericRating = Number(rating);
     if (!Number.isFinite(numericRating) || numericRating < 1 || numericRating > 5) {
-      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+      return res.status(400).json({ message: req.t('errors.ratingRange') });
     }
 
     const lecture = await Lecture.findById(lectureId).select('_id owner isPublished');
@@ -254,7 +254,7 @@ export const rateLecture = async (req, res) => {
     }
 
     if (!lecture.isPublished && lecture.owner.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Cannot rate unpublished lecture' });
+      return res.status(403).json({ message: req.t('errors.rateUnpublished') });
     }
 
     await LectureRating.findOneAndUpdate(
@@ -274,7 +274,7 @@ export const rateLecture = async (req, res) => {
     });
   } catch (error) {
     console.error('Error saving lecture rating:', error);
-    res.status(500).json({ message: 'Failed to save rating' });
+    res.status(500).json({ message: req.t('errors.saveRating') });
   }
 };
 
@@ -287,7 +287,7 @@ export const getLectureRatings = async (req, res) => {
 
     const lectureExists = await Lecture.exists({ _id: lectureId });
     if (!lectureExists) {
-      return res.status(404).json({ message: 'Lecture not found' });
+      return res.status(404).json({ message: req.t('errors.lectureNotFound') });
     }
 
     const { summaryMap, userMap } = await collectLectureRatings(
@@ -303,7 +303,7 @@ export const getLectureRatings = async (req, res) => {
     });
   } catch (error) {
     console.error('Error loading lecture ratings:', error);
-    res.status(500).json({ message: 'Failed to load ratings' });
+    res.status(500).json({ message: req.t('errors.loadRatings') });
   }
 };
 
@@ -311,22 +311,22 @@ export const deleteLecture = async (req, res) => {
   try {
     const { lectureId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(lectureId)) {
-      return res.status(404).json({ message: 'Lecture not found' });
+      return res.status(404).json({ message: req.t('errors.lectureNotFound') });
     }
 
     const lecture = await Lecture.findById(lectureId);
     if (!lecture) {
-      return res.status(404).json({ message: 'Lecture not found' });
+      return res.status(404).json({ message: req.t('errors.lectureNotFound') });
     }
 
     if (lecture.owner.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'You can only remove your own lectures' });
+      return res.status(403).json({ message: req.t('errors.deleteOwnLecture') });
     }
 
     await lecture.deleteOne();
     res.json({ success: true });
   } catch (error) {
     console.error('Error deleting lecture:', error);
-    res.status(500).json({ message: 'Failed to delete lecture' });
+    res.status(500).json({ message: req.t('errors.deleteLecture') });
   }
 };

@@ -1,31 +1,29 @@
-import { useOutletContext, Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import CourseCard from '../components/CourseCard.jsx';
 import styles from './CoursesPage.module.css';
 
 const CoursesPage = () => {
   const { courses, loading, status } = useOutletContext();
+  const { t } = useTranslation();
 
   return (
     <section className={styles.wrapper} id="courses">
         <header className={styles.headerRow}>
           <div>
-            <h2 className={styles.heading}>Available courses</h2>
-            <p className={styles.subheading}>
-              Download compressed lessons, notes, and quizzes for offline study.
-            </p>
+            <h2 className={styles.heading}>{t("coursesPage.heading")}</h2>
+            <p className={styles.subheading}>{t("coursesPage.subheading")}</p>
           </div>
           <div className={styles.actions}>
             <Link to="/downloads" className={styles.manageLink}>
-              Manage downloads
+              {t("coursesPage.manageDownloads")}
             </Link>
           </div>
         </header>
 
         {status.isOffline && (
-          <div className={styles.offlineNotice}>
-            You are offline. Viewing locally cached courses.
-          </div>
+          <div className={styles.offlineNotice}>{t("coursesPage.offlineNotice")}</div>
         )}
 
         {loading && !courses.length ? (
@@ -37,7 +35,7 @@ const CoursesPage = () => {
         ) : null}
 
         {!loading && !courses.length ? (
-          <p className={styles.emptyState}>No courses available yet. Check back soon.</p>
+          <p className={styles.emptyState}>{t("coursesPage.empty")}</p>
         ) : null}
 
         {courses.length ? (

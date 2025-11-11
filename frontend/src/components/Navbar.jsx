@@ -1,12 +1,15 @@
 import { useEffect, useId, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
 import styles from "./Navbar.module.css";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navbar = ({ navItems, actions = null }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const panelId = useId();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setIsOpen(false);
@@ -29,7 +32,7 @@ const Navbar = ({ navItems, actions = null }) => {
     <header
       className={styles.navbar}
       role="banner"
-      aria-label="Primary navigation"
+      aria-label={t("nav.primaryNavigation")}
     >
       <div className={styles.background} aria-hidden="true">
         <svg
@@ -73,11 +76,13 @@ const Navbar = ({ navItems, actions = null }) => {
         <div className={styles.brandRow}>
           <Link to="/" className={styles.brand}>
             <span className={styles.logo} aria-hidden="true">
-              <img src="/logo.svg" alt="Neural Study logo" />
+              <img src="/logo.svg" alt={t("common.logoAlt") ?? "Neural Study"} />
             </span>
             <span className={styles.brandText}>
-              <span className={styles.brandName}>Neural Study</span>
-              <span className={styles.brandTagline}>Offline Learning Hub</span>
+              <span className={styles.brandName}>{t("common.appName")}</span>
+              <span className={styles.brandTagline}>
+                {t("common.brandTagline")}
+              </span>
             </span>
           </Link>
 
@@ -87,7 +92,7 @@ const Navbar = ({ navItems, actions = null }) => {
             onClick={toggleMenu}
             aria-expanded={isOpen}
             aria-controls={panelId}
-            aria-label="Toggle navigation menu"
+            aria-label={t("nav.toggleMenu")}
           >
             <span className={styles.toggleBar} />
             <span className={styles.toggleBar} />
@@ -101,7 +106,7 @@ const Navbar = ({ navItems, actions = null }) => {
           }`}
           id={panelId}
         >
-          <nav className={styles.nav} aria-label="Primary">
+          <nav className={styles.nav} aria-label={t("nav.primaryNavigation")}>
             <ul className={styles.navLinks}>
               {navItemsWithIcons.map((item) => (
                 <li key={item.to} className={styles.navItem}>
@@ -117,14 +122,17 @@ const Navbar = ({ navItems, actions = null }) => {
                     {item.icon ? (
                       <span className={styles.icon}>{item.icon}</span>
                     ) : null}
-                    {item.label}
+                    {t(item.label)}
                   </NavLink>
                 </li>
               ))}
             </ul>
           </nav>
 
-          <div className={styles.actions}>{actions}</div>
+          <div className={styles.actions}>
+            <LanguageSwitcher />
+            {actions}
+          </div>
         </div>
       </div>
     </header>

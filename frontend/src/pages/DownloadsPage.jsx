@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './DownloadsPage.module.css';
 import {
@@ -26,10 +27,11 @@ const DownloadsPage = () => {
     registerLectureView,
   } = useOutletContext();
 
+  const { t } = useTranslation();
+
   const formatRetryMessage = (count) => {
     if (!count) return null;
-    const label = count === 1 ? 'asset' : 'assets';
-    return `${count} ${label} pending retry`;
+    return t('downloadsPage.retry.pending', { count });
   };
 
   const totalSizeMB = downloads.reduce((acc, item) => acc + (item.totalSizeMB || 0), 0);
@@ -57,29 +59,37 @@ const DownloadsPage = () => {
     <section className={styles.wrapper}>
       <header className={styles.header}>
         <div className={styles.heroCopy}>
-          <span className={styles.heroEyebrow}>Offline hub</span>
-          <h2 className={styles.heading}>Downloads at your fingertips</h2>
-          <p className={styles.subheading}>
-            Keep learning without buffering. Manage cached courses and quick lecture drops in one fast view.
-          </p>
+          <span className={styles.heroEyebrow}>{t('downloadsPage.hero.eyebrow')}</span>
+          <div className={styles.heroHeading}>
+            <span className={styles.heroIcon} aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path
+                  fill="currentColor"
+                  d="M6.5 10.5a4.5 4.5 0 0 1 8.812-1.53 3.751 3.751 0 0 1 4.938 3.53 3.75 3.75 0 0 1-1.23 2.756.75.75 0 1 1-1.015-1.106 2.252 2.252 0 0 0-.005-3.345 2.25 2.25 0 0 0-3.028.209.75.75 0 0 1-1.279-.463A3 3 0 1 0 9.5 12H11a.75.75 0 0 1 0 1.5H6.5A1.5 1.5 0 0 1 5 12a4.5 4.5 0 0 1 1.5-1.5Zm6.22 6.22 1.47-1.47a.75.75 0 1 1 1.06 1.06l-2.75 2.75a.75.75 0 0 1-1.06 0l-2.75-2.75a.75.75 0 1 1 1.06-1.06l1.47 1.47V14a.75.75 0 0 1 1.5 0v2.72ZM6.5 10.5"
+                />
+              </svg>
+            </span>
+            <h2 className={styles.heading}>{t('downloadsPage.hero.heading')}</h2>
+          </div>
+          <p className={styles.subheading}>{t('downloadsPage.hero.subheading')}</p>
         </div>
         <div className={styles.storageCard}>
-          <p className={styles.storageTitle}>Storage budget</p>
-          <p className={styles.storageValue}>{totalSizeGB} / 2.0 GB used</p>
-          <p className={styles.storageHint}>Auto-stop downloads when storage limit is reached.</p>
+          <p className={styles.storageTitle}>{t('downloadsPage.storage.title')}</p>
+          <p className={styles.storageValue}>
+            {t('downloadsPage.storage.usage', { used: totalSizeGB, limit: '2.0' })}
+          </p>
+          <p className={styles.storageHint}>{t('downloadsPage.storage.hint')}</p>
         </div>
       </header>
 
       {status.isOffline && (
-        <div className={styles.notice}>
-          Offline mode — downloads will resume when you reconnect to Wi-Fi.
-        </div>
+        <div className={styles.notice}>{t('downloadsPage.notice.offline')}</div>
       )}
 
       {!downloads.length ? (
         <div className={styles.emptyState}>
-          <p>No courses or lectures have been saved yet.</p>
-          <p className={styles.emptyHint}>Open a course or lecture and tap “Save offline” to cache it.</p>
+          <p>{t('downloadsPage.empty.title')}</p>
+          <p className={styles.emptyHint}>{t('downloadsPage.empty.hint')}</p>
         </div>
       ) : (
         <>
@@ -88,9 +98,16 @@ const DownloadsPage = () => {
               {courseDownloads.map((course) => {
                 const courseKey = makeCourseProgressKey(course.id);
                 const courseProgress = progress?.get?.(courseKey);
+                const cachedAssetsCount = course.cachedAssets?.length ?? 0;
+                const totalAssetsCount = course.assets?.length ?? '—';
                 const courseLabel =
-                  formatProgressLabel(courseProgress) ||
-                  (course.cachedAssets?.length ? `Cached ${course.cachedAssets.length}/${course.assets?.length || '—'}` : null);
+                  formatProgressLabel(courseProgress, t) ||
+                  (cachedAssetsCount
+                    ? t('downloadsPage.courses.cachedSummary', {
+                        cached: cachedAssetsCount,
+                        total: totalAssetsCount,
+                      })
+                    : null);
 
                 const originalCourse = courses.find((item) => item._id === course.id);
                 const moduleSource = originalCourse?.modules ?? course.modules ?? [];
@@ -103,7 +120,9 @@ const DownloadsPage = () => {
                   (asset) => typeof asset === 'string'
                 );
                 const courseMedia = resolveMedia(mediaCandidates);
-                const description = originalCourse?.description || 'Offline copy ready for playback and revision.';
+                const description =
+                  originalCourse?.description ||
+                  t('downloadsPage.courses.descriptionFallback');
 
                 const moduleSummary = moduleSource.map((module, moduleIndex) => {
                   const lessons = module?.lessons ?? [];
@@ -112,16 +131,23 @@ const DownloadsPage = () => {
                   const moduleKey = makeModuleProgressKey(course.id, module._id || module.id || module.name || module.order || moduleIndex);
                   const progressState = progress?.get?.(moduleKey);
                   const label =
-                    formatProgressLabel(progressState) ||
+                    formatProgressLabel(progressState, t) ||
                     (cachedCount
-                      ? `Cached ${cachedCount}/${assets.length}`
+                      ? t('downloadsPage.courses.module.cached', {
+                          cached: cachedCount,
+                          total: assets.length,
+                        })
                       : assets.length
-                      ? 'Not cached yet'
-                      : 'No downloadable assets');
+                      ? t('downloadsPage.courses.module.notCached')
+                      : t('downloadsPage.courses.module.noAssets'));
 
                   return {
                     key: moduleKey,
-                    name: module.name || `Module ${module.order || moduleIndex + 1}`,
+                    name:
+                      module.name ||
+                      t('downloadsPage.courses.module.fallback', {
+                        index: (module.order ?? moduleIndex) + 1,
+                      }),
                     assetsCount: assets.length,
                     label,
                   };
@@ -135,13 +161,17 @@ const DownloadsPage = () => {
                           <img src={course.thumbnailUrl} alt="Course thumbnail" className={styles.thumbnailImage} />
                         ) : (
                           <div className={styles.mediaPlaceholder}>
-                            <span>No video preview available</span>
+                            <span>{t('downloadsPage.courses.noPreview')}</span>
                           </div>
                         )}
-                        <span className={styles.badge}>Course</span>
+                        <span className={styles.badge}>{t('downloadsPage.courses.badge')}</span>
                       </div>
                       <div className={styles.visualFooter}>
-                        <p>{course.cachedAssets?.length ? 'Offline ready' : 'Cache modules to study offline'}</p>
+                        <p>
+                          {course.cachedAssets?.length
+                            ? t('downloadsPage.courses.status.offlineReady')
+                            : t('downloadsPage.courses.status.cachePrompt')}
+                        </p>
                         {course.failedAssets?.length ? (
                           <span>{formatRetryMessage(course.failedAssets.length)}</span>
                         ) : null}
@@ -157,7 +187,7 @@ const DownloadsPage = () => {
                             })
                           }
                         >
-                          See lecture
+                          {t('downloadsPage.actions.preview')}
                         </button>
                       ) : null}
                     </div>
@@ -166,7 +196,10 @@ const DownloadsPage = () => {
                       <header className={styles.detailHeader}>
                         <h3 className={styles.title}>{course.title}</h3>
                         <p className={styles.meta}>
-                          {course.moduleCount || moduleSource.length} modules • {course.totalSizeMB || '—'} MB total
+                          {t('downloadsPage.courses.meta', {
+                            modules: course.moduleCount || moduleSource.length,
+                            size: course.totalSizeMB || '—',
+                          })}
                         </p>
                       </header>
 
@@ -175,7 +208,9 @@ const DownloadsPage = () => {
 
                       {moduleSummary.length ? (
                         <div className={styles.moduleList}>
-                          <h4 className={styles.moduleHeading}>Module cache status</h4>
+                          <h4 className={styles.moduleHeading}>
+                            {t('downloadsPage.courses.module.heading')}
+                          </h4>
                           <ul>
                             {moduleSummary.map((module) => (
                               <li key={module.key} className={styles.moduleItem}>
@@ -194,7 +229,9 @@ const DownloadsPage = () => {
                           onClick={() => removeCourse(course.id)}
                           disabled={pendingDownloadIds?.has?.(course.id)}
                         >
-                          {pendingDownloadIds?.has?.(course.id) ? 'Removing…' : 'Remove download'}
+                          {pendingDownloadIds?.has?.(course.id)
+                            ? t('downloadsPage.actions.removing')
+                            : t('downloadsPage.actions.removeDownload')}
                         </button>
                       </div>
                     </div>
@@ -207,8 +244,10 @@ const DownloadsPage = () => {
           {hasLectureDownloads ? (
             <section className={styles.lectureDownloads} aria-labelledby="offline-lecture-heading">
               <header className={styles.lectureDownloadsHeader}>
-                <h3 id="offline-lecture-heading">Offline lectures</h3>
-                <p>Standalone lecture drops cached for on-the-go revision.</p>
+                <h3 id="offline-lecture-heading">
+                  {t('downloadsPage.lectures.heading')}
+                </h3>
+                <p>{t('downloadsPage.lectures.subheading')}</p>
               </header>
 
               <div className={styles.lectureGrid}>
@@ -216,12 +255,15 @@ const DownloadsPage = () => {
                   const lectureKey = makeLectureProgressKey(lecture.id);
                   const lectureProgress = progress?.get?.(lectureKey);
                   const label =
-                    formatProgressLabel(lectureProgress) ||
+                    formatProgressLabel(lectureProgress, t) ||
                     (lecture.cachedAssets?.length
-                      ? `Cached ${lecture.cachedAssets.length}/${lecture.assets?.length || '—'}`
+                      ? t('downloadsPage.lectures.cachedSummary', {
+                          cached: lecture.cachedAssets.length,
+                          total: lecture.assets?.length || '—',
+                        })
                       : lecture.assets?.length
-                      ? 'Assets available'
-                      : 'Cached offline');
+                      ? t('downloadsPage.lectures.assetsAvailable')
+                      : t('downloadsPage.lectures.assetsCached'));
 
                   const lectureCandidates = [
                     lecture.previewUrl,
@@ -237,17 +279,17 @@ const DownloadsPage = () => {
                     <article key={lecture.id} className={styles.lectureCard}>
                       <div className={styles.cardVisual}>
                         <div className={styles.thumbShell}>
-                          <span className={styles.badgeSecondary}>Lecture</span>
+                          <span className={styles.badgeSecondary}>{t('downloadsPage.lectures.badge')}</span>
                           {lecture.thumbnailUrl ? (
                             <img src={lecture.thumbnailUrl} alt="Thumbnail" className={styles.lectureThumb} />
                           ) : (
                             <div className={styles.mediaPlaceholder}>
-                              <span>{lecture.exam ?? 'Lecture'}</span>
+                              <span>{lecture.exam ?? t('downloadsPage.lectures.placeholder')}</span>
                             </div>
                           )}
                         </div>
                         <div className={styles.visualFooter}>
-                          <p>{label || 'Assets cached'}</p>
+                          <p>{label || t('downloadsPage.lectures.assetsCached')}</p>
                           {lecture.failedAssets?.length ? (
                             <span>{formatRetryMessage(lecture.failedAssets.length)}</span>
                           ) : null}
@@ -276,7 +318,7 @@ const DownloadsPage = () => {
                               });
                             }}
                           >
-                            See lecture
+                            {t('downloadsPage.actions.preview')}
                           </button>
                         ) : null}
                       </div>
@@ -285,12 +327,23 @@ const DownloadsPage = () => {
                         <header className={styles.detailHeader}>
                           <h4 className={styles.lectureTitle}>{lecture.title}</h4>
                           <p className={styles.lectureMeta}>
-                            {[lecture.exam, lecture.subject, lecture.language].filter(Boolean).join(' • ') || 'Metadata coming soon'}
+                            {[lecture.exam, lecture.subject, lecture.language].filter(Boolean).join(' • ') ||
+                              t('downloadsPage.lectures.metaFallback')}
                           </p>
                         </header>
                         <p className={styles.lectureDescription}>
-                          Cached assets: {lecture.cachedAssets?.length || 0}
-                          {lecture.durationMinutes ? ` • ${lecture.durationMinutes} mins` : ''}
+                          {[ 
+                            t('downloadsPage.lectures.cachedAssets', {
+                              count: lecture.cachedAssets?.length || 0,
+                            }),
+                            lecture.durationMinutes
+                              ? t('downloadsPage.lectures.duration', {
+                                  minutes: lecture.durationMinutes,
+                                })
+                              : null,
+                          ]
+                            .filter(Boolean)
+                            .join(' • ')}
                         </p>
 
                         <div className={styles.lectureActionsRow}>
@@ -300,7 +353,9 @@ const DownloadsPage = () => {
                             onClick={() => removeLecture(lecture.id)}
                             disabled={pendingLectureIds?.has?.(lecture.id)}
                           >
-                            {pendingLectureIds?.has?.(lecture.id) ? 'Removing…' : 'Remove lecture'}
+                            {pendingLectureIds?.has?.(lecture.id)
+                              ? t('downloadsPage.actions.removing')
+                              : t('downloadsPage.actions.removeLecture')}
                           </button>
                         </div>
                       </div>
@@ -315,8 +370,8 @@ const DownloadsPage = () => {
 
       {queuedDownloads.length ? (
         <aside className={styles.queueBanner}>
-          <strong>{queuedDownloads.length} module download(s) queued</strong>
-          <span>We’ll retry them automatically once you’re back online.</span>
+          <strong>{t('downloadsPage.queue.count', { count: queuedDownloads.length })}</strong>
+          <span>{t('downloadsPage.queue.hint')}</span>
         </aside>
       ) : null}
       <MediaModal open={Boolean(preview)} title={preview?.title} media={preview?.media} onClose={handleClosePreview} />

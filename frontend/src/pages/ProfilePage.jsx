@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
 import { Link, useOutletContext } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import styles from "./ProfilePage.module.css";
 
@@ -16,6 +17,7 @@ const formatDate = (value) => {
 
 function ProfilePage() {
   const outletContext = useOutletContext() ?? {};
+  const { t } = useTranslation();
   const {
     currentUser,
     profile = {},
@@ -54,12 +56,15 @@ function ProfilePage() {
 
     return courses.slice(0, 4).map((course) => ({
       id: course._id || course.id,
-      title: course.title || course.name || "Untitled course",
-      exam: course.exam || course.category || "General",
-      language: course.language || course.languages?.join(", ") || "English",
+      title: course.title || course.name || t("profilePage.courseFallback.title"),
+      exam: course.exam || course.category || t("profilePage.courseFallback.exam"),
+      language:
+        course.language ||
+        course.languages?.join(", ") ||
+        t("common.languages.en"),
       progress: course.progressPercentage ?? 0,
     }));
-  }, [courses]);
+  }, [courses, t]);
 
   const offlineCourseCount = downloadsStats.total ?? 0;
   const totalCourses = courses?.length ?? 0;
@@ -81,30 +86,42 @@ function ProfilePage() {
     );
     const bestPercent = Math.max(...percents.map((value) => Math.round(value)));
 
-    let recentTrend = null;
+    let recentTrendKey = null;
+    let recentTrendDelta = null;
     if (attempts >= 2) {
       const [latest, previous] = percents;
       const delta = Math.round(latest - previous);
-      recentTrend =
-        delta === 0
-          ? "No change from last attempt"
-          : `${delta > 0 ? "+" : ""}${delta}% vs last attempt`;
+      if (delta === 0) {
+        recentTrendKey = "unchanged";
+      } else {
+        recentTrendKey = "delta";
+        recentTrendDelta = delta;
+      }
     }
 
     return {
       attempts,
       averagePercent,
       bestPercent,
-      recentTrend,
+      recentTrendKey,
+      recentTrendDelta,
     };
   }, [testAttempts]);
 
   const recentReports = useMemo(() => testAttempts.slice(0, 3), [testAttempts]);
 
-  const formatSizeMB = (value) => {
-    if (!value || Number.isNaN(value)) return "0 MB";
-    if (value < 1) return `${(value * 1024).toFixed(0)} KB`;
-    return `${value.toFixed(1)} MB`;
+  const formatSize = (value) => {
+    if (!value || Number.isNaN(value)) {
+      return t("profilePage.downloads.formatMb", { value: 0 });
+    }
+    if (value < 1) {
+      return t("profilePage.downloads.formatKb", {
+        value: (value * 1024).toFixed(0),
+      });
+    }
+    return t("profilePage.downloads.formatMb", {
+      value: Number.parseFloat(value.toFixed(1)),
+    });
   };
 
   const level = useMemo(
@@ -124,49 +141,61 @@ function ProfilePage() {
 
   const streakLabel = useMemo(() => {
     if (testSummary.attempts >= 3) {
-      return `On a ${testSummary.attempts}-test streak`;
+      return t("profilePage.hero.streakMessages.threePlus", {
+        count: testSummary.attempts,
+      });
     }
     if (testSummary.attempts === 2) {
-      return "Momentum building";
+      return t("profilePage.hero.streakMessages.two");
     }
     if (testSummary.attempts === 1) {
-      return "Great start—keep going!";
+      return t("profilePage.hero.streakMessages.one");
     }
-    return "Launch a test to begin your streak";
-  }, [testSummary.attempts]);
+    return t("profilePage.hero.streakMessages.zero");
+  }, [t, testSummary.attempts]);
 
   const achievementBadges = useMemo(
     () => [
       {
         id: "streak",
         icon: "🔥",
-        title: testSummary.attempts >= 3 ? "Streak master" : "Warm up",
+        title:
+          testSummary.attempts >= 3
+            ? t("profilePage.achievement.streak.title.active")
+            : t("profilePage.achievement.streak.title.idle"),
         caption:
           testSummary.attempts >= 3
-            ? `${testSummary.attempts} drills in a row`
-            : "Build your streak with consistent drills",
+            ? t("profilePage.achievement.streak.caption.active", {
+                count: testSummary.attempts,
+              })
+            : t("profilePage.achievement.streak.caption.idle"),
       },
       {
         id: "collector",
         icon: "📦",
-        title: offlineCourseCount > 0 ? "Offline collector" : "Cache seeker",
+        title:
+          offlineCourseCount > 0
+            ? t("profilePage.achievement.collector.title.active")
+            : t("profilePage.achievement.collector.title.idle"),
         caption:
           offlineCourseCount > 0
-            ? `${offlineCourseCount} lecture${
-                offlineCourseCount === 1 ? "" : "s"
-              } ready offline`
-            : "Save lectures for zero-buffer revision",
+            ? t("profilePage.achievement.collector.caption.active", {
+                count: offlineCourseCount,
+              })
+            : t("profilePage.achievement.collector.caption.idle"),
       },
       {
         id: "level",
         icon: "🚀",
-        title: `Level ${level}`,
+        title: t("profilePage.achievement.level.title", { level }),
         caption: xpPercent
-          ? `${xpPercent}% mastery unlocked`
-          : "Complete tests to boost mastery",
+          ? t("profilePage.achievement.level.caption.filled", {
+              percent: xpPercent,
+            })
+          : t("profilePage.achievement.level.caption.empty"),
       },
     ],
-    [level, offlineCourseCount, testSummary.attempts, xpPercent]
+    [level, offlineCourseCount, t, testSummary.attempts, xpPercent]
   );
 
   const insightStats = useMemo(() => {
@@ -179,43 +208,65 @@ function ProfilePage() {
       Math.round((testSummary.attempts / 5) * 100)
     );
 
+    const formattedDelta =
+      typeof testSummary.recentTrendDelta === "number"
+        ? `${testSummary.recentTrendDelta > 0 ? "+" : ""}${testSummary.recentTrendDelta}`
+        : null;
+    const scoreHint =
+      testSummary.recentTrendKey === "delta"
+        ? t("profilePage.recentTrend.delta", { delta: formattedDelta })
+        : testSummary.recentTrendKey === "unchanged"
+        ? t("profilePage.recentTrend.unchanged")
+        : t("profilePage.insights.score.hintFallback");
+
+    const offlineHint = offlineCourseCount > 0
+      ? t("profilePage.insights.offline.hintPlural", {
+          count: offlineCourseCount,
+        })
+      : t("profilePage.insights.offline.hintEmpty");
+
     return [
       {
         id: "score",
-        label: "Accuracy pulse",
+        label: t("profilePage.insights.score.label"),
         value:
           testSummary.averagePercent !== null
             ? `${testSummary.averagePercent}%`
             : "—",
-        hint:
-          testSummary.recentTrend ??
-          "Complete another drill to track improvement.",
+        hint: scoreHint,
         percent: testSummary.averagePercent ?? 0,
         color: "#6366f1",
       },
       {
         id: "offline",
-        label: "Offline readiness",
-        value: formatSizeMB(downloadsStats.sizeMB),
-        hint:
-          offlineCourseCount > 0
-            ? `${offlineCourseCount} cached lecture${
-                offlineCourseCount === 1 ? "" : "s"
-              }`
-            : "Cache lectures to continue learning offline.",
+        label: t("profilePage.insights.offline.label"),
+        value: formatSize(downloadsStats.sizeMB),
+        hint: offlineHint,
         percent: offlinePercent,
         color: "#22d3ee",
       },
       {
         id: "streak",
-        label: "Consistency streak",
-        value: `${testSummary.attempts ?? 0} attempts`,
+        label: t("profilePage.insights.streak.label"),
+        value: t("profilePage.insights.streak.value", {
+          count: testSummary.attempts ?? 0,
+        }),
         hint: streakLabel,
         percent: streakPercent,
         color: "#f97316",
       },
     ];
-  }, [downloadsStats.sizeMB, offlineCourseCount, streakLabel, testSummary]);
+  }, [
+    downloadsStats.sizeMB,
+    formatSize,
+    offlineCourseCount,
+    streakLabel,
+    t,
+    testSummary.averagePercent,
+    testSummary.attempts,
+    testSummary.recentTrendDelta,
+    testSummary.recentTrendKey,
+  ]);
 
   const [ratingBusyId, setRatingBusyId] = useState(null);
 
@@ -267,8 +318,8 @@ function ProfilePage() {
 
       return {
         id: lecture.id || lecture._id || `recent-${index}`,
-        title: lecture.title || "Untitled lecture",
-        subject: lecture.subject || lecture.exam || "General",
+        title: lecture.title || t("teacher.uploads.untitledLecture"),
+        subject: lecture.subject || lecture.exam || t("profilePage.courseFallback.exam"),
         duration: lecture.duration || lecture.durationMinutes || null,
         viewedAt,
         thumbnail: lecture.thumbnail || lecture.thumbnailUrl || null,
@@ -282,6 +333,7 @@ function ProfilePage() {
     profile?.recentLectures,
     profile?.recentlyViewedLectures,
     currentUser?.recentLectures,
+    t,
   ]);
 
   return (
@@ -290,7 +342,11 @@ function ProfilePage() {
         <div className={styles.heroCard}>
           <div className={styles.heroPrimary}>
             <div className={styles.heroAvatar} aria-hidden="true">
-              <svg viewBox="0 0 72 72" role="img" aria-label="Profile icon">
+              <svg
+                viewBox="0 0 72 72"
+                role="img"
+                aria-label={t("profilePage.hero.iconAria")}
+              >
                 <defs>
                   <linearGradient
                     id="profileIconGradient"
@@ -317,17 +373,17 @@ function ProfilePage() {
             </div>
             <div className={styles.heroSummary}>
               <div>
-                <p className={styles.heroEyebrow}>Player profile</p>
+                <p className={styles.heroEyebrow}>{t("profilePage.hero.eyebrow")}</p>
                 <h1 className={styles.heroTitle}>
-                  {resolvedProfile.name || "Learner"}
+                  {resolvedProfile.name || t("profilePage.hero.fallbackName")}
                 </h1>
               </div>
               <ul className={styles.heroBadgeStrip}>
                 <li
                   className={styles.heroBadge}
                   tabIndex={0}
-                  aria-label="Elite streak badge"
-                  data-hint="Maintain a blazing practice streak"
+                  aria-label={t("profilePage.badges.streak.aria")}
+                  data-hint={t("profilePage.badges.streak.hint")}
                 >
                   <svg viewBox="0 0 64 80" aria-hidden="true">
                     <circle cx="32" cy="28" r="26" fill="#ef4444" />
@@ -345,8 +401,8 @@ function ProfilePage() {
                 <li
                   className={styles.heroBadge}
                   tabIndex={0}
-                  aria-label="Accuracy boost badge"
-                  data-hint="Score above 80% in recent drills"
+                  aria-label={t("profilePage.badges.accuracy.aria")}
+                  data-hint={t("profilePage.badges.accuracy.hint")}
                 >
                   <svg viewBox="0 0 64 80" aria-hidden="true">
                     <circle cx="32" cy="28" r="26" fill="#2563eb" />
@@ -364,8 +420,8 @@ function ProfilePage() {
                 <li
                   className={styles.heroBadge}
                   tabIndex={0}
-                  aria-label="Power-ups badge"
-                  data-hint="Unlock advanced practice power-ups"
+                  aria-label={t("profilePage.badges.power.aria")}
+                  data-hint={t("profilePage.badges.power.hint")}
                 >
                   <svg viewBox="0 0 64 80" aria-hidden="true">
                     <circle cx="32" cy="28" r="26" fill="#f97316" />
@@ -389,13 +445,19 @@ function ProfilePage() {
                   <span>{resolvedProfile.location}</span>
                 ) : null}
                 {resolvedProfile.joinedOn ? (
-                  <span>Member since {resolvedProfile.joinedOn}</span>
+                  <span>
+                    {t("profilePage.hero.memberSince", {
+                      date: resolvedProfile.joinedOn,
+                    })}
+                  </span>
                 ) : null}
               </div>
             </div>
           </div>
           <div className={styles.heroStatus}>
-            <span className={styles.heroLevelBadge}>Level {level}</span>
+            <span className={styles.heroLevelBadge}>
+              {t("profilePage.hero.level", { level })}
+            </span>
             <div className={styles.heroProgress}>
               <div className={styles.heroProgressTrack}>
                 <div
@@ -403,15 +465,19 @@ function ProfilePage() {
                   style={{ width: `${xpPercent}%` }}
                 />
               </div>
-              <span>{xpPercent}% mastery</span>
+              <span>
+                {t("profilePage.hero.mastery", {
+                  percent: xpPercent,
+                })}
+              </span>
             </div>
             <p className={styles.heroStatusHint}>{streakLabel}</p>
             <div className={styles.heroActions}>
               <Link to="/courses" className={styles.primaryAction}>
-                Explore courses
+                {t("profilePage.hero.primaryAction")}
               </Link>
               <Link to="/downloads" className={styles.secondaryAction}>
-                Manage downloads
+                {t("profilePage.hero.secondaryAction")}
               </Link>
             </div>
           </div>
@@ -421,8 +487,10 @@ function ProfilePage() {
       <section className={styles.cardsGrid}>
         <article className={`${styles.card} ${styles.cardLagoon}`}>
           <header className={styles.cardHeader}>
-            <span className={styles.cardEyebrow}>Performance</span>
-            <h2>Skill pulse</h2>
+            <span className={styles.cardEyebrow}>
+              {t("profilePage.cards.performance.eyebrow")}
+            </span>
+            <h2>{t("profilePage.cards.performance.title")}</h2>
           </header>
           <div className={styles.quickStatsGrid}>
             {insightStats.map((item) => (
@@ -453,11 +521,17 @@ function ProfilePage() {
           aria-labelledby="recent-tests-heading"
         >
           <header className={styles.cardHeader}>
-            <span className={styles.cardEyebrow}>Recent</span>
-            <h2 id="recent-tests-heading">Test reports</h2>
+            <span className={styles.cardEyebrow}>
+              {t("profilePage.cards.recent.eyebrow")}
+            </span>
+            <h2 id="recent-tests-heading">
+              {t("profilePage.cards.recent.title")}
+            </h2>
           </header>
           {testAttemptsLoading ? (
-            <div className={styles.stateCard}>Loading recent attempts…</div>
+            <div className={styles.stateCard}>
+              {t("profilePage.cards.recent.loading")}
+            </div>
           ) : testAttemptsError ? (
             <div className={styles.stateCard}>{testAttemptsError}</div>
           ) : recentReports.length ? (
@@ -481,18 +555,24 @@ function ProfilePage() {
                     </span>
                   </div>
                   <p className={styles.reportMeta}>
-                    {report.score}/{report.total} correct · {report.difficulty}{" "}
-                    · {report.duration}
+                    {t("profilePage.reports.meta", {
+                      correct: report.score,
+                      total: report.total,
+                      difficulty: report.difficulty,
+                      duration: report.duration,
+                    })}
                   </p>
                   <p className={styles.reportTimestamp}>
-                    Completed {new Date(report.completedAt).toLocaleString()}
+                    {t("profilePage.reports.timestamp", {
+                      timestamp: new Date(report.completedAt).toLocaleString(),
+                    })}
                   </p>
                 </li>
               ))}
             </ul>
           ) : (
             <p className={styles.cardEmpty}>
-              Your next quiz will appear here once completed.
+              {t("profilePage.cards.recent.empty")}
             </p>
           )}
         </article>
@@ -502,8 +582,12 @@ function ProfilePage() {
           aria-labelledby="recently-viewed-heading"
         >
           <header className={styles.cardHeader}>
-            <span className={styles.cardEyebrow}>Playback</span>
-            <h2 id="recently-viewed-heading">Recently viewed lectures</h2>
+            <span className={styles.cardEyebrow}>
+              {t("profilePage.cards.recentLectures.eyebrow")}
+            </span>
+            <h2 id="recently-viewed-heading">
+              {t("profilePage.cards.recentLectures.title")}
+            </h2>
           </header>
           {recentlyViewedLectures.length ? (
             <ul className={styles.recentLecturesList}>
@@ -513,7 +597,7 @@ function ProfilePage() {
                     {lecture.thumbnail ? (
                       <img
                         src={lecture.thumbnail}
-                        alt="Lecture thumbnail"
+                        alt={t("profilePage.recentLectures.thumbnailAlt")}
                         className={styles.recentLectureThumb}
                         loading="lazy"
                       />
@@ -527,16 +611,28 @@ function ProfilePage() {
                     <h3>{lecture.title}</h3>
                     <p>
                       {lecture.subject}
-                      {lecture.duration ? ` • ${lecture.duration} mins` : ""}
+                      {lecture.duration
+                        ? ` • ${t("profilePage.recentLectures.duration", {
+                            minutes: lecture.duration,
+                          })}`
+                        : ""}
                     </p>
                     {lecture.viewedAt ? (
                       <span className={styles.recentLectureTimestamp}>
-                        Viewed {new Date(lecture.viewedAt).toLocaleString()}
+                        {t("profilePage.recentLectures.viewed", {
+                          timestamp: new Date(lecture.viewedAt).toLocaleString(),
+                        })}
                       </span>
                     ) : null}
                   </div>
                   <div className={styles.recentLectureRating}>
-                    <div className={styles.ratingStars} role="radiogroup" aria-label={`Rate ${lecture.title}`}>
+                    <div
+                      className={styles.ratingStars}
+                      role="radiogroup"
+                      aria-label={t("profilePage.ratings.groupAria", {
+                        title: lecture.title,
+                      })}
+                    >
                       {[1, 2, 3, 4, 5].map((value) => (
                         <button
                           key={value}
@@ -546,7 +642,9 @@ function ProfilePage() {
                           }`}
                           onClick={() => handleRateLecture(lecture.id, value)}
                           disabled={!rateLecture || ratingBusyId === lecture.id}
-                          aria-label={`Give ${value} star${value === 1 ? "" : "s"}`}
+                          aria-label={t("profilePage.ratings.starAria", {
+                            count: value,
+                          })}
                           aria-pressed={(lecture.myRating ?? 0) === value}
                         >
                           ★
@@ -556,12 +654,18 @@ function ProfilePage() {
                     <div className={styles.ratingSummary}>
                       <span>
                         {lecture.ratingAverage != null
-                          ? `${lecture.ratingAverage.toFixed(1)} / 5`
-                          : "No rating"}
+                          ? t("profilePage.ratings.value", {
+                              rating: lecture.ratingAverage.toFixed(1),
+                            })
+                          : t("profilePage.ratings.none")}
                       </span>
                       <span aria-hidden="true">·</span>
                       <span>
-                        {lecture.ratingCount ? `${lecture.ratingCount} vote${lecture.ratingCount === 1 ? "" : "s"}` : "Be first"}
+                        {lecture.ratingCount
+                          ? t("profilePage.ratings.votes", {
+                              count: lecture.ratingCount,
+                            })
+                          : t("profilePage.ratings.votesEmpty")}
                       </span>
                     </div>
                   </div>
@@ -570,7 +674,7 @@ function ProfilePage() {
             </ul>
           ) : (
             <p className={styles.cardEmpty}>
-              Recently opened lectures will appear here as you continue learning.
+              {t("profilePage.cards.recentLectures.empty")}
             </p>
           )}
         </article>

@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ToastStack.module.css';
 
 const Toast = ({ id, message, tone, onDismiss, duration = 4000 }) => {
+  const { t } = useTranslation();
   useEffect(() => {
     if (!duration) return undefined;
     const timer = setTimeout(() => onDismiss(id), duration);
@@ -12,7 +14,12 @@ const Toast = ({ id, message, tone, onDismiss, duration = 4000 }) => {
   return (
     <div className={`${styles.toast} ${styles[`toast${tone}`]}`} role="status">
       <span className={styles.message}>{message}</span>
-      <button type="button" className={styles.dismissButton} onClick={() => onDismiss(id)} aria-label="Dismiss notification">
+      <button
+        type="button"
+        className={styles.dismissButton}
+        onClick={() => onDismiss(id)}
+        aria-label={t('toast.dismiss')}
+      >
         ×
       </button>
     </div>

@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import ToastStack from "../../components/ToastStack.jsx";
+import CenteredLoader from "../../components/CenteredLoader.jsx";
+import LanguageSwitcher from "../../components/LanguageSwitcher.jsx";
 import styles from "./TeacherLayout.module.css";
 
 const NAV_ITEMS = [
-  { to: "/teacher/upload", label: "Upload lecture" },
-  { to: "/teacher/uploads", label: "My uploads" },
-  { to: "/teacher/profile", label: "Profile" },
+  { to: "/teacher/upload", key: "teacher.nav.upload" },
+  { to: "/teacher/uploads", key: "teacher.nav.uploads" },
+  { to: "/teacher/profile", key: "teacher.nav.profile" },
 ];
 
 const TeacherLayout = ({ outletContext, status, onRefresh, errorMessage }) => {
@@ -16,6 +19,7 @@ const TeacherLayout = ({ outletContext, status, onRefresh, errorMessage }) => {
   const banner = errorMessage;
   const location = useLocation();
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setIsNavOpen(false);
@@ -23,17 +27,22 @@ const TeacherLayout = ({ outletContext, status, onRefresh, errorMessage }) => {
 
   const handleToggleMenu = () => setIsNavOpen((prev) => !prev);
 
+  const showLoader = Boolean(
+    status?.loading || status?.downloadsLoading || status?.lecturesLoading
+  );
+
   return (
     <div className={styles.shell}>
       <ToastStack toasts={toasts} onDismiss={dismissToast} />
+      {showLoader ? <CenteredLoader /> : null}
 
       <header className={styles.topbar}>
         <div className={styles.brandGroup}>
-          <span className={styles.brandMark}>Teach</span>
+          <span className={styles.brandMark}>{t("teacher.layout.brandMark")}</span>
           <div className={styles.brandCopy}>
-            <p className={styles.brandEyebrow}>Teacher workspace</p>
+            <p className={styles.brandEyebrow}>{t("teacher.layout.eyebrow")}</p>
             <h1 className={styles.brandTitle}>
-              {currentUser?.name ?? "Educator"}
+              {currentUser?.name ?? t("teacher.layout.fallbackName")}
             </h1>
           </div>
         </div>
@@ -49,7 +58,7 @@ const TeacherLayout = ({ outletContext, status, onRefresh, errorMessage }) => {
         >
           <span className={styles.menuToggleIcon} aria-hidden="true" />
           <span className={styles.srOnly}>
-            {isNavOpen ? "Close menu" : "Open menu"}
+            {isNavOpen ? t("teacher.layout.closeMenu") : t("teacher.layout.openMenu")}
           </span>
         </button>
 
@@ -59,7 +68,10 @@ const TeacherLayout = ({ outletContext, status, onRefresh, errorMessage }) => {
           }`}
           id="teacher-topbar-cluster"
         >
-          <nav className={styles.nav} aria-label="Teacher navigation">
+          <nav
+            className={styles.nav}
+            aria-label={t("teacher.layout.navAria")}
+          >
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.to}
@@ -68,25 +80,26 @@ const TeacherLayout = ({ outletContext, status, onRefresh, errorMessage }) => {
                   `${styles.navLink} ${isActive ? styles.navLinkActive : ""}`
                 }
               >
-                {item.label}
+                {t(item.key)}
               </NavLink>
             ))}
           </nav>
 
           <div className={styles.topbarActions}>
+            <LanguageSwitcher />
             <button
               type="button"
               className={styles.refreshButton}
               onClick={onRefresh}
             >
-              Refresh data
+              {t("teacher.layout.refresh")}
             </button>
             <button
               type="button"
               className={styles.signOut}
               onClick={handleLogout}
             >
-              Sign out
+              {t("teacher.layout.signOut")}
             </button>
           </div>
         </div>

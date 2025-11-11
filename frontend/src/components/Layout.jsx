@@ -1,12 +1,15 @@
 import { Outlet } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Navbar from './Navbar';
 import Footer from './Footer';
 import ToastStack from './ToastStack';
+import CenteredLoader from './CenteredLoader.jsx';
 import styles from './Layout.module.css';
 
 const Layout = ({ status, onRefresh, outletContext, errorMessage }) => {
   const { error, toasts, dismissToast, currentUser, handleLogout } = outletContext ?? {};
+  const { t } = useTranslation();
   const banner = errorMessage || error;
 
   const profileIcon = (
@@ -14,7 +17,7 @@ const Layout = ({ status, onRefresh, outletContext, errorMessage }) => {
       className={styles.navProfileIcon}
       viewBox="0 0 24 24"
       role="img"
-      aria-label="Profile"
+      aria-label={t('nav.profileAria')}
     >
       <defs>
         <linearGradient id="navProfileGradient" x1="0" y1="0" x2="1" y2="1">
@@ -30,22 +33,30 @@ const Layout = ({ status, onRefresh, outletContext, errorMessage }) => {
     </svg>
   );
 
+  const showLoader = Boolean(
+    status?.loading ||
+      status?.downloadsLoading ||
+      status?.lecturesLoading ||
+      outletContext?.testAttemptsLoading
+  );
+
   return (
     <div className={styles.appShell}>
       <ToastStack toasts={toasts} onDismiss={dismissToast} />
+      {showLoader ? <CenteredLoader /> : null}
       <Navbar
         navItems={[
-          { to: '/', label: 'Home' },
-          { to: '/courses', label: 'Explore courses' },
-          { to: '/tests', label: 'Tests' },
-          { to: '/downloads', label: 'Downloads' },
-          { to: '/settings', label: 'Settings' },
-          { to: '/profile', label: 'Profile', icon: profileIcon },
+          { to: '/', label: 'nav.home' },
+          { to: '/courses', label: 'nav.courses' },
+          { to: '/tests', label: 'nav.tests' },
+          { to: '/downloads', label: 'nav.downloads' },
+          { to: '/settings', label: 'nav.settings' },
+          { to: '/profile', label: 'nav.profile', icon: profileIcon },
         ].filter((item) => currentUser?.role === 'student')}
         actions={
           currentUser ? (
             <button type="button" className={styles.signOut} onClick={handleLogout}>
-              Sign out
+              {t('nav.signOut')}
             </button>
           ) : null
         }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useOutletContext, useParams } from 'react-router-dom';
 
 import styles from './CourseDetailPage.module.css';
@@ -26,6 +27,7 @@ const CourseDetailPage = () => {
     progress,
     status,
   } = useOutletContext();
+  const { t } = useTranslation();
 
   const memoizedCourse = useMemo(() => {
     if (location.state?.course) return location.state.course;
@@ -42,7 +44,7 @@ const CourseDetailPage = () => {
       setCourseLoading(false);
       setCourseError(null);
     }
-  }, [memoizedCourse]);
+  }, [memoizedCourse, t]);
 
   useEffect(() => {
     const needsFetch = !memoizedCourse || !(memoizedCourse.modules?.length);
@@ -52,9 +54,7 @@ const CourseDetailPage = () => {
 
     if (status?.isOffline) {
       setCourseLoading(false);
-      setCourseError(
-        'This course is not cached yet. Connect to the internet and sync to load full details.'
-      );
+      setCourseError(t('courseDetail.errors.notCached'));
       return () => {
         cancelled = true;
       };
@@ -70,8 +70,7 @@ const CourseDetailPage = () => {
         setCourseData(resolvedCourse);
       } catch (err) {
         if (cancelled) return;
-        const message =
-          err?.response?.data?.message || err?.message || 'Unable to load course details.';
+        const message = err?.response?.data?.message || err?.message || t('courseDetail.errors.fetch');
         setCourseError(message);
       } finally {
         if (!cancelled) {
@@ -96,9 +95,12 @@ const CourseDetailPage = () => {
   const courseProgress = progress.get(makeCourseProgressKey(courseId));
   const coursePending = pendingDownloadIds?.has?.(courseId);
   const courseLabel =
-    formatProgressLabel(courseProgress) ||
+    formatProgressLabel(courseProgress, t) ||
     (isCourseCached && totalCourseAssets
-      ? `Cached ${cachedCourseAssets}/${totalCourseAssets}`
+      ? t('downloadsPage.courses.cachedSummary', {
+          cached: cachedCourseAssets,
+          total: totalCourseAssets,
+        })
       : null);
 
   const modules = course.modules ?? [];
@@ -119,17 +121,23 @@ const CourseDetailPage = () => {
     const isFullyCached = moduleHasAssets && moduleCachedCount === moduleAssetsCount;
 
     const moduleLabel =
-      formatProgressLabel(moduleProgress) ||
-      (hasCachedAssets ? `Cached ${moduleCachedCount}/${moduleAssetsCount}` : null);
-    const moduleBadgeLabel = moduleLabel ?? (moduleHasAssets ? 'Not cached yet' : null);
+      formatProgressLabel(moduleProgress, t) ||
+      (hasCachedAssets
+        ? t('downloadsPage.courses.module.cached', {
+            cached: moduleCachedCount,
+            total: moduleAssetsCount,
+          })
+        : null);
+    const moduleBadgeLabel =
+      moduleLabel ?? (moduleHasAssets ? t('courseDetail.module.badgeFallback') : null);
     const moduleBadgeTone = hasCachedAssets
       ? styles.moduleBadgeSuccess
       : isPending
       ? styles.moduleBadgeActive
       : styles.moduleBadgeNeutral;
     const moduleAssetSummary = moduleHasAssets
-      ? `${moduleAssetsCount} downloadable asset${moduleAssetsCount !== 1 ? 's' : ''}`
-      : 'Streaming content only';
+      ? t('courseDetail.module.assetSummary', { count: moduleAssetsCount })
+      : t('courseDetail.module.assetSummaryStreaming');
 
     return {
       module,
@@ -166,7 +174,13 @@ const CourseDetailPage = () => {
   const availableAssets = preferredAssets.length ? preferredAssets : lessonAssets;
   const videoAsset = availableAssets.find((asset) => /\.mp4(\?|$)/.test(asset));
   const failedAssetCount = downloadRecord?.failedAssets?.length ?? 0;
-  const description = course.description || 'Offline copy ready for playback and revision.';
+  const description = course.description || t('courseDetail.descriptionFallback');
+
+  const resolvedLanguage = course?.language
+    ? t(`common.languages.${String(course.language).toLowerCase()}`, {
+        defaultValue: course.language,
+      })
+    : t('courseDetail.meta.languageUnknown');
 
   const [preview, setPreview] = useState({ open: false, assetUrl: '', title: '', lessonType: '' });
 
@@ -175,10 +189,10 @@ const CourseDetailPage = () => {
   if (courseLoading) {
     return (
       <section className={styles.emptyWrapper}>
-        <h2 className={styles.heading}>Loading course…</h2>
-        <p className={styles.description}>Fetching the latest modules and lessons.</p>
+        <h2 className={styles.heading}>{t('courseDetail.load.heading')}</h2>
+        <p className={styles.description}>{t('courseDetail.load.description')}</p>
         <Link to="/" className={styles.backLink}>
-          Back to catalog
+          {t('courseDetail.actions.back')}
         </Link>
       </section>
     );
@@ -187,15 +201,15 @@ const CourseDetailPage = () => {
   if (!course) {
     return (
       <section className={styles.emptyWrapper}>
-        <h2 className={styles.heading}>Course details unavailable</h2>
+        <h2 className={styles.heading}>{t('courseDetail.unavailable.heading')}</h2>
         <p className={styles.description}>
           {courseError ||
             (status?.isOffline
-              ? 'This course is not cached yet. Connect to the internet and try syncing again.'
-              : 'We could not find that course. Try another one from the catalog.')}
+              ? t('courseDetail.unavailable.offline')
+              : t('courseDetail.unavailable.message'))}
         </p>
         <Link to="/" className={styles.backLink}>
-          Back to catalog
+          {t('courseDetail.actions.back')}
         </Link>
       </section>
     );
@@ -216,18 +230,20 @@ const CourseDetailPage = () => {
         <div className={styles.mediaColumn}>
           {videoAsset ? (
             <video key={videoAsset} className={styles.mediaPlayer} src={videoAsset} controls preload="metadata">
-              Your browser does not support offline playback.
+              {t('courseDetail.media.noSupport')}
             </video>
           ) : (
             <div className={styles.mediaPlaceholder}>
-              <span>No video preview available</span>
+              <span>{t('courseDetail.media.noPreview')}</span>
             </div>
           )}
           <p className={styles.mediaHint}>
             {course.cachedAssets?.length || cachedCourseAssets
-              ? 'Offline playback ready.'
-              : 'Cache this course to enable offline playback.'}
-            {failedAssetCount ? ` • ${failedAssetCount} asset(s) pending retry.` : ''}
+              ? t('courseDetail.media.hintReady')
+              : t('courseDetail.media.hintPrompt')}
+            {failedAssetCount
+              ? ` • ${t('downloadsPage.retry.pending', { count: failedAssetCount })}`
+              : ''}
           </p>
         </div>
 
@@ -236,21 +252,30 @@ const CourseDetailPage = () => {
             <span className={styles.exam}>{course.exam}</span>
             <h2 className={styles.title}>{course.title}</h2>
             <p className={styles.meta}>
-              {course.modules?.length || 0} modules • {totalLessons} lessons • {course.language}
+              {t('courseDetail.meta.line', {
+                modules: course.modules?.length || 0,
+                lessons: totalLessons,
+                language: resolvedLanguage,
+              })}
             </p>
             <p className={styles.description}>{description}</p>
             <div className={styles.downloadSummaryRow}>
               <span className={`${styles.summaryChip} ${styles.summaryChipPrimary}`}>
-                {fullyCachedModulesCount}/{modulesWithAssetsCount || course.modules?.length || 0} modules cached
+                {t('courseDetail.summary.modulesCached', {
+                  cached: fullyCachedModulesCount,
+                  total: modulesWithAssetsCount || course.modules?.length || 0,
+                })}
               </span>
               {partiallyCachedModulesCount ? (
                 <span className={`${styles.summaryChip} ${styles.summaryChipInfo}`}>
-                  {partiallyCachedModulesCount} in progress
+                  {t('courseDetail.summary.modulesProgress', {
+                    count: partiallyCachedModulesCount,
+                  })}
                 </span>
               ) : null}
               {failedAssetCount ? (
                 <span className={`${styles.summaryChip} ${styles.summaryChipWarning}`}>
-                  {failedAssetCount} asset{failedAssetCount !== 1 ? 's' : ''} failed
+                  {t('courseDetail.summary.assetsFailed', { count: failedAssetCount })}
                 </span>
               ) : null}
             </div>
@@ -265,14 +290,17 @@ const CourseDetailPage = () => {
             >
               {coursePending
                 ? courseProgress?.total
-                  ? `Caching ${courseProgress.completed}/${courseProgress.total}`
-                  : 'Caching…'
+                  ? t('downloads.progress.caching', {
+                      success: courseProgress.completed ?? courseProgress.success ?? 0,
+                      total: courseProgress.total,
+                    })
+                  : t('courseCard.download.caching')
                 : isCourseCached
-                ? 'Remove full course'
-                : 'Download full course'}
+                ? t('courseDetail.actions.removeFull')
+                : t('courseDetail.actions.downloadFull')}
             </button>
             <Link to="/" className={styles.secondaryLink}>
-              Back to catalog
+              {t('courseDetail.actions.back')}
             </Link>
           </div>
         </header>
@@ -327,13 +355,16 @@ const CourseDetailPage = () => {
                   >
                     {isPending
                       ? moduleProgress?.total
-                        ? `Caching ${moduleProgress.completed}/${moduleProgress.total}`
-                        : 'Caching…'
+                        ? t('downloads.progress.caching', {
+                            success: moduleProgress.completed ?? moduleProgress.success ?? 0,
+                            total: moduleProgress.total,
+                          })
+                        : t('courseCard.download.caching')
                       : hasCachedAssets
-                      ? 'Remove module'
+                      ? t('courseDetail.actions.removeModule')
                       : moduleHasAssets
-                      ? 'Download module'
-                      : 'No assets'}
+                      ? t('courseDetail.actions.downloadModule')
+                      : t('courseDetail.actions.noAssets')}
                   </button>
                 </div>
               </header>
@@ -342,7 +373,9 @@ const CourseDetailPage = () => {
                 {lessons.map((lesson, lessonIndex) => (
                   <li key={`${moduleKey}-${lessonIndex}`} className={styles.lessonItem}>
                     <div>
-                      <span className={styles.lessonType}>{lesson.type?.toUpperCase() || 'LESSON'}</span>
+                      <span className={styles.lessonType}>
+                        {lesson.type?.toUpperCase() || t('courseDetail.lessons.typeFallback')}
+                      </span>
                       <p className={styles.lessonTitle}>{lesson.title}</p>
                       {lesson.description ? (
                         <p className={styles.lessonDescription}>{lesson.description}</p>
@@ -350,9 +383,15 @@ const CourseDetailPage = () => {
                     </div>
                     <div className={styles.lessonMetaBlock}>
                       {lesson.durationMinutes ? (
-                        <span className={styles.lessonMeta}>{lesson.durationMinutes} mins</span>
+                        <span className={styles.lessonMeta}>
+                          {t('courseDetail.lessons.duration', { minutes: lesson.durationMinutes })}
+                        </span>
                       ) : null}
-                      {lesson.sizeMB ? <span className={styles.lessonMeta}>{lesson.sizeMB} MB</span> : null}
+                      {lesson.sizeMB ? (
+                        <span className={styles.lessonMeta}>
+                          {t('courseDetail.lessons.size', { size: lesson.sizeMB })}
+                        </span>
+                      ) : null}
                       {lesson.assetUrl ? (
                         <button
                           type="button"
@@ -366,7 +405,7 @@ const CourseDetailPage = () => {
                             })
                           }
                         >
-                          Preview asset
+                          {t('courseDetail.actions.previewAsset')}
                         </button>
                       ) : null}
                     </div>

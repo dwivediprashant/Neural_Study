@@ -1,0 +1,806 @@
+{
+  "common": {
+    "appName": "Neural Study",
+    "offlinePlatform": "Offline-first platform",
+    "tagline": "Empower learning wherever your students are.",
+    "language": "Language",
+    "english": "English",
+    "hindi": "Hindi",
+    "offlineMode": "Offline mode",
+    "online": "Online",
+    "lastSync": "Last sync",
+    "syncNow": "Sync now",
+    "loading": "Loading…",
+    "retry": "Retry",
+    "search": "Search",
+    "clear": "Clear",
+    "noResults": "No results found",
+    "loadingWorkspace": "Preparing your workspace…",
+    "brandTagline": "Offline Learning Hub",
+    "logoAlt": "Neural Study logo",
+    "dismiss": "Dismiss notification",
+    "languages": {
+      "en": "English",
+      "hi": "Hindi",
+      "bi": "Bilingual"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "courses": "Explore courses",
+    "tests": "Tests",
+    "downloads": "Downloads",
+    "settings": "Settings",
+    "profile": "Profile",
+    "signOut": "Sign out",
+    "primaryNavigation": "Primary navigation",
+    "toggleMenu": "Toggle navigation menu",
+    "profileAria": "Profile",
+    "languageLabel": "Change language"
+  },
+  "coursesPage": {
+    "heading": "Available courses",
+    "subheading": "Download compressed lessons, notes, and quizzes for offline study.",
+    "manageDownloads": "Manage downloads",
+    "offlineNotice": "You are offline. Viewing locally cached courses.",
+    "empty": "No courses available yet. Check back soon."
+  },
+  "profilePage": {
+    "hero": {
+      "eyebrow": "Player profile",
+      "fallbackName": "Learner",
+      "memberSince": "Member since {{date}}",
+      "level": "Level {{level}}",
+      "mastery": "{{percent}}% mastery",
+      "primaryAction": "Explore courses",
+      "secondaryAction": "Manage downloads",
+      "streakMessages": {
+        "threePlus": "On a {{count}}-test streak",
+        "two": "Momentum building",
+        "one": "Great start—keep going!",
+        "zero": "Launch a test to begin your streak"
+      }
+    },
+    "badges": {
+      "streak": {
+        "aria": "Elite streak badge",
+        "hint": "Maintain a blazing practice streak",
+        "titleActive": "Streak master",
+        "titleIdle": "Warm up",
+        "captionActive": "{{count}} drills in a row",
+        "captionIdle": "Build your streak with consistent drills"
+      },
+      "accuracy": {
+        "aria": "Accuracy boost badge",
+        "hint": "Score above 80% in recent drills"
+      },
+      "power": {
+        "aria": "Power-ups badge",
+        "hint": "Unlock advanced practice power-ups"
+      },
+      "collector": {
+        "titleActive": "Offline collector",
+        "titleIdle": "Cache seeker",
+        "captionActive": "{{count}} lecture{{count, plural, one {} other {s}}} ready offline",
+        "captionIdle": "Save lectures for zero-buffer revision"
+      },
+      "level": {
+        "title": "Level {{level}}",
+        "captionFilled": "{{percent}}% mastery unlocked",
+        "captionEmpty": "Complete tests to boost mastery"
+      }
+    },
+    "recentTrend": {
+      "unchanged": "No change from last attempt",
+      "delta": "{{delta}}% vs last attempt"
+    },
+    "courseFallback": {
+      "title": "Untitled course",
+      "exam": "General"
+    },
+    "achievement": {
+      "streak": {
+        "title": {
+          "active": "Streak master",
+          "idle": "Warm up"
+        },
+        "caption": {
+          "active": "{{count}} drills in a row",
+          "idle": "Build your streak with consistent drills"
+        }
+      },
+      "collector": {
+        "title": {
+          "active": "Offline collector",
+          "idle": "Cache seeker"
+        },
+        "caption": {
+          "active": "{{count}} lecture{{count, plural, one {} other {s}}} ready offline",
+          "idle": "Save lectures for zero-buffer revision"
+        }
+      },
+      "level": {
+        "title": "Level {{level}}",
+        "caption": {
+          "filled": "{{percent}}% mastery unlocked",
+          "empty": "Complete tests to boost mastery"
+        }
+      }
+    },
+    "insights": {
+      "score": {
+        "label": "Accuracy pulse",
+        "hintFallback": "Complete another drill to track improvement."
+      },
+      "offline": {
+        "label": "Offline readiness",
+        "hintPlural": "{{count}} cached lecture{{count, plural, one {} other {s}}}",
+        "hintEmpty": "Cache lectures to continue learning offline."
+      },
+      "streak": {
+        "label": "Consistency streak",
+        "value": "{{count}} attempts"
+      }
+    },
+    "cards": {
+      "performance": {
+        "eyebrow": "Performance",
+        "title": "Skill pulse"
+      },
+      "recent": {
+        "eyebrow": "Recent",
+        "title": "Test reports",
+        "loading": "Loading recent attempts…",
+        "empty": "Your next quiz will appear here once completed."
+      },
+      "recentLectures": {
+        "eyebrow": "Playback",
+        "title": "Recently viewed lectures",
+        "empty": "Recently opened lectures will appear here as you continue learning."
+      }
+    },
+    "reports": {
+      "meta": "{{correct}}/{{total}} correct · {{difficulty}} · {{duration}}",
+      "timestamp": "Completed {{timestamp}}"
+    },
+    "ratings": {
+      "groupAria": "Rate {{title}}",
+      "starAria": "Give {{count}} star{{count, plural, one {} other {s}}}",
+      "value": "{{rating}} / 5",
+      "none": "No rating",
+      "votes": "{{count}} vote{{count, plural, one {} other {s}}}",
+      "votesEmpty": "Be first"
+    },
+    "recentLectures": {
+      "thumbnailAlt": "Lecture thumbnail",
+      "duration": "{{minutes}} mins",
+      "viewed": "Viewed {{timestamp}}"
+    },
+    "streak": {
+      "label": "Consistency streak"
+    },
+    "downloads": {
+      "formatMb": "{{value}} MB",
+      "formatKb": "{{value}} KB"
+    }
+  },
+  "downloads": {
+    "progress": {
+      "cachedOffline": "Cached offline",
+      "failedSuffix": " • {{count}} failed",
+      "caching": "Caching {{success}}/{{total}}"
+    }
+  },
+  "downloadsPage": {
+    "hero": {
+      "eyebrow": "Offline hub",
+      "heading": "Downloads at your fingertips",
+      "subheading": "Keep learning without buffering. Manage cached courses and quick lecture drops in one fast view."
+    },
+    "storage": {
+      "title": "Storage budget",
+      "usage": "{{used}} / {{limit}} GB used",
+      "hint": "Auto-stop downloads when storage limit is reached."
+    },
+    "notice": {
+      "offline": "Offline mode — downloads will resume when you reconnect to Wi-Fi."
+    },
+    "empty": {
+      "title": "No courses or lectures have been saved yet.",
+      "hint": "Open a course or lecture and tap “Save offline” to cache it."
+    },
+    "retry": {
+      "pending": "{{count}} asset{{count, plural, one {} other {s}}} pending retry"
+    },
+    "actions": {
+      "preview": "See lecture",
+      "removeDownload": "Remove download",
+      "removeLecture": "Remove lecture",
+      "removing": "Removing…"
+    },
+    "courses": {
+      "cachedSummary": "Cached {{cached}}/{{total}}",
+      "descriptionFallback": "Offline copy ready for playback and revision.",
+      "badge": "Course",
+      "status": {
+        "offlineReady": "Offline ready",
+        "cachePrompt": "Cache modules to study offline"
+      },
+      "meta": "{{modules}} modules • {{size}} MB total",
+      "noPreview": "No video preview available",
+      "module": {
+        "heading": "Module cache status",
+        "cached": "Cached {{cached}}/{{total}}",
+        "notCached": "Not cached yet",
+        "noAssets": "No downloadable assets",
+        "fallback": "Module {{index}}"
+      }
+    },
+    "lectures": {
+      "heading": "Offline lectures",
+      "subheading": "Standalone lecture drops cached for on-the-go revision.",
+      "badge": "Lecture",
+      "placeholder": "Lecture",
+      "cachedSummary": "Cached {{cached}}/{{total}}",
+      "assetsAvailable": "Assets available",
+      "assetsCached": "Cached offline",
+      "metaFallback": "Metadata coming soon",
+      "cachedAssets": "Cached assets: {{count}}",
+      "duration": "{{minutes}} mins"
+    },
+    "queue": {
+      "count": "{{count}} module download{{count, plural, one {} other {s}}} queued",
+      "hint": "We’ll retry them automatically once you’re back online."
+    }
+  },
+  "courseCard": {
+    "size": {
+      "value": "{{value}} MB",
+      "tbd": "Size TBD"
+    },
+    "download": {
+      "caching": "Caching…",
+      "remove": "Remove offline",
+      "save": "Save offline"
+    },
+    "progress": {
+      "cachedAssets": "Cached {{cached}}/{{total}} assets"
+    },
+    "modules": "{{count}} module{{count, plural, one {} other {s}}}",
+    "updated": "Updated {{date}}",
+    "updatedRecent": "Updated recently",
+    "meta": "{{modules}} • {{updated}}",
+    "links": {
+      "viewDetails": "View details"
+    }
+  },
+  "exploreCourses": {
+    "search": {
+      "placeholder": "Search by tag (e.g., NEET, UPSC, Hinglish)",
+      "aria": "Search courses by tag",
+      "hint": "Filter batches by exam category or language tags.",
+      "loading": "Searching…",
+      "offline": "Online search is unavailable offline. Showing cached matches.",
+      "noResults": "No courses matched that tag on the server.",
+      "error": "Unable to fetch courses right now.",
+      "remoteCount": "Showing {{count}} result{{count, plural, one {} other {s}}} from the server."
+    },
+    "page": {
+      "title": "Courses designed for deep, personalised learning",
+      "subtitle": "Browse high-impact programmes curated by mentors. Each batch combines interactive live sessions, structured notes, offline-first practice, and guided doubt support."
+    },
+    "schedule": {
+      "starts": "Starts:",
+      "ends": "Ends:"
+    },
+    "lectureSection": {
+      "heading": "Fresh lectures from Neural mentors",
+      "body": "Browse individual lecture drops uploaded by teachers. Thumbnails and metadata are provided directly by the mentor.",
+      "loading": "Loading mentor lectures…",
+      "noMatches": "No lectures match that search.",
+      "empty": "Teachers are preparing new lectures. Check back soon!"
+    },
+    "lecture": {
+      "thumbnail": "Thumbnail for {{title}}"
+    }
+  },
+  "exploreLectures": {
+    "search": {
+      "placeholder": "Search lectures by title, subject, or tag",
+      "aria": "Search lectures",
+      "loading": "Searching…",
+      "hint": "Tip: try keywords like \"mechanics\", \"organic\", or \"aptitude\".",
+      "toastEmpty": "No lectures available yet. Check back soon!"
+    },
+    "page": {
+      "title": "Lectures ready for offline-first revision",
+      "subtitle": "Browse mentor-uploaded lessons. Save any lecture offline for buffer-free viewing and study on the go."
+    },
+    "state": {
+      "errorTitle": "Unable to load lectures",
+      "loadingTitle": "Loading lectures…",
+      "loadingBody": "Fetching the latest drops from Neural mentors.",
+      "emptyTitle": "No lectures match that search",
+      "emptyBody": "Adjust your keywords or check again later as mentors upload new lessons."
+    },
+    "lecture": {
+      "thumbnail": "Lecture thumbnail",
+      "untitled": "Untitled lecture",
+      "published": "Published {{date}}",
+      "openResource": "Open resource"
+    }
+  },
+  "courseDetail": {
+    "errors": {
+      "notCached": "This course is not cached yet. Connect to the internet and sync to load full details.",
+      "fetch": "Unable to load course details."
+    },
+    "descriptionFallback": "Offline copy ready for playback and revision.",
+    "load": {
+      "heading": "Loading course…",
+      "description": "Fetching the latest modules and lessons."
+    },
+    "unavailable": {
+      "heading": "Course details unavailable",
+      "offline": "This course is not cached yet. Connect to the internet and try syncing again.",
+      "message": "We could not find that course. Try another one from the catalog."
+    },
+    "actions": {
+      "back": "Back to catalog",
+      "downloadFull": "Download full course",
+      "removeFull": "Remove full course",
+      "removeModule": "Remove module",
+      "downloadModule": "Download module",
+      "noAssets": "No assets",
+      "previewAsset": "Preview asset"
+    },
+    "media": {
+      "noSupport": "Your browser does not support offline playback.",
+      "noPreview": "No video preview available",
+      "hintReady": "Offline playback ready.",
+      "hintPrompt": "Cache this course to enable offline playback."
+    },
+    "meta": {
+      "line": "{{modules}} modules • {{lessons}} lessons • {{language}}",
+      "languageUnknown": "Language coming soon"
+    },
+    "summary": {
+      "modulesCached": "{{cached}}/{{total}} modules cached",
+      "modulesProgress": "{{count}} in progress",
+      "assetsFailed": "{{count}} asset{{count, plural, one {} other {s}}} failed"
+    },
+    "module": {
+      "badgeFallback": "Not cached yet",
+      "assetSummary": "{{count}} downloadable asset{{count, plural, one {} other {s}}}",
+      "assetSummaryStreaming": "Streaming content only"
+    },
+    "lessons": {
+      "typeFallback": "LESSON",
+      "duration": "{{minutes}} mins",
+      "size": "{{size}} MB"
+    }
+  },
+  "assetPreview": {
+    "ariaLabel": "Preview for {{title}}",
+    "lessonFallback": "Lesson asset",
+    "assetTypes": {
+      "video": "video",
+      "pdf": "PDF",
+      "json": "JSON",
+      "image": "image",
+      "unknown": "asset"
+    },
+    "assetMeta": {
+      "download": "Download to view",
+      "showing": "Showing {{type}} preview"
+    },
+    "actions": {
+      "close": "Close asset preview",
+      "download": "Download asset"
+    },
+    "video": {
+      "noSupport": "Your browser does not support embedded video playback."
+    },
+    "pdf": {
+      "title": "{{title}} PDF preview"
+    },
+    "json": {
+      "loading": "Loading preview…",
+      "error": "Unable to load JSON asset"
+    },
+    "unknown": {
+      "message": "Preview unavailable for this asset type."
+    }
+  },
+  "mediaModal": {
+    "ariaLabel": "Media preview for {{title}}",
+    "actions": {
+      "close": "Close preview"
+    },
+    "video": {
+      "noSupport": "Your browser does not support embedded video playback."
+    },
+    "fallback": "No preview available for this lecture."
+  },
+  "footer": {
+    "ariaLabel": "Site footer",
+    "brand": {
+      "tagline": "Offline learning, always within reach",
+      "description": "Download modules once, learn anywhere. Neural Study keeps lessons, quizzes, and progress available even when connectivity drops.",
+      "badges": {
+        "lowBandwidth": "Low bandwidth ready",
+        "sync": "Sync on return online"
+      },
+      "social": {
+        "title": "Stay updated",
+        "items": {
+          "youtube": "YouTube",
+          "telegram": "Telegram",
+          "linkedin": "LinkedIn"
+        }
+      }
+    },
+    "links": {
+      "aria": "Helpful links",
+      "groups": {
+        "offline": {
+          "title": "Offline essentials",
+          "items": {
+            "courses": "Download courses",
+            "resources": "Saved resources",
+            "sync": "Sync preferences"
+          }
+        },
+        "support": {
+          "title": "Support",
+          "items": {
+            "email": "Email support",
+            "helpline": "Community helpline",
+            "faq": "Offline FAQ"
+          }
+        },
+        "community": {
+          "title": "Community",
+          "items": {
+            "updates": "Release notes",
+            "events": "Local meetups",
+            "volunteer": "Volunteer mentors"
+          }
+        }
+      }
+    },
+    "bottom": {
+      "copyright": "© {{year}} Neural Study. Offline-first education for all.",
+      "links": {
+        "terms": "Terms",
+        "privacy": "Privacy",
+        "contact": "Contact"
+      }
+    }
+  },
+  "toast": {
+    "courseCached": "Cached \"{{title}}\" for offline learning.",
+    "courseRemoved": "Removed \"{{title}}\" from offline storage.",
+    "courseRemovedFallback": "Removed offline course.",
+    "moduleCached": "Cached module \"{{module}}\" · {{course}}",
+    "moduleRemoved": "Removed module \"{{module}}\" from offline storage.",
+    "lectureCached": "Cached \"{{title}}\" for offline access.",
+    "lectureRemoved": "Removed \"{{title}}\" from offline storage.",
+    "lectureRemovedFallback": "Removed offline lecture.",
+    "sessionExpired": "Session expired. Please sign in again.",
+    "welcomeBack": "Welcome back, {{name}}!",
+    "loginFailed": "Failed to sign in",
+    "accountCreated": "Account created successfully!",
+    "accountCreateFailed": "Failed to create account",
+    "signedOut": "Signed out successfully.",
+    "testFinished": "Test finished: {{title}} · {{percent}}%",
+    "ratingThanks": "Thanks for the rating!",
+    "lectureUploadSuccess": "Lecture uploaded successfully!",
+    "lectureRemovedSuccess": "Lecture removed successfully.",
+    "genericDanger": "Something went wrong.",
+    "downloadWarning": "{{message}}",
+    "dismiss": "Dismiss notification"
+  },
+  "auth": {
+    "loginBadge": "Login",
+    "signupBadge": "Sign up",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create your account",
+    "signupHelper": "Choose your role to unlock the appropriate dashboard.",
+    "signinHelper": "Sign in with the credentials you created earlier.",
+    "fullName": "Full name",
+    "email": "Email address",
+    "password": "Password",
+    "role": "Role",
+    "studentRole": "Student",
+    "studentRoleHint": "Learn & take tests",
+    "teacherRole": "Teacher",
+    "teacherRoleHint": "Share lectures & resources",
+    "ctaLogin": "Sign in",
+    "ctaSignup": "Sign up",
+    "needHelp": "Need assistance?",
+    "supportEmail": "support@neuralstudy.in",
+    "alreadyHaveAccount": "Already have an account?",
+    "promptNoAccount": "Don't have an account?",
+    "createOne": "Create one",
+    "signin": "Sign in",
+    "signup": "Sign up",
+    "pleaseWait": "Please wait…",
+    "formError": "Please fill in all required fields.",
+    "success": "Action completed successfully",
+    "fullNamePlaceholder": "e.g. Anjali Sharma",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "Minimum 6 characters",
+    "roleLabel": "Role",
+    "visualAria": "Neural Study branding"
+  },
+  "errors": {
+    "authRequired": "Authentication is required.",
+    "loadLectures": "Failed to load lectures.",
+    "titleRequired": "Title is required.",
+    "resourceUrlRequired": "Resource URL is required.",
+    "teacherNotFound": "Teacher account not found.",
+    "uploadLecture": "Failed to upload lecture.",
+    "lectureNotFound": "Lecture not found.",
+    "permissionDenied": "You don't have permission to view this lecture.",
+    "loadLecture": "Failed to load lecture.",
+    "ratingRange": "Rating must be between 1 and 5.",
+    "rateUnpublished": "Cannot rate an unpublished lecture.",
+    "saveRating": "Failed to save rating.",
+    "loadRatings": "Failed to load ratings.",
+    "deleteOwnLecture": "You can only remove your own lectures.",
+    "deleteLecture": "Failed to delete lecture."
+  },
+  "settings": {
+    "appPreferences": "App preferences",
+    "configureHelp": "Configure how the web app handles sync, downloads, and language support.",
+    "sync": "Sync",
+    "syncWifiOnly": "Sync on Wi-Fi only",
+    "syncWifiOnlyHint": "Avoid large downloads when on metered connections.",
+    "autoSync": "Auto-sync when online",
+    "autoSyncHint": "Automatically upload progress and fetch updates when connected.",
+    "language": "Language",
+    "moreLanguagesNote": "More regional languages will be added based on demand.",
+    "support": "Support",
+    "supportHint": "Need to sideload offline content bundles or distribute updates? Contact the institute admin team for the latest download packs.",
+    "offlineBundle": "Need to sideload offline content bundles or distribute updates?",
+    "syncWifiOnlyLabel": "Sync on Wi-Fi only",
+    "autoSyncLabel": "Auto-sync when online",
+    "languageHeading": "Language",
+    "supportHeading": "Support",
+    "offlineBadge": "Offline mode",
+    "onlineBadge": "Online",
+    "lastSync": "Last sync: {{timestamp}}",
+    "lastSyncNever": "No sync yet",
+    "syncing": "Syncing…"
+  },
+  "teacher": {
+    "layout": {
+      "brandMark": "Teach",
+      "eyebrow": "Teacher workspace",
+      "fallbackName": "Educator",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "navAria": "Teacher navigation",
+      "refresh": "Refresh data",
+      "signOut": "Sign out"
+    },
+    "nav": {
+      "upload": "Upload lecture",
+      "uploads": "My uploads",
+      "profile": "Profile"
+    },
+    "uploads": {
+      "confirmDelete": "Remove this lecture? This action cannot be undone.",
+      "deleteFailed": "Failed to remove lecture",
+      "eyebrow": "My uploads",
+      "title": "Manage lectures",
+      "subtitle": "Review, filter, and remove content you have shared with students. Upload changes propagate immediately to the student catalogue.",
+      "searchPlaceholder": "Search by title, subject, tag, or exam",
+      "searchAria": "Search uploaded lectures",
+      "loading": "Loading your uploads…",
+      "generalExam": "General",
+      "durationValue": "{{minutes}} mins",
+      "durationUnknown": "Duration unknown",
+      "assetAvailable": "Asset available",
+      "assetMissing": "Asset missing",
+      "assetReady": "Ready for students",
+      "assetUpload": "Upload resource link",
+      "ratingValue": "★ {{rating}} / 5",
+      "ratingNone": "Not rated",
+      "ratingCount": "{{count}} review{{count, plural, one {} other {s}}}",
+      "ratingAwaiting": "Awaiting reviews",
+      "untitledLecture": "Untitled lecture",
+      "badgeLecture": "Lecture",
+      "thumbnailAlt": "Thumbnail for {{title}}",
+      "thumbnailFallback": "No thumbnail",
+      "detailsMissing": "Details missing",
+      "updated": "Updated {{date}}",
+      "removeLecture": "Remove lecture",
+      "emptySearch": "No uploads match that search.",
+      "emptyInitial": "You have not uploaded any lectures yet."
+    },
+    "profile": {
+      "heroEyebrow": "Teacher workspace",
+      "fallbackName": "Educator",
+      "verifiedAria": "Verified educator",
+      "meta": {
+        "email": "Email",
+        "role": "Role",
+        "joined": "Joined"
+      },
+      "refreshBusy": "Refreshing…",
+      "refreshIdle": "Refresh data",
+      "stats": {
+        "total": {
+          "label": "Total uploads",
+          "hint": "Published to the student catalogue"
+        },
+        "average": {
+          "label": "Avg. duration",
+          "value": "{{minutes}} mins",
+          "empty": "—",
+          "hint": "Across timed lecture uploads"
+        },
+        "subjects": {
+          "label": "Unique subjects",
+          "hint": "Based on your current uploads"
+        },
+        "sync": {
+          "label": "Sync status",
+          "valueSyncing": "Syncing…",
+          "valueIdle": "Up to date",
+          "hintSyncing": "Fetching the latest data",
+          "hintIdle": "Last refresh is live"
+        }
+      },
+      "subjects": {
+        "title": "You have uploaded lectures of",
+        "description": "Your most frequently published lecture categories.",
+        "empty": "Upload your first lecture to start tracking subject stats."
+      },
+      "recent": {
+        "title": "Latest upload",
+        "description": "Highlight of your most recent lecture shared with students.",
+        "empty": "Your most recent upload will appear here once you publish a lecture."
+      },
+      "genericExam": "General",
+      "duration": "{{minutes}} mins",
+      "published": "Published {{timestamp}}",
+      "thumbnailAlt": "Lecture thumbnail"
+    }
+  },
+  "tests": {
+    "practiceEyebrow": "Practice Zone",
+    "practiceTitle": "Test yourself with fast revision drills",
+    "practiceSubtitle": "Choose a topic to launch a bite-sized assessment. Each test is optimised for offline-first practice sessions with instant scoring once you reconnect.",
+    "loading": "Loading tests…",
+    "error": "Unable to load tests right now. Please try again later.",
+    "comingSoon": "Coming soon",
+    "startTest": "Start test",
+    "flashcards": {
+      "concept": {
+        "title": "Concept Sprint Mini Deck",
+        "description": "Preview key formulas and rapid-fire prompts to warm up before a lecture quiz.",
+        "duration": "5 min burst",
+        "secondary": "Preview deck"
+      },
+      "strategy": {
+        "title": "Strategy Snapshot Pack",
+        "description": "Glance through quick tactics to improve accuracy during timed assessments.",
+        "duration": "8 min focus",
+        "secondary": "Tactics"
+      }
+    }
+  },
+  "testsRunner": {
+    "loading": "Loading test…",
+    "loadError": "Unable to load this test right now.",
+    "submitError": "Unable to submit your attempt. Please try again.",
+    "answerAll": "Please answer every question before submitting.",
+    "back": "← Back to tests",
+    "eyebrow": "Quick test",
+    "score": "Score",
+    "difficulty": "Difficulty",
+    "duration": "Duration",
+    "completedOn": "Completed on",
+    "retake": "Retake test",
+    "viewProfile": "View in profile",
+    "questionReview": "Question review",
+    "correct": "Correct",
+    "incorrect": "Incorrect",
+    "answer": "Answer",
+    "yourChoice": "Your choice",
+    "notAnswered": "Not answered",
+    "questionOf": "Question {{current}} of {{total}}",
+    "previous": "Previous",
+    "next": "Next question",
+    "submit": "Submit test",
+    "progress": "Progress",
+    "goToQuestion": "Go to question {{index}}"
+  },
+  "hero": {
+    "carouselLabel": "Featured highlights",
+    "prev": "Previous highlight",
+    "next": "Next highlight",
+    "slides": {
+      "community": {
+        "title": "Community support anywhere",
+        "description": "Track streaks, unlock badges, and collaborate when you come back online."
+      },
+      "concept": {
+        "title": "Master concepts visually",
+        "description": "Interactive diagrams and bilingual summaries make complex topics stick."
+      },
+      "adaptive": {
+        "title": "Adaptive offline learning",
+        "description": "Lessons sync when connected and stay accessible even in low-signal areas."
+      }
+    }
+  },
+  "features": {
+    "ariaLabel": "Key features",
+    "items": {
+      "free": {
+        "title": "Free access",
+        "description": "High quality courses",
+        "alt": "Free access"
+      },
+      "ai": {
+        "title": "AI powered",
+        "description": "Tests, sample papers & notes",
+        "alt": "AI powered guidance"
+      },
+      "support": {
+        "title": "Structured notes, quizzes, tests",
+        "description": "Offline available",
+        "alt": "Structured support"
+      },
+      "offline": {
+        "title": "Gamified UI + Badges + Achievements",
+        "description": "Interactive & engaging experience",
+        "alt": "Gamified experience"
+      }
+    }
+  },
+  "exams": {
+    "eyebrow": "Exam catalogue",
+    "title": "Explore exam categories",
+    "subtitle": "Choose a track to see recommended offline-ready batches for your preparation journey.",
+    "explore": "Explore category",
+    "categories": {
+      "neet": {
+        "title": "NEET",
+        "tags": {
+          "class11": "Class 11",
+          "class12": "Class 12",
+          "dropper": "Dropper"
+        }
+      },
+      "iit": {
+        "title": "IIT JEE",
+        "tags": {
+          "class11": "Class 11",
+          "class12": "Class 12",
+          "dropper": "Dropper"
+        }
+      },
+      "gate": {
+        "title": "GATE",
+        "tags": {
+          "cse": "CSE",
+          "ece": "ECE",
+          "ee": "EE"
+        }
+      },
+      "upsc": {
+        "title": "UPSC",
+        "tags": {
+          "prelims": "CSE Prelims",
+          "mains": "CSE Mains",
+          "optional": "Optional"
+        }
+      }
+    }
+  }
+}

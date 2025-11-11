@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import styles from './TestsRunnerPage.module.css';
@@ -12,6 +13,7 @@ function TestsRunnerPage() {
   const navigate = useNavigate();
   const outletContext = useOutletContext() ?? {};
   const { handleTestAttemptRecorded } = outletContext;
+  const { t } = useTranslation();
 
   const [test, setTest] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,7 +40,7 @@ function TestsRunnerPage() {
         setError(null);
       } catch (err) {
         console.error('Failed to load test', err);
-        setError('Unable to load this test right now.');
+        setError(t('testsRunner.loadError'));
         setTest(null);
       } finally {
         setLoading(false);
@@ -46,7 +48,7 @@ function TestsRunnerPage() {
     };
 
     loadTest();
-  }, [testId]);
+  }, [testId, t]);
 
   useEffect(() => {
     if (!loading && !test) {
@@ -67,7 +69,7 @@ function TestsRunnerPage() {
     return (
       <section className={styles.page}>
         <div className={styles.shell}>
-          <div className={styles.stateCard}>Loading test…</div>
+          <div className={styles.stateCard}>{t('testsRunner.loading')}</div>
         </div>
       </section>
     );
@@ -95,7 +97,7 @@ function TestsRunnerPage() {
 
   const handleSubmit = () => {
     if (questions.some((_, index) => responses[index] === undefined)) {
-      setError('Please answer every question before submitting.');
+      setError(t('testsRunner.answerAll'));
       return;
     }
 
@@ -171,7 +173,7 @@ function TestsRunnerPage() {
       })
       .catch((err) => {
         console.error('Failed to submit attempt', err);
-        setError('Unable to submit your attempt. Please try again.');
+        setError(t('testsRunner.submitError'));
       })
       .finally(() => {
         setSubmitting(false);
@@ -191,19 +193,19 @@ function TestsRunnerPage() {
     <section className={styles.page}>
       <div className={styles.shell}>
         <button type="button" className={styles.backLink} onClick={() => navigate('/tests')}>
-          ← Back to tests
+          {t('testsRunner.back')}
         </button>
 
         <header className={styles.header}>
           <div>
-            <p className={styles.eyebrow}>Quick test</p>
+            <p className={styles.eyebrow}>{t('testsRunner.eyebrow')}</p>
             <h1 className={styles.title}>{test.title}</h1>
           </div>
           <div className={styles.metaRow}>
             <span className={styles.metaBadge}>{durationLabel}</span>
             {test.difficulty ? <span className={styles.metaBadgeNeutral}>{test.difficulty}</span> : null}
             <span className={styles.metaLabel}>
-              {questions.length} question{questions.length !== 1 ? 's' : ''}
+              {t('testsRunner.questionOf', { current: questions.length, total: questions.length })}
             </span>
           </div>
         </header>
@@ -211,7 +213,7 @@ function TestsRunnerPage() {
         {result ? (
           <div className={styles.resultCard}>
             <div className={styles.resultSummary}>
-              <p className={styles.resultLabel}>Score</p>
+              <p className={styles.resultLabel}>{t('testsRunner.score')}</p>
               <p className={styles.resultValue}>
                 {result.summary.score}/{result.summary.total}
               </p>
@@ -219,26 +221,26 @@ function TestsRunnerPage() {
             </div>
             <div className={styles.resultMeta}>
               <p className={styles.resultMetaLine}>
-                Difficulty · <strong>{result.summary.difficulty}</strong>
+                {t('testsRunner.difficulty')} · <strong>{result.summary.difficulty}</strong>
               </p>
               <p className={styles.resultMetaLine}>
-                Duration · <strong>{result.summary.duration}</strong>
+                {t('testsRunner.duration')} · <strong>{result.summary.duration}</strong>
               </p>
               <p className={styles.resultMetaLine}>
-                Completed on ·{' '}
+                {t('testsRunner.completedOn')} ·{' '}
                 <strong>{new Date(result.summary.completedAt).toLocaleString()}</strong>
               </p>
             </div>
             <div className={styles.resultActions}>
               <button type="button" className={styles.primaryButton} onClick={resetTest}>
-                Retake test
+                {t('testsRunner.retake')}
               </button>
               <Link to="/profile" className={styles.secondaryLink}>
-                View in profile
+                {t('testsRunner.viewProfile')}
               </Link>
             </div>
             <div className={styles.resultDetails}>
-              <p className={styles.resultDetailsTitle}>Question review</p>
+              <p className={styles.resultDetailsTitle}>{t('testsRunner.questionReview')}</p>
               <ul className={styles.resultList}>
                 {result.details.map((entry) => (
                   <li key={entry.index} className={styles.resultItem}>
@@ -249,17 +251,19 @@ function TestsRunnerPage() {
                           entry.correct ? styles.resultTagCorrect : styles.resultTagIncorrect
                         }`}
                       >
-                        {entry.correct ? 'Correct' : 'Incorrect'}
+                        {entry.correct ? t('testsRunner.correct') : t('testsRunner.incorrect')}
                       </span>
                     </div>
                     <p className={styles.resultPrompt}>{entry.prompt}</p>
                     <p className={styles.resultAnswer}>
-                      <strong>Answer:</strong> {entry.options[entry.correctIndex]}
+                      <strong>{t('testsRunner.answer')}:</strong> {entry.options[entry.correctIndex]}
                     </p>
                     {entry.selectedIndex !== entry.correctIndex ? (
                       <p className={styles.resultAnswer}>
-                        <strong>Your choice:</strong>{' '}
-                        {entry.selectedIndex !== undefined ? entry.options[entry.selectedIndex] : 'Not answered'}
+                        <strong>{t('testsRunner.yourChoice')}:</strong>{' '}
+                        {entry.selectedIndex !== undefined
+                          ? entry.options[entry.selectedIndex]
+                          : t('testsRunner.notAnswered')}
                       </p>
                     ) : null}
                     {entry.explanation ? (
@@ -271,86 +275,84 @@ function TestsRunnerPage() {
             </div>
           </div>
         ) : (
-          <>
-            <div className={styles.questionCard}>
-              <header className={styles.questionHeader}>
-                <p className={styles.questionIndex}>
-                  Question {currentIndex + 1} of {questions.length}
-                </p>
-                <h2 className={styles.questionPrompt}>{currentQuestion.prompt}</h2>
-              </header>
+          <div className={styles.questionCard}>
+            <header className={styles.questionHeader}>
+              <p className={styles.questionIndex}>
+                {t('testsRunner.questionOf', { current: currentIndex + 1, total: questions.length })}
+              </p>
+              <h2 className={styles.questionPrompt}>{currentQuestion.prompt}</h2>
+            </header>
 
-              <div className={styles.optionsList}>
-                {currentQuestion.options.map((option, optionIndex) => {
-                  const isSelected = responses[currentIndex] === optionIndex;
-                  return (
-                    <button
-                      key={option}
-                      type="button"
-                      className={`${styles.optionButton} ${isSelected ? styles.optionButtonSelected : ''}`}
-                      onClick={() => handleSelectOption(currentIndex, optionIndex)}
-                    >
-                      <span className={styles.optionLabel}>{String.fromCharCode(65 + optionIndex)}</span>
-                      <span>{option}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {error ? <p className={styles.validation}>{error}</p> : null}
-
-              <div className={styles.controls}>
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={() => handleNavigateQuestion(-1)}
-                  disabled={currentIndex === 0}
-                >
-                  Previous
-                </button>
-                {isLastQuestion ? (
+            <div className={styles.optionsList}>
+              {currentQuestion.options.map((option, optionIndex) => {
+                const isSelected = responses[currentIndex] === optionIndex;
+                return (
                   <button
+                    key={option}
                     type="button"
-                    className={styles.primaryButton}
-                    onClick={handleSubmit}
-                    disabled={submitting}
+                    className={`${styles.optionButton} ${isSelected ? styles.optionButtonSelected : ''}`}
+                    onClick={() => handleSelectOption(currentIndex, optionIndex)}
                   >
-                    Submit test
+                    <span className={styles.optionLabel}>{String.fromCharCode(65 + optionIndex)}</span>
+                    <span>{option}</span>
                   </button>
-                ) : (
-                  <button
-                    type="button"
-                    className={styles.primaryButton}
-                    onClick={() => handleNavigateQuestion(1)}
-                  >
-                    Next question
-                  </button>
-                )}
-              </div>
+                );
+              })}
             </div>
 
-            <aside className={styles.progressPanel}>
-              <p className={styles.progressTitle}>Progress</p>
-              <div className={styles.progressDots}>
-                {questions.map((question, index) => {
-                  const state = responses[index] !== undefined ? 'answered' : 'pending';
-                  const isActive = index === currentIndex;
-                  return (
-                    <button
-                      key={`${test.slug}-${index}`}
-                      type="button"
-                      className={`${styles.progressDot} ${styles[`progressDot_${state}`]} ${
-                        isActive ? styles.progressDotActive : ''
-                      }`}
-                      onClick={() => setCurrentIndex(index)}
-                      aria-label={`Go to question ${index + 1}`}
-                    />
-                  );
-                })}
-              </div>
-            </aside>
-          </>
+            {error ? <p className={styles.validation}>{error}</p> : null}
+
+            <div className={styles.controls}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => handleNavigateQuestion(-1)}
+                disabled={currentIndex === 0}
+              >
+                {t('testsRunner.previous')}
+              </button>
+              {isLastQuestion ? (
+                <button
+                  type="button"
+                  className={styles.primaryButton}
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                >
+                  {t('testsRunner.submit')}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.primaryButton}
+                  onClick={() => handleNavigateQuestion(1)}
+                >
+                  {t('testsRunner.next')}
+                </button>
+              )}
+            </div>
+          </div>
         )}
+
+        <aside className={styles.progressPanel}>
+          <p className={styles.progressTitle}>{t('testsRunner.progress')}</p>
+          <div className={styles.progressDots}>
+            {questions.map((question, index) => {
+              const state = responses[index] !== undefined ? 'answered' : 'pending';
+              const isActive = index === currentIndex;
+              return (
+                <button
+                  key={`progress-${index}`}
+                  type="button"
+                  className={`${styles.progressDot} ${styles[`progressDot_${state}`]} ${
+                    isActive ? styles.progressDotActive : ''
+                  }`}
+                  onClick={() => setCurrentIndex(index)}
+                  aria-label={t('testsRunner.goToQuestion', { index: index + 1 })}
+                />
+              );
+            })}
+          </div>
+        </aside>
       </div>
     </section>
   );

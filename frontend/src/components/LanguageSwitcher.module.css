@@ -1,0 +1,66 @@
+.switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  min-width: 3.5rem;
+  border-radius: 10px;
+  border: 1.25px solid rgba(17, 24, 39, 0.9);
+  background: transparent;
+  transition: transform 150ms ease, border-color 150ms ease;
+}
+
+.switcher:hover {
+  border-color: rgba(17, 24, 39, 0.65);
+}
+
+.switcher:has(.select:focus-visible) {
+  transform: translateY(-1px);
+  border-color: rgba(17, 24, 39, 0.55);
+}
+
+.select {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: 500 1rem/1 "Inter", system-ui, sans-serif;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 2rem;
+  letter-spacing: 0.012em;
+}
+
+.select option {
+  color: #111827;
+  background-color: #ffffff;
+}
+
+.select:focus-visible {
+  outline: none;
+}
+
+.switcher::after {
+  content: "▾";
+  position: absolute;
+  right: 0.75rem;
+  pointer-events: none;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  color: currentColor;
+  transition: transform 140ms ease;
+}
+
+.switcher:hover::after {
+  transform: translateY(1px);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

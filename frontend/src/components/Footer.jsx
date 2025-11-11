@@ -1,80 +1,121 @@
+import { useTranslation } from "react-i18next";
+
 import styles from "./Footer.module.css";
 
+const SOCIAL_LINKS = [
+  { id: "youtube", href: "https://www.youtube.com/", icon: "▶" },
+  { id: "telegram", href: "https://t.me/", icon: "✉" },
+  { id: "linkedin", href: "https://www.linkedin.com/", icon: "in" },
+];
+
+const BADGE_KEYS = ["lowBandwidth", "sync"];
+
+const LINK_GROUPS = [
+  {
+    id: "offline",
+    links: [
+      { key: "courses", href: "#courses" },
+      { key: "resources", href: "#study-material" },
+      { key: "sync", href: "#sync" },
+    ],
+  },
+  {
+    id: "support",
+    links: [
+      { key: "email", href: "mailto:support@neuralstudy.com" },
+      { key: "helpline", href: "tel:+919876543210" },
+      { key: "faq", href: "#faq" },
+    ],
+  },
+  {
+    id: "community",
+    links: [
+      { key: "updates", href: "#updates" },
+      { key: "events", href: "#events" },
+      { key: "volunteer", href: "#volunteer" },
+    ],
+  },
+];
+
+const BOTTOM_LINKS = [
+  { key: "terms", href: "#terms" },
+  { key: "privacy", href: "#privacy" },
+  { key: "contact", href: "#contact" },
+];
+
 const Footer = () => {
+  const { t } = useTranslation();
   const year = new Date().getFullYear();
 
   return (
-    <footer className={styles.footer} aria-labelledby="footerHeading">
+    <footer className={styles.footer} aria-label={t("footer.ariaLabel")}>
       <div className={styles.container}>
         <div className={styles.topRow}>
           <section className={styles.brandBlock}>
             <div className={styles.brandRow}>
-              <img src="/logo.svg" alt="Neural Study logo" className={styles.logo} />
+              <img src="/logo.svg" alt={t("common.logoAlt")} className={styles.logo} />
               <div>
-                <p className={styles.brandName}>Neural Study</p>
-                <p className={styles.brandTagline}>Offline learning, always within reach</p>
+                <p className={styles.brandName}>{t("common.appName")}</p>
+                <p className={styles.brandTagline}>{t("footer.brand.tagline")}</p>
               </div>
             </div>
 
-            <p className={styles.description}>
-              Download modules once, learn anywhere. Neural Study keeps lessons, quizzes, and progress available even when connectivity drops.
-            </p>
+            <p className={styles.description}>{t("footer.brand.description")}</p>
 
             <div className={styles.badgeRow}>
-              <div className={styles.badge}>Low bandwidth ready</div>
-              <div className={styles.badge}>Sync on return online</div>
+              {BADGE_KEYS.map((badgeKey) => (
+                <div key={badgeKey} className={styles.badge}>
+                  {t(`footer.brand.badges.${badgeKey}`)}
+                </div>
+              ))}
             </div>
 
             <div className={styles.socialBlock}>
-              <p className={styles.sectionTitle}>Stay updated</p>
+              <p className={styles.sectionTitle}>{t("footer.brand.social.title")}</p>
               <div className={styles.socialIcons}>
-                <a href="https://www.youtube.com/" aria-label="YouTube" target="_blank" rel="noreferrer">
-                  <span>▶</span>
-                </a>
-                <a href="https://t.me/" aria-label="Telegram" target="_blank" rel="noreferrer">
-                  <span>✉</span>
-                </a>
-                <a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noreferrer">
-                  <span>in</span>
-                </a>
+                {SOCIAL_LINKS.map((link) => (
+                  <a
+                    key={link.id}
+                    href={link.href}
+                    aria-label={t(`footer.brand.social.items.${link.id}`)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span>{link.icon}</span>
+                  </a>
+                ))}
               </div>
             </div>
           </section>
 
-          <section className={styles.linksGrid} aria-label="Helpful links">
-            <div>
-              <h6 className={styles.sectionTitle}>Offline essentials</h6>
-              <ul className={styles.linkList}>
-                <li><a href="#courses">Download courses</a></li>
-                <li><a href="#study-material">Saved resources</a></li>
-                <li><a href="#sync">Sync preferences</a></li>
-              </ul>
-            </div>
-            <div>
-              <h6 className={styles.sectionTitle}>Support</h6>
-              <ul className={styles.linkList}>
-                <li><a href="mailto:support@neuralstudy.com">Email support</a></li>
-                <li><a href="tel:+919876543210">Community helpline</a></li>
-                <li><a href="#faq">Offline FAQ</a></li>
-              </ul>
-            </div>
-            <div>
-              <h6 className={styles.sectionTitle}>Community</h6>
-              <ul className={styles.linkList}>
-                <li><a href="#updates">Release notes</a></li>
-                <li><a href="#events">Local meetups</a></li>
-                <li><a href="#volunteer">Volunteer mentors</a></li>
-              </ul>
-            </div>
+          <section className={styles.linksGrid} aria-label={t("footer.links.aria")}>
+            {LINK_GROUPS.map((group) => (
+              <div key={group.id}>
+                <h6 className={styles.sectionTitle}>
+                  {t(`footer.links.groups.${group.id}.title`)}
+                </h6>
+                <ul className={styles.linkList}>
+                  {group.links.map((link) => (
+                    <li key={link.key}>
+                      <a href={link.href}>
+                        {t(`footer.links.groups.${group.id}.items.${link.key}`)}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </section>
         </div>
 
         <div className={styles.bottomBar}>
-          <small>© {year} Neural Study. Offline-first education for all.</small>
+          <small>{t("footer.bottom.copyright", { year })}</small>
           <div className={styles.bottomLinks}>
-            <a href="#terms">Terms</a>
-            <a href="#privacy">Privacy</a>
-            <a href="#contact">Contact</a>
+            {BOTTOM_LINKS.map((link) => (
+              <a key={link.key} href={link.href}>
+                {t(`footer.bottom.links.${link.key}`)}
+              </a>
+            ))}
           </div>
         </div>
       </div>

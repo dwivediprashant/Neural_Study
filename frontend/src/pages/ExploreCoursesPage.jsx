@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import styles from "./ExploreCoursesPage.module.css";
 import { formatProgressLabel, makeCourseProgressKey, makeLectureProgressKey } from "../utils/downloads";
@@ -19,11 +20,6 @@ const TONE_BY_EXAM = {
   APTITUDE: "warning",
 };
 
-const languageBadgeMap = {
-  EN: "English",
-  HI: "Hindi",
-};
-
 const Badge = ({ label, tone }) => (
   <span className={`${styles.badge} ${styles[`badge${tone}`]}`}>{label}</span>
 );
@@ -31,6 +27,7 @@ const Badge = ({ label, tone }) => (
 const CourseCard = ({ course, downloadsState }) => {
   const { downloads, saveCourse, removeCourse, pendingDownloadIds, progress } =
     downloadsState;
+  const { t } = useTranslation();
 
   const courseId = course.raw._id ?? course.raw.id ?? course.id;
   const downloadRecord = downloads.find((item) => item.id === courseId);
@@ -43,16 +40,22 @@ const CourseCard = ({ course, downloadsState }) => {
 
   const downloadLabel = isPending
     ? progressState?.total
-      ? `Caching ${progressState.completed}/${progressState.total}`
-      : "Caching…"
+      ? t("downloads.progress.caching", {
+          success: progressState.completed ?? progressState.success ?? 0,
+          total: progressState.total,
+        })
+      : t("courseCard.download.caching")
     : isDownloaded
-    ? "Remove offline"
-    : "Save offline";
+    ? t("courseCard.download.remove")
+    : t("courseCard.download.save");
 
   const progressLabel =
-    formatProgressLabel(progressState) ||
+    formatProgressLabel(progressState, t) ||
     (isDownloaded && totalAssets
-      ? `Cached ${cachedAssets}/${totalAssets}`
+      ? t("downloadsPage.courses.cachedSummary", {
+          cached: cachedAssets,
+          total: totalAssets,
+        })
       : null);
 
   const handleToggle = () => {
@@ -93,7 +96,7 @@ const CourseCard = ({ course, downloadsState }) => {
               🎯
             </span>
             <span>
-              <strong>Starts:</strong> {course.schedule.start}
+              <strong>{t("exploreCourses.schedule.starts")}</strong> {course.schedule.start}
             </span>
           </div>
           <div className={styles.metaItem}>
@@ -101,7 +104,7 @@ const CourseCard = ({ course, downloadsState }) => {
               📅
             </span>
             <span>
-              <strong>Ends:</strong> {course.schedule.end}
+              <strong>{t("exploreCourses.schedule.ends")}</strong> {course.schedule.end}
             </span>
           </div>
         </div>
@@ -114,7 +117,7 @@ const CourseCard = ({ course, downloadsState }) => {
             state={{ course: course.raw }}
             className={styles.viewLink}
           >
-            <span>View details</span>
+            <span>{t("courseCard.links.viewDetails")}</span>
             <span aria-hidden="true" className={styles.viewLinkIcon}>
               →
             </span>
@@ -142,6 +145,7 @@ const CourseCard = ({ course, downloadsState }) => {
 const LectureCard = ({ lecture, downloadsState, onPreview }) => {
   const { downloads, saveLecture, removeLecture, pendingLectureIds, progress } =
     downloadsState;
+  const { t } = useTranslation();
 
   const hasThumbnail = Boolean(lecture.thumbnail);
   const lectureId = lecture.raw?._id ?? lecture.raw?.id ?? lecture.id;
@@ -156,16 +160,19 @@ const LectureCard = ({ lecture, downloadsState, onPreview }) => {
     (cachedAssets || (lecture.assetCount ?? 0));
 
   const downloadLabel = isPending
-    ? "Caching…"
+    ? t("courseCard.download.caching")
     : isDownloaded
-    ? "Remove offline"
-    : "Save offline";
+    ? t("courseCard.download.remove")
+    : t("courseCard.download.save");
   const progressLabel =
-    formatProgressLabel(progressState) ||
+    formatProgressLabel(progressState, t) ||
     (isDownloaded
       ? cachedAssets && totalAssets
-        ? `Cached ${cachedAssets}/${totalAssets}`
-        : "Cached offline"
+        ? t("downloadsPage.lectures.cachedSummary", {
+            cached: cachedAssets,
+            total: totalAssets,
+          })
+        : t("downloads.progress.cachedOffline")
       : null);
 
   const previewCandidates = [
@@ -192,7 +199,7 @@ const LectureCard = ({ lecture, downloadsState, onPreview }) => {
         {hasThumbnail ? (
           <img
             src={lecture.thumbnail}
-            alt={`Thumbnail for ${lecture.title}`}
+            alt={t("exploreCourses.lecture.thumbnail", { title: lecture.title })}
             loading="lazy"
           />
         ) : (
@@ -219,7 +226,7 @@ const LectureCard = ({ lecture, downloadsState, onPreview }) => {
             ) : null}
             {lecture.duration ? (
               <span className={styles.lectureBadgeSecondary}>
-                {lecture.duration} mins
+                {t("downloadsPage.lectures.duration", { minutes: lecture.duration })}
               </span>
             ) : null}
             {lecture.language ? (
@@ -276,7 +283,7 @@ const LectureCard = ({ lecture, downloadsState, onPreview }) => {
                 });
               }}
             >
-              See lecture
+              {t("downloadsPage.actions.preview")}
             </button>
           ) : null}
           <div className={styles.lectureActions}>
@@ -320,6 +327,7 @@ const ExploreCoursesPage = () => {
     lecturesLoading,
     registerLectureView,
   } = useOutletContext() ?? {};
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [remoteCourses, setRemoteCourses] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -339,8 +347,12 @@ const ExploreCoursesPage = () => {
           BANNER_BY_EXAM[course.exam] ??
           "/b75e0c1a-6893-4b31-8d79-f37a1c72115a.webp";
         const tagTone = TONE_BY_EXAM[course.exam] ?? "primary";
-        const languageBadge =
-          languageBadgeMap[course.language] ?? course.language;
+
+        const languageBadge = course.language
+          ? t(`common.languages.${String(course.language).toLowerCase()}`, {
+              defaultValue: course.language,
+            })
+          : null;
 
         return {
           id: course._id ?? course.id,
@@ -381,6 +393,11 @@ const ExploreCoursesPage = () => {
         (lecture.assets ?? []).forEach((asset) => {
           if (asset) assets.push(asset);
         });
+        const languageLabel = lecture.language
+          ? t(`common.languages.${String(lecture.language).toLowerCase()}`, {
+              defaultValue: lecture.language,
+            })
+          : lecture.language ?? null;
         return {
           id: lecture._id ?? lecture.id,
           raw: lecture,
@@ -391,8 +408,7 @@ const ExploreCoursesPage = () => {
           duration: lecture.durationMinutes
             ? `${lecture.durationMinutes}`
             : null,
-          language:
-            languageBadgeMap[lecture.language] ?? lecture.language ?? null,
+          language: languageLabel,
           tags: (lecture.tags ?? []).filter(Boolean).slice(0, 5),
           thumbnail:
             lecture.thumbnailUrl ||
@@ -475,7 +491,7 @@ const ExploreCoursesPage = () => {
     if (status?.isOffline) {
       setRemoteCourses(null);
       setSearchError(
-        "Online search is unavailable offline. Showing cached matches."
+        t("exploreCourses.search.offline")
       );
       return;
     }
@@ -490,14 +506,14 @@ const ExploreCoursesPage = () => {
       const results = data?.courses ?? [];
       setRemoteCourses(results);
       if (!results.length) {
-        setSearchError("No courses matched that tag on the server.");
+        setSearchError(t("exploreCourses.search.noResults"));
       }
     } catch (err) {
       setRemoteCourses(null);
       const message =
         err?.response?.data?.message ||
         err?.message ||
-        "Unable to fetch courses right now.";
+        t("exploreCourses.search.error");
       setSearchError(message);
     } finally {
       setSearchLoading(false);
@@ -554,8 +570,8 @@ const ExploreCoursesPage = () => {
                 id="explore-course-search"
                 type="search"
                 className={styles.searchInput}
-                placeholder="Search by tag (e.g., NEET, UPSC, Hinglish)"
-                aria-label="Search courses by tag"
+                placeholder={t("exploreCourses.search.placeholder")}
+                aria-label={t("exploreCourses.search.aria")}
                 value={searchTerm}
                 onChange={handleChange}
                 disabled={searchLoading}
@@ -566,7 +582,7 @@ const ExploreCoursesPage = () => {
                   className={styles.clearButton}
                   onClick={handleClear}
                 >
-                  Clear
+                  {t("common.clear")}
                 </button>
               ) : null}
             </div>
@@ -575,11 +591,11 @@ const ExploreCoursesPage = () => {
               className={styles.searchButton}
               disabled={searchLoading}
             >
-              {searchLoading ? "Searching…" : "Search"}
+              {searchLoading ? t("exploreCourses.search.loading") : t("common.search")}
             </button>
           </form>
           <p className={styles.searchHint}>
-            Filter batches by exam category or language tags.
+            {t("exploreCourses.search.hint")}
           </p>
           {searchError ? (
             <p className={`${styles.searchStatus} ${styles.searchStatusError}`}>
@@ -587,20 +603,19 @@ const ExploreCoursesPage = () => {
             </p>
           ) : remoteCourses && !searchLoading ? (
             <p className={styles.searchStatus}>
-              Showing {filteredCourses.length} result
-              {filteredCourses.length === 1 ? "" : "s"} from the server.
+              {t("exploreCourses.search.remoteCount", {
+                count: filteredCourses.length,
+              })}
             </p>
           ) : null}
         </div>
 
         <header className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>
-            Courses designed for deep, personalised learning
+            {t("exploreCourses.page.title")}
           </h1>
           <p className={styles.pageSubtitle}>
-            Browse high-impact programmes curated by mentors. Each batch
-            combines interactive live sessions, structured notes, offline-first
-            practice, and guided doubt support.
+            {t("exploreCourses.page.subtitle")}
           </p>
         </header>
 
@@ -610,17 +625,16 @@ const ExploreCoursesPage = () => {
         >
           <header className={styles.lectureSectionHeader}>
             <h2 id="teacher-lectures-heading">
-              Fresh lectures from Neural mentors
+              {t("exploreCourses.lectureSection.heading")}
             </h2>
             <p>
-              Browse individual lecture drops uploaded by teachers. Thumbnails
-              and metadata are provided directly by the mentor.
+              {t("exploreCourses.lectureSection.body")}
             </p>
           </header>
 
           {lecturesLoading ? (
             <div className={styles.lectureState} role="status">
-              Loading mentor lectures…
+              {t("exploreCourses.lectureSection.loading")}
             </div>
           ) : hasLectureResults ? (
             <div className={styles.lectureGrid}>
@@ -636,8 +650,8 @@ const ExploreCoursesPage = () => {
           ) : (
             <div className={styles.lectureState} role="status">
               {lectures.length
-                ? "No lectures match that search."
-                : "Teachers are preparing new lectures. Check back soon!"}
+                ? t("exploreCourses.lectureSection.noMatches")
+                : t("exploreCourses.lectureSection.empty")}
             </div>
           )}
         </section>

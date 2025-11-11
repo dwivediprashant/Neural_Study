@@ -1,9 +1,14 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const localesDir = resolve(__dirname, '../locales');
 
   return {
     plugins: [
@@ -62,7 +67,15 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    resolve: {
+      alias: {
+        '@locales': localesDir,
+      },
+    },
     server: {
+      fs: {
+        allow: [localesDir, __dirname],
+      },
       proxy: {
         '/api': {
           target: env.VITE_API_BASE_URL || 'http://localhost:5000',

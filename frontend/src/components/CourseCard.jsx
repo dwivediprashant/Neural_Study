@@ -1,13 +1,8 @@
 import { Link, useOutletContext } from 'react-router-dom';
-import styles from './CourseCard.module.css';
+import { useTranslation } from 'react-i18next';
 
-const formatProgressLabel = (progress) => {
-  if (!progress) return null;
-  const { total, success, failed } = progress;
-  if (!total) return null;
-  if (success === total) return 'Cached offline';
-  return `Caching ${success}/${total}${failed ? ` • ${failed} failed` : ''}`;
-};
+import styles from './CourseCard.module.css';
+import { formatProgressLabel } from '../utils/downloads';
 
 const CourseCard = ({ course }) => {
   const {
@@ -17,9 +12,12 @@ const CourseCard = ({ course }) => {
     pendingDownloadIds,
     progress,
   } = useOutletContext();
+  const { t } = useTranslation();
 
   const moduleCount = course.modules?.length ?? 0;
-  const size = course.totalSizeMB ? `${course.totalSizeMB} MB` : 'Size TBD';
+  const size = course.totalSizeMB
+    ? t('courseCard.size.value', { value: course.totalSizeMB })
+    : t('courseCard.size.tbd');
   const downloadRecord = downloads.find((item) => item.id === course._id);
   const cachedAssets = downloadRecord?.cachedAssets?.length ?? 0;
   const totalAssets = downloadRecord?.assets?.length ?? 0;
@@ -28,16 +26,40 @@ const CourseCard = ({ course }) => {
   const progressState = progress?.get?.(course._id);
   const downloadLabel = isPending
     ? progressState && progressState.total
-      ? `Caching ${progressState.completed}/${progressState.total}`
-      : 'Caching…'
+      ? t('downloads.progress.caching', {
+          success: progressState.completed ?? progressState.success ?? 0,
+          total: progressState.total,
+        })
+      : t('courseCard.download.caching')
     : isDownloaded
-      ? 'Remove offline'
-      : 'Save offline';
+      ? t('courseCard.download.remove')
+      : t('courseCard.download.save');
   const progressLabel =
-    formatProgressLabel(progressState) ||
+    formatProgressLabel(progressState, t) ||
     (isDownloaded
-      ? `Cached ${cachedAssets}/${totalAssets || '—'} assets`
+      ? t('courseCard.progress.cachedAssets', {
+          cached: cachedAssets,
+          total: totalAssets || '—',
+        })
       : null);
+
+  const languageLabel = course.language
+    ? t(`common.languages.${String(course.language).toLowerCase()}`, {
+        defaultValue: course.language,
+      })
+    : null;
+
+  const updatedLabel = course.updatedAt
+    ? t('courseCard.updated', {
+        date: new Date(course.updatedAt).toLocaleDateString(),
+      })
+    : t('courseCard.updatedRecent');
+
+  const moduleCountLabel = t('courseCard.modules', { count: moduleCount });
+  const metaLine = t('courseCard.meta', {
+    modules: moduleCountLabel,
+    updated: updatedLabel,
+  });
 
   const handleDownloadToggle = () => {
     if (isDownloaded) {
@@ -51,16 +73,16 @@ const CourseCard = ({ course }) => {
     <article className={styles.card}>
       <header className={styles.header}>
         <span className={styles.exam}>{course.exam}</span>
-        <span className={styles.language}>{course.language}</span>
+        {languageLabel ? (
+          <span className={styles.language}>{languageLabel}</span>
+        ) : null}
       </header>
       <h3 className={styles.title}>{course.title}</h3>
-      <p className={styles.meta}>
-        {moduleCount} modules • Updated {course.updatedAt ? new Date(course.updatedAt).toLocaleDateString() : 'recently'}
-      </p>
+      <p className={styles.meta}>{metaLine}</p>
       <p className={styles.size}>{size}</p>
       <footer className={styles.footer}>
         <Link to={`/courses/${course._id}`} className={styles.link} state={{ course }}>
-          View details
+          {t('courseCard.links.viewDetails')}
         </Link>
         <div className={styles.downloadColumn}>
           {progressLabel ? <p className={styles.progressLabel}>{progressLabel}</p> : null}

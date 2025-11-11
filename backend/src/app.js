@@ -8,10 +8,13 @@ import testRoutes from './routes/testRoutes.js';
 import lectureRoutes from './routes/lectureRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { initAuth } from './middleware/auth.js';
+import { attachI18n } from './middleware/i18n.js';
 
 dotenv.config();
 
 const app = express();
+
+attachI18n(app);
 
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN || true,

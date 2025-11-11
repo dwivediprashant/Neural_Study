@@ -1,12 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import styles from './AuthPage.module.css';
 
-const ROLE_OPTIONS = [
-  { value: 'student', label: 'Student (learn & take tests)' },
-  { value: 'teacher', label: 'Teacher (share lectures & resources)' },
-];
+const ROLE_OPTIONS = ['student', 'teacher'];
 
 const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
   const [mode, setMode] = useState('login');
@@ -17,10 +15,11 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
     role: 'student',
   });
   const [localError, setLocalError] = useState(null);
+  const { t } = useTranslation();
 
   const isSignup = mode === 'signup';
-  const title = isSignup ? 'Create your account' : 'Welcome back';
-  const cta = isSignup ? 'Sign up' : 'Sign in';
+  const title = isSignup ? t('auth.createAccount') : t('auth.welcomeBack');
+  const cta = isSignup ? t('auth.ctaSignup') : t('auth.ctaLogin');
 
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -47,7 +46,7 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
     setLocalError(null);
 
     if (!form.email || !form.password || (isSignup && !form.name)) {
-      setLocalError('Please fill in all required fields.');
+      setLocalError(t('auth.formError'));
       return;
     }
 
@@ -65,11 +64,8 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
   }, [form, isSignup, onLogin, onRegister]);
 
   const helperText = useMemo(
-    () =>
-      isSignup
-        ? 'Choose your role to unlock the appropriate dashboard.'
-        : 'Sign in with the credentials you created earlier.',
-    [isSignup]
+    () => (isSignup ? t('auth.signupHelper') : t('auth.signinHelper')),
+    [isSignup, t]
   );
 
   const effectiveError = localError || authError;
@@ -91,7 +87,7 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
         <div className={formColumnClassName}>
           <div className={formCardClassName}>
             <header className={formHeaderClassName}>
-              <span className={styles.formBadge}>{isSignup ? 'Sign up' : 'Login'}</span>
+              <span className={styles.formBadge}>{isSignup ? t('auth.signupBadge') : t('auth.loginBadge')}</span>
               <h1 className={styles.formTitle}>{title}</h1>
               <p className={styles.formSubtitle}>{helperText}</p>
             </header>
@@ -100,13 +96,13 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
               {isSignup ? (
                 <div className={styles.fieldGroup}>
                   <label className={styles.label} htmlFor="name">
-                    Full name
+                    {t('auth.fullName')}
                   </label>
                   <input
                     id="name"
                     name="name"
                     type="text"
-                    placeholder="e.g. Anjali Sharma"
+                    placeholder={t('auth.fullNamePlaceholder')}
                     value={form.name}
                     onChange={handleInputChange}
                     disabled={authLoading}
@@ -118,13 +114,13 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
 
               <div className={styles.fieldGroup}>
                 <label className={styles.label} htmlFor="email">
-                  Email address
+                  {t('auth.email')}
                 </label>
                 <input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={form.email}
                   onChange={handleInputChange}
                   disabled={authLoading}
@@ -135,13 +131,13 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
 
               <div className={styles.fieldGroup}>
                 <label className={styles.label} htmlFor="password">
-                  Password
+                  {t('auth.password')}
                 </label>
                 <input
                   id="password"
                   name="password"
                   type="password"
-                  placeholder="Minimum 6 characters"
+                  placeholder={t('auth.passwordPlaceholder')}
                   value={form.password}
                   onChange={handleInputChange}
                   disabled={authLoading}
@@ -153,21 +149,21 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
 
               {isSignup ? (
                 <div className={styles.fieldGroup}>
-                  <span className={styles.label}>Role</span>
+                  <span className={styles.label}>{t('auth.roleLabel')}</span>
                   <div className={roleGridClassName}>
                     {ROLE_OPTIONS.map((role) => (
-                      <label key={role.value} className={styles.roleOption}>
+                      <label key={role} className={styles.roleOption}>
                         <input
                           type="radio"
                           name="role"
-                          value={role.value}
-                          checked={form.role === role.value}
+                          value={role}
+                          checked={form.role === role}
                           onChange={handleInputChange}
                           disabled={authLoading}
                         />
                         <span>
-                          <strong>{role.label.split(' ')[0]}</strong>
-                          <small>{role.label.split(' ').slice(1).join(' ')}</small>
+                          <strong>{t(`auth.${role}Role`)}</strong>
+                          <small>{t(`auth.${role}RoleHint`)}</small>
                         </span>
                       </label>
                     ))}
@@ -179,33 +175,33 @@ const AuthPage = ({ onLogin, onRegister, authLoading, authError }) => {
 
               <div className={styles.actionRow}>
                 <button type="submit" className={styles.primaryButton} disabled={authLoading}>
-                  {authLoading ? 'Please wait…' : cta}
+                  {authLoading ? t('auth.pleaseWait') : cta}
                 </button>
 
                 <p className={styles.switcherInline}>
-                  {isSignup ? 'Already have an account?' : "Don't have an account?"}{' '}
+                  {isSignup ? t('auth.alreadyHaveAccount') : t('auth.promptNoAccount')}{' '}
                   <button type="button" onClick={toggleMode} className={styles.switcherButton}>
-                    {isSignup ? 'Sign in' : 'Create one'}
+                    {isSignup ? t('auth.signin') : t('auth.createOne')}
                   </button>
                 </p>
               </div>
             </form>
 
             <p className={styles.formSupport}>
-              Need assistance?{' '}
+              {t('auth.needHelp')}{' '}
               <Link to="mailto:support@neuralstudy.in">support@neuralstudy.in</Link>
             </p>
           </div>
         </div>
 
-        <aside className={styles.visualColumn} aria-label="Neural Study branding">
+        <aside className={styles.visualColumn} aria-label={t('auth.visualAria')}>
           <div className={styles.visualCard}>
             <div className={styles.visualBackdrop} aria-hidden="true" />
-            <img src="/logo.svg" alt="Neural Study logo" className={styles.visualLogo} />
-            <p className={styles.visualTagline}>Empower learning wherever your students are.</p>
+            <img src="/logo.svg" alt={t('common.logoAlt')} className={styles.visualLogo} />
+            <p className={styles.visualTagline}>{t('common.tagline')}</p>
             <div className={styles.visualMeta}>
-              <span>Neural Study</span>
-              <span>Offline-first platform</span>
+              <span>{t('common.appName')}</span>
+              <span>{t('common.offlinePlatform')}</span>
             </div>
           </div>
         </aside>

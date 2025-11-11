@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './TeacherProfilePage.module.css';
 
 const TeacherProfilePage = () => {
   const outletContext = useOutletContext() ?? {};
   const { currentUser, lectures = [], status, onRefresh } = outletContext;
+  const { t } = useTranslation();
 
   const lectureStats = useMemo(() => {
     if (!Array.isArray(lectures) || lectures.length === 0) {
@@ -64,27 +66,39 @@ const TeacherProfilePage = () => {
   const quickStats = useMemo(
     () => [
       {
-        label: 'Total uploads',
+        label: t('teacher.profile.stats.total.label'),
         value: lectureStats.total,
-        hint: 'Published to the student catalogue',
+        hint: t('teacher.profile.stats.total.hint'),
       },
       {
-        label: 'Avg. duration',
-        value: lectureStats.averageDuration ? `${lectureStats.averageDuration} mins` : '—',
-        hint: 'Across timed lecture uploads',
+        label: t('teacher.profile.stats.average.label'),
+        value: lectureStats.averageDuration
+          ? t('teacher.profile.stats.average.value', { minutes: lectureStats.averageDuration })
+          : t('teacher.profile.stats.average.empty'),
+        hint: t('teacher.profile.stats.average.hint'),
       },
       {
-        label: 'Unique subjects',
+        label: t('teacher.profile.stats.subjects.label'),
         value: lectureStats.subjects.length,
-        hint: 'Based on your current uploads',
+        hint: t('teacher.profile.stats.subjects.hint'),
       },
       {
-        label: 'Sync status',
-        value: status?.lecturesLoading ? 'Syncing…' : 'Up to date',
-        hint: status?.lecturesLoading ? 'Fetching the latest data' : 'Last refresh is live',
+        label: t('teacher.profile.stats.sync.label'),
+        value: status?.lecturesLoading
+          ? t('teacher.profile.stats.sync.valueSyncing')
+          : t('teacher.profile.stats.sync.valueIdle'),
+        hint: status?.lecturesLoading
+          ? t('teacher.profile.stats.sync.hintSyncing')
+          : t('teacher.profile.stats.sync.hintIdle'),
       },
     ],
-    [lectureStats.averageDuration, lectureStats.subjects.length, lectureStats.total, status?.lecturesLoading]
+    [
+      lectureStats.averageDuration,
+      lectureStats.subjects.length,
+      lectureStats.total,
+      status?.lecturesLoading,
+      t,
+    ]
   );
 
   return (
@@ -96,10 +110,15 @@ const TeacherProfilePage = () => {
               <span>{teacherInitial}</span>
             </div>
             <div className={styles.heroHeading}>
-              <p className={styles.heroEyebrow}>Teacher workspace</p>
+              <p className={styles.heroEyebrow}>{t('teacher.profile.heroEyebrow')}</p>
               <div className={styles.heroTitleRow}>
-                <h1 className={styles.heroTitle}>{currentUser?.name ?? 'Educator'}</h1>
-                <span className={styles.heroVerified} aria-label="Verified educator">✔</span>
+                <h1 className={styles.heroTitle}>{currentUser?.name ?? t('teacher.profile.fallbackName')}</h1>
+                <span
+                  className={styles.heroVerified}
+                  aria-label={t('teacher.profile.verifiedAria')}
+                >
+                  ✔
+                </span>
               </div>
             </div>
           </div>
@@ -109,19 +128,19 @@ const TeacherProfilePage = () => {
               <dl className={styles.metaList}>
                 {currentUser?.email ? (
                   <div>
-                    <dt>Email</dt>
+                    <dt>{t('teacher.profile.meta.email')}</dt>
                     <dd>{currentUser.email}</dd>
                   </div>
                 ) : null}
                 {currentUser?.role ? (
                   <div>
-                    <dt>Role</dt>
+                    <dt>{t('teacher.profile.meta.role')}</dt>
                     <dd>{currentUser.role}</dd>
                   </div>
                 ) : null}
                 {signupDate ? (
                   <div>
-                    <dt>Joined</dt>
+                    <dt>{t('teacher.profile.meta.joined')}</dt>
                     <dd>{signupDate}</dd>
                   </div>
                 ) : null}
@@ -129,7 +148,7 @@ const TeacherProfilePage = () => {
 
               <div className={styles.heroActions}>
                 <Link to="/teacher/upload" className={styles.primaryAction}>
-                  Upload lecture
+                  {t('teacher.nav.upload')}
                 </Link>
                 <button
                   type="button"
@@ -137,7 +156,9 @@ const TeacherProfilePage = () => {
                   onClick={onRefresh}
                   disabled={!onRefresh || status?.lecturesLoading}
                 >
-                  {status?.lecturesLoading ? 'Refreshing…' : 'Refresh data'}
+                  {status?.lecturesLoading
+                    ? t('teacher.profile.refreshBusy')
+                    : t('teacher.profile.refreshIdle')}
                 </button>
               </div>
             </div>
@@ -158,8 +179,8 @@ const TeacherProfilePage = () => {
       <div className={styles.panelGrid}>
         <section className={styles.panel} aria-labelledby="teacher-subjects-heading">
           <header className={styles.panelHeader}>
-            <h2 id="teacher-subjects-heading">You have uploaded lectures of</h2>
-            <p>Your most frequently published lecture categories.</p>
+            <h2 id="teacher-subjects-heading">{t('teacher.profile.subjects.title')}</h2>
+            <p>{t('teacher.profile.subjects.description')}</p>
           </header>
           {lectureStats.subjects.length ? (
             <ul className={styles.subjectList}>
@@ -171,37 +192,44 @@ const TeacherProfilePage = () => {
               ))}
             </ul>
           ) : (
-            <div className={styles.emptyState}>Upload your first lecture to start tracking subject stats.</div>
+            <div className={styles.emptyState}>{t('teacher.profile.subjects.empty')}</div>
           )}
         </section>
       </div>
 
       <section className={styles.recentSection} aria-labelledby="teacher-recent-heading">
         <header className={styles.panelHeader}>
-          <h2 id="teacher-recent-heading">Latest upload</h2>
-          <p>Highlight of your most recent lecture shared with students.</p>
+          <h2 id="teacher-recent-heading">{t('teacher.profile.recent.title')}</h2>
+          <p>{t('teacher.profile.recent.description')}</p>
         </header>
         {lectureStats.recent ? (
           <article className={styles.recentCard}>
             <div className={styles.recentBody}>
-              <p className={styles.recentEyebrow}>{lectureStats.recent.exam ?? 'GENERAL'}</p>
+              <p className={styles.recentEyebrow}>
+                {lectureStats.recent.exam ?? t('teacher.profile.genericExam')}
+              </p>
               <h3 className={styles.recentTitle}>{lectureStats.recent.title}</h3>
               {lectureStats.recent.description ? (
                 <p className={styles.recentDescription}>{lectureStats.recent.description}</p>
               ) : null}
               <div className={styles.recentMeta}>
                 {lectureStats.recent.durationMinutes ? (
-                  <span>{lectureStats.recent.durationMinutes} mins</span>
+                  <span>
+                    {t('teacher.profile.duration', {
+                      minutes: lectureStats.recent.durationMinutes,
+                    })}
+                  </span>
                 ) : null}
                 {lectureStats.recent.subject ? <span>{lectureStats.recent.subject}</span> : null}
                 <span>
-                  Published{' '}
-                  {new Date(lectureStats.recent.createdAt).toLocaleString(undefined, {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
+                  {t('teacher.profile.published', {
+                    timestamp: new Date(lectureStats.recent.createdAt).toLocaleString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }),
                   })}
                 </span>
               </div>
@@ -209,14 +237,14 @@ const TeacherProfilePage = () => {
             {lectureStats.recent.thumbnailUrl ? (
               <img
                 src={lectureStats.recent.thumbnailUrl}
-                alt="Lecture thumbnail"
+                alt={t('teacher.profile.thumbnailAlt')}
                 className={styles.recentThumb}
                 loading="lazy"
               />
             ) : null}
           </article>
         ) : (
-          <div className={styles.emptyState}>Your most recent upload will appear here once you publish a lecture.</div>
+          <div className={styles.emptyState}>{t('teacher.profile.recent.empty')}</div>
         )}
       </section>
     </section>

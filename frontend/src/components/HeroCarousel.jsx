@@ -1,35 +1,47 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import styles from "./HeroCarousel.module.css";
 
 const AUTOPLAY_INTERVAL = 4500;
 
-const slides = [
+const SLIDE_CONFIG = [
   {
     id: "community",
     bgClass: "slideCommunity",
-    title: "Community support anywhere",
-    description: "Track streaks, unlock badges, and collaborate when you come back online.",
+    translationKey: "community",
   },
   {
     id: "concept-mastery",
     bgClass: "slideConcept",
-    title: "Master concepts visually",
-    description: "Interactive diagrams and bilingual summaries make complex topics stick.",
+    translationKey: "concept",
   },
   {
     id: "adaptive-learning",
     bgClass: "slideAdaptive",
-    title: "Adaptive offline learning",
-    description: "Lessons sync when connected and stay accessible even in low-signal areas.",
+    translationKey: "adaptive",
   },
 ];
 
 const HeroCarousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const { t } = useTranslation();
 
-  const totalSlides = useMemo(() => slides.length, []);
+  const slides = useMemo(
+    () =>
+      SLIDE_CONFIG.map((config) => {
+        const baseKey = `hero.slides.${config.translationKey}`;
+        return {
+          ...config,
+          title: t(`${baseKey}.title`),
+          description: t(`${baseKey}.description`),
+        };
+      }),
+    [t]
+  );
+
+  const totalSlides = slides.length;
 
   const goTo = useCallback(
     (index) => {
@@ -69,6 +81,7 @@ const HeroCarousel = () => {
       className={styles.carousel}
       role="region"
       aria-roledescription="carousel"
+      aria-label={t('hero.carouselLabel')}
       onMouseEnter={handlePause}
       onMouseLeave={handleResume}
       onFocusCapture={handlePause}
@@ -103,7 +116,7 @@ const HeroCarousel = () => {
           type="button"
           className={`${styles.sideButton} ${styles.sideButtonPrev}`}
           onClick={goPrev}
-          aria-label="Previous highlight"
+          aria-label={t('hero.prev')}
         >
           ‹
         </button>
@@ -111,7 +124,7 @@ const HeroCarousel = () => {
           type="button"
           className={`${styles.sideButton} ${styles.sideButtonNext}`}
           onClick={goNext}
-          aria-label="Next highlight"
+          aria-label={t('hero.next')}
         >
           ›
         </button>

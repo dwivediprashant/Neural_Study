@@ -1,0 +1,41 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 1200;
+}
+
+.loader {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 6px solid rgba(148, 163, 184, 0.25);
+  border-top-color: rgba(79, 70, 229, 0.85);
+  animation: spin 1.2s linear infinite;
+}
+
+.logo {
+  width: 78px;
+  height: 78px;
+  display: block;
+  filter: drop-shadow(0 6px 18px rgba(30, 64, 175, 0.3));
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
