@@ -1,68 +1,102 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
-import ToastStack from '../../components/ToastStack.jsx';
-import styles from './TeacherLayout.module.css';
+import ToastStack from "../../components/ToastStack.jsx";
+import styles from "./TeacherLayout.module.css";
 
 const NAV_ITEMS = [
-  { to: '/teacher/upload', label: 'Upload lecture' },
-  { to: '/teacher/uploads', label: 'My uploads' },
-  { to: '/teacher/profile', label: 'Profile' },
+  { to: "/teacher/upload", label: "Upload lecture" },
+  { to: "/teacher/uploads", label: "My uploads" },
+  { to: "/teacher/profile", label: "Profile" },
 ];
 
 const TeacherLayout = ({ outletContext, status, onRefresh, errorMessage }) => {
-  const { currentUser, handleLogout, toasts, dismissToast } = outletContext ?? {};
+  const { currentUser, handleLogout, toasts, dismissToast } =
+    outletContext ?? {};
   const banner = errorMessage;
+  const location = useLocation();
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  useEffect(() => {
+    setIsNavOpen(false);
+  }, [location.pathname]);
+
+  const handleToggleMenu = () => setIsNavOpen((prev) => !prev);
 
   return (
     <div className={styles.shell}>
       <ToastStack toasts={toasts} onDismiss={dismissToast} />
-      <aside className={styles.sidebar}>
-        <header className={styles.brand}>
+
+      <header className={styles.topbar}>
+        <div className={styles.brandGroup}>
           <span className={styles.brandMark}>Teach</span>
-          <div>
+          <div className={styles.brandCopy}>
             <p className={styles.brandEyebrow}>Teacher workspace</p>
-            <h1 className={styles.brandTitle}>{currentUser?.name ?? 'Educator'}</h1>
+            <h1 className={styles.brandTitle}>
+              {currentUser?.name ?? "Educator"}
+            </h1>
           </div>
-        </header>
+        </div>
 
-        <nav className={styles.nav} aria-label="Teacher navigation">
-          {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-              }
+        <button
+          type="button"
+          className={`${styles.menuToggle} ${
+            isNavOpen ? styles.menuToggleActive : ""
+          }`}
+          onClick={handleToggleMenu}
+          aria-expanded={isNavOpen}
+          aria-controls="teacher-topbar-cluster"
+        >
+          <span className={styles.menuToggleIcon} aria-hidden="true" />
+          <span className={styles.srOnly}>
+            {isNavOpen ? "Close menu" : "Open menu"}
+          </span>
+        </button>
+
+        <div
+          className={`${styles.topbarCluster} ${
+            isNavOpen ? styles.topbarClusterOpen : ""
+          }`}
+          id="teacher-topbar-cluster"
+        >
+          <nav className={styles.nav} aria-label="Teacher navigation">
+            {NAV_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `${styles.navLink} ${isActive ? styles.navLinkActive : ""}`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className={styles.topbarActions}>
+            <button
+              type="button"
+              className={styles.refreshButton}
+              onClick={onRefresh}
             >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
+              Refresh data
+            </button>
+            <button
+              type="button"
+              className={styles.signOut}
+              onClick={handleLogout}
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+      </header>
 
-        <footer className={styles.sidebarFooter}>
-          <button type="button" className={styles.signOut} onClick={handleLogout}>
-            Sign out
-          </button>
-          {status?.lectureCount !== undefined ? (
-            <p className={styles.statusLine}>
-              {status.lectureCount} upload{status.lectureCount === 1 ? '' : 's'} available
-            </p>
-          ) : null}
-          {status?.downloadsLoading || status?.lecturesLoading ? (
-            <p className={styles.statusLine}>Syncing latest data…</p>
-          ) : null}
-          <button type="button" className={styles.refreshButton} onClick={onRefresh}>
-            Refresh data
-          </button>
-        </footer>
-      </aside>
+      {banner ? <div className={styles.errorBanner}>{banner}</div> : null}
 
-      <section className={styles.mainContent}>
-        {banner ? <div className={styles.errorBanner}>{banner}</div> : null}
-        <main className={styles.contentArea}>
-          <Outlet context={{ ...outletContext, status, onRefresh }} />
-        </main>
-      </section>
+      <main className={styles.contentArea}>
+        <Outlet context={{ ...outletContext, status, onRefresh }} />
+      </main>
     </div>
   );
 };

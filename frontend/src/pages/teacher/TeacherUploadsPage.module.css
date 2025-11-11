@@ -66,149 +66,191 @@
 
 .list {
   display: grid;
-  gap: 1rem;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.card {
-  background: #ffffff;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 18px;
-  padding: clamp(1.35rem, 4vw, 1.75rem);
-  display: grid;
-  gap: 0.75rem;
-  box-shadow: 0 18px 32px -26px rgba(15, 23, 42, 0.26);
+.listItem {
+  list-style: none;
 }
 
-.cardHeader {
+.lectureCard {
+  display: grid;
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 1.5rem);
+  background: white;
+  border-radius: 20px;
+  padding: clamp(1.25rem, 3.5vw, 1.75rem);
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.26);
+  overflow: hidden;
+}
+
+.cardVisual {
+  display: grid;
+  gap: 0.65rem;
+  align-content: start;
+}
+
+.thumbShell {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 190px;
+  background: linear-gradient(
+    135deg,
+    rgba(226, 232, 240, 0.65),
+    rgba(148, 163, 184, 0.45)
+  );
+  display: grid;
+  place-items: center;
+}
+
+.thumbShell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badgeSecondary {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.85);
+  color: #f8fafc;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.thumbFallback {
+  color: rgba(51, 65, 85, 0.75);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.visualFooter {
+  display: grid;
+  gap: 0.1rem;
+  background: rgba(15, 23, 42, 0.05);
+  border-radius: 14px;
+  padding: 0.7rem 0.9rem;
+}
+
+.visualFooter p {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(15, 23, 42, 0.85);
+}
+
+.visualFooter span {
+  font-size: 0.75rem;
+  color: rgba(71, 85, 105, 0.85);
+}
+
+.cardDetails {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.detailHeader {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  align-items: center;
+  align-items: flex-start;
 }
 
-.cardEyebrow {
+.detailHeading {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.lectureTitle {
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
-  color: rgba(15, 23, 42, 0.55);
-}
-
-.cardTitle {
-  margin: 0.2rem 0 0;
-  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  font-size: clamp(1.25rem, 3vw, 1.55rem);
   color: var(--color-text-primary);
 }
 
-.cardDescription {
+.lectureMeta {
   margin: 0;
-  color: var(--color-text-secondary);
-  line-height: 1.55;
-}
-
-.metaRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  font-size: 0.85rem;
-  color: rgba(15, 23, 42, 0.6);
-}
-
-.tagList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tagList li {
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(99, 102, 241, 0.12);
-  color: #312e81;
+  font-size: 0.9rem;
+  color: rgba(71, 85, 105, 0.85);
   font-weight: 600;
-  font-size: 0.82rem;
 }
 
-.cardFooter {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+.lectureDescription {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(15, 23, 42, 0.75);
 }
 
-.ratingRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  font-size: 0.85rem;
-  color: rgba(15, 23, 42, 0.65);
-}
-
-.ratingChip {
-  display: inline-flex;
-  align-items: center;
+.ratingSummary {
+  display: grid;
+  justify-items: end;
   gap: 0.35rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(250, 204, 21, 0.18);
-  color: #92400e;
-  font-weight: 600;
 }
 
-.ratingChipMuted {
-  padding: 0.3rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.12);
-  color: rgba(71, 85, 105, 0.75);
-  font-weight: 600;
+.ratingValue {
+  font-weight: 700;
+  font-size: 1rem;
+  color: rgba(15, 23, 42, 0.9);
 }
 
 .ratingCount {
   font-size: 0.8rem;
-  color: rgba(71, 85, 105, 0.75);
+  color: rgba(100, 116, 139, 0.85);
 }
 
-.linkButton {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  color: var(--color-primary);
-  text-decoration: none;
+.publishBadge {
+  font-size: 0.78rem;
   font-weight: 600;
-  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  color: rgba(59, 130, 246, 0.95);
 }
 
-.linkButton:hover,
-.linkButton:focus-visible {
-  background: rgba(148, 163, 184, 0.12);
-  color: var(--color-primary-700);
-  border-color: rgba(148, 163, 184, 0.5);
+.lectureActionsRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.deleteButton {
+.lectureRemoveButton {
   border: none;
-  border-radius: 10px;
-  padding: 0.55rem 0.95rem;
+  border-radius: 12px;
+  padding: 0.75rem 1.2rem;
   font-size: 0.9rem;
   font-weight: 600;
-  background: rgba(248, 113, 113, 0.15);
-  color: #b91c1c;
+  background: rgba(248, 113, 113, 0.18);
+  color: #991b1b;
   cursor: pointer;
   transition: background 150ms ease, transform 120ms ease;
 }
 
-.deleteButton:hover,
-.deleteButton:focus-visible {
+.lectureRemoveButton:hover,
+.lectureRemoveButton:focus-visible {
   background: rgba(248, 113, 113, 0.28);
   transform: translateY(-1px);
+}
+
+@media (max-width: 1024px) {
+  .lectureCard {
+    grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .lectureCard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cardVisual {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 680px) {
@@ -225,13 +267,27 @@
     width: 100%;
   }
 
-  .cardHeader {
-    flex-direction: column;
-    align-items: flex-start;
+  .lectureCard {
+    padding: clamp(1rem, 5vw, 1.35rem);
   }
 
-  .cardFooter {
+  .detailHeader {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .ratingSummary {
+    justify-items: flex-start;
+  }
+
+  .lectureActionsRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lectureRemoveButton {
+    width: 100%;
+    justify-content: center;
   }
 }

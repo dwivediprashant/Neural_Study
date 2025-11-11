@@ -90,43 +90,66 @@ const TeacherProfilePage = () => {
   return (
     <section className={styles.page}>
       <header className={styles.heroSection}>
-        <div className={styles.heroHeader}>
-          <div className={styles.heroAvatar} aria-hidden="true">
-            <span>{teacherInitial}</span>
-          </div>
-          <div className={styles.heroBody}>
-            <p className={styles.heroEyebrow}>Teacher workspace</p>
-            <h1 className={styles.heroTitle}>{currentUser?.name ?? 'Educator'}</h1>
-            <p className={styles.heroSubtitle}>
-              Upload new lectures, monitor your catalogue, and keep your batches engaged with polished study assets.
-            </p>
-            <div className={styles.heroMeta}>
-              {currentUser?.email ? <span>{currentUser.email}</span> : null}
-              {currentUser?.role ? <span className={styles.metaBadge}>{currentUser.role}</span> : null}
-              {signupDate ? <span>Joined {signupDate}</span> : null}
+        <div className={styles.heroMain}>
+          <div className={styles.heroIdentity}>
+            <div className={styles.heroAvatar} aria-hidden="true">
+              <span>{teacherInitial}</span>
             </div>
-            <div className={styles.heroActions}>
-              <Link to="/teacher/upload" className={styles.primaryAction}>
-                Upload a lecture
-              </Link>
-              <button
-                type="button"
-                className={styles.secondaryAction}
-                onClick={onRefresh}
-                disabled={!onRefresh || status?.lecturesLoading}
-              >
-                {status?.lecturesLoading ? 'Refreshing…' : 'Refresh data'}
-              </button>
+            <div className={styles.heroHeading}>
+              <p className={styles.heroEyebrow}>Teacher workspace</p>
+              <div className={styles.heroTitleRow}>
+                <h1 className={styles.heroTitle}>{currentUser?.name ?? 'Educator'}</h1>
+                <span className={styles.heroVerified} aria-label="Verified educator">✔</span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.heroInfoGrid}>
+            <div className={styles.heroMetaStack}>
+              <dl className={styles.metaList}>
+                {currentUser?.email ? (
+                  <div>
+                    <dt>Email</dt>
+                    <dd>{currentUser.email}</dd>
+                  </div>
+                ) : null}
+                {currentUser?.role ? (
+                  <div>
+                    <dt>Role</dt>
+                    <dd>{currentUser.role}</dd>
+                  </div>
+                ) : null}
+                {signupDate ? (
+                  <div>
+                    <dt>Joined</dt>
+                    <dd>{signupDate}</dd>
+                  </div>
+                ) : null}
+              </dl>
+
+              <div className={styles.heroActions}>
+                <Link to="/teacher/upload" className={styles.primaryAction}>
+                  Upload lecture
+                </Link>
+                <button
+                  type="button"
+                  className={styles.secondaryAction}
+                  onClick={onRefresh}
+                  disabled={!onRefresh || status?.lecturesLoading}
+                >
+                  {status?.lecturesLoading ? 'Refreshing…' : 'Refresh data'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className={styles.heroStats}>
+        <div className={styles.heroStatsRow}>
           {quickStats.map((item) => (
-            <article key={item.label} className={styles.heroStatCard}>
-              <p className={styles.heroStatLabel}>{item.label}</p>
-              <p className={styles.heroStatValue}>{item.value}</p>
-              <p className={styles.heroStatHint}>{item.hint}</p>
+            <article key={item.label} className={styles.statCard}>
+              <p className={styles.statLabel}>{item.label}</p>
+              <p className={styles.statValue}>{item.value}</p>
+              <p className={styles.statHint}>{item.hint}</p>
             </article>
           ))}
         </div>
@@ -135,7 +158,7 @@ const TeacherProfilePage = () => {
       <div className={styles.panelGrid}>
         <section className={styles.panel} aria-labelledby="teacher-subjects-heading">
           <header className={styles.panelHeader}>
-            <h2 id="teacher-subjects-heading">Subject mix</h2>
+            <h2 id="teacher-subjects-heading">You have uploaded lectures of</h2>
             <p>Your most frequently published lecture categories.</p>
           </header>
           {lectureStats.subjects.length ? (
@@ -149,22 +172,6 @@ const TeacherProfilePage = () => {
             </ul>
           ) : (
             <div className={styles.emptyState}>Upload your first lecture to start tracking subject stats.</div>
-          )}
-        </section>
-
-        <section className={styles.panel} aria-labelledby="teacher-tags-heading">
-          <header className={styles.panelHeader}>
-            <h2 id="teacher-tags-heading">Popular tags</h2>
-            <p>Quick glance at descriptors helping students discover your content.</p>
-          </header>
-          {lectureStats.tags.length ? (
-            <ul className={styles.tagCloud}>
-              {lectureStats.tags.map((tag) => (
-                <li key={tag}>#{tag}</li>
-              ))}
-            </ul>
-          ) : (
-            <div className={styles.emptyState}>Tag your lectures for easier discovery.</div>
           )}
         </section>
       </div>

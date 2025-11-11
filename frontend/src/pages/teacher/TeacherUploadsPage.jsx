@@ -21,6 +21,12 @@ const filterLectures = (lectures, query) => {
   });
 };
 
+const LANG_LABELS = {
+  EN: 'English',
+  HI: 'Hindi',
+  BI: 'Bilingual',
+};
+
 const TeacherUploadsPage = () => {
   const outletContext = useOutletContext() ?? {};
   const { lectures = [], lecturesLoading, handleLectureDeleted } = outletContext;
@@ -65,63 +71,83 @@ const TeacherUploadsPage = () => {
         <div className={styles.stateCard}>Loading your uploads…</div>
       ) : filtered.length ? (
         <ul className={styles.list}>
-          {filtered.map((lecture) => (
-            <li key={lecture.id ?? lecture._id} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <div>
-                  <p className={styles.cardEyebrow}>{lecture.exam ?? 'GENERAL'}</p>
-                  <h2 className={styles.cardTitle}>{lecture.title}</h2>
-                </div>
-                <button
-                  type="button"
-                  className={styles.deleteButton}
-                  onClick={() => handleDelete(lecture.id ?? lecture._id)}
-                >
-                  Remove
-                </button>
-              </div>
-              {lecture.description ? <p className={styles.cardDescription}>{lecture.description}</p> : null}
-              <div className={styles.metaRow}>
-                {lecture.durationMinutes ? <span>{lecture.durationMinutes} mins</span> : null}
-                {lecture.language ? <span>{lecture.language}</span> : null}
-                {lecture.subject ? <span>{lecture.subject}</span> : null}
-                <span>
-                  Published {new Date(lecture.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                </span>
-              </div>
-              {lecture.tags?.length ? (
-                <ul className={styles.tagList}>
-                  {lecture.tags.map((tag) => (
-                    <li key={tag}>#{tag}</li>
-                  ))}
-                </ul>
-              ) : null}
-              <div className={styles.ratingRow}>
-                {typeof lecture.ratingAverage === 'number' ? (
-                  <span className={styles.ratingChip} aria-label="Average rating">
-                    ★ {lecture.ratingAverage.toFixed(1)} / 5
-                  </span>
-                ) : (
-                  <span className={styles.ratingChipMuted}>No ratings yet</span>
-                )}
-                <span className={styles.ratingCount}>
-                  {lecture.ratingCount ? `${lecture.ratingCount} vote${lecture.ratingCount === 1 ? '' : 's'}` : 'Awaiting feedback'}
-                </span>
-              </div>
-              <footer className={styles.cardFooter}>
-                {lecture.resourceUrl ? (
-                  <a href={lecture.resourceUrl} target="_blank" rel="noreferrer" className={styles.linkButton}>
-                    View resource
-                  </a>
-                ) : null}
-                {lecture.thumbnailUrl ? (
-                  <a href={lecture.thumbnailUrl} target="_blank" rel="noreferrer" className={styles.linkButton}>
-                    View thumbnail
-                  </a>
-                ) : null}
-              </footer>
-            </li>
-          ))}
+          {filtered.map((lecture) => {
+            const lectureId = lecture.id ?? lecture._id;
+            const languageLabel = lecture.language ? LANG_LABELS[lecture.language] ?? lecture.language : null;
+            const publishedDate = lecture.updatedAt ?? lecture.createdAt;
+            const publishedLabel = publishedDate
+              ? new Date(publishedDate).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })
+              : null;
+            const metaSegments = [
+              (lecture.exam ?? 'GENERAL').toUpperCase(),
+              lecture.subject,
+              languageLabel,
+            ].filter(Boolean);
+            const metaLine = metaSegments.join(' • ');
+            const durationLabel = lecture.durationMinutes ? `${lecture.durationMinutes} mins` : 'Duration unknown';
+            const assetStatus = lecture.resourceUrl ? 'Asset available' : 'Asset missing';
+            const assetFootnote = lecture.resourceUrl ? 'Ready for students' : 'Upload resource link';
+            const summaryParts = [assetStatus, durationLabel];
+            const summaryLine = summaryParts.filter(Boolean).join(' • ');
+            const ratingAverage =
+              typeof lecture.ratingAverage === 'number' ? lecture.ratingAverage.toFixed(1) : null;
+            const ratingCount = typeof lecture.ratingCount === 'number' ? lecture.ratingCount : 0;
+
+            return (
+              <li key={lectureId} className={styles.listItem}>
+                <article className={styles.lectureCard}>
+                  <div className={styles.cardVisual}>
+                    <div className={styles.thumbShell}>
+                      <span className={styles.badgeSecondary}>Lecture</span>
+                      {lecture.thumbnailUrl ? (
+                        <img src={lecture.thumbnailUrl} alt={`Thumbnail for ${lecture.title}`} />
+                      ) : (
+                        <div className={styles.thumbFallback}>No thumbnail</div>
+                      )}
+                    </div>
+                    <div className={styles.visualFooter}>
+                      <p>{assetStatus}</p>
+                      <span>{assetFootnote}</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.cardDetails}>
+                    <header className={styles.detailHeader}>
+                      <div className={styles.detailHeading}>
+                        <h4 className={styles.lectureTitle}>{lecture.title}</h4>
+                        <p className={styles.lectureMeta}>{metaLine || 'Details missing'}</p>
+                      </div>
+                      <div className={styles.ratingSummary}>
+                        <span className={styles.ratingValue}>
+                          {ratingAverage ? `★ ${ratingAverage} / 5` : 'Not rated'}
+                        </span>
+                        <span className={styles.ratingCount}>
+                          {ratingCount ? `${ratingCount} review${ratingCount === 1 ? '' : 's'}` : 'Awaiting reviews'}
+                        </span>
+                      </div>
+                    </header>
+                    <p className={styles.lectureDescription}>{summaryLine}</p>
+                    {publishedLabel ? (
+                      <span className={styles.publishBadge}>Updated {publishedLabel}</span>
+                    ) : null}
+                    <div className={styles.lectureActionsRow}>
+                      <button
+                        type="button"
+                        className={styles.lectureRemoveButton}
+                        onClick={() => handleDelete(lectureId)}
+                      >
+                        Remove lecture
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <div className={styles.emptyState}>
