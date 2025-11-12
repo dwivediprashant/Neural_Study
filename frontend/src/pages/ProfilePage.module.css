@@ -288,6 +288,108 @@
   color: #e0f2fe;
 }
 
+.cardSettings {
+  background: #ffffff;
+  border-color: rgba(148, 163, 184, 0.35);
+  color: #0f172a;
+  width: 100%;
+}
+
+.settingsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.miniSettingsGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.languageRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.languagePill,
+.languagePillActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.55rem 1.05rem;
+  border-radius: 999px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.08);
+  color: #1d4ed8;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+
+.languagePill:hover,
+.languagePill:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(59, 130, 246, 0.14);
+}
+
+.languagePillActive {
+  background: rgba(37, 99, 235, 0.2);
+  border-color: rgba(37, 99, 235, 0.35);
+  color: #0f172a;
+}
+
+.toggleRow {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.toggleItem {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(248, 250, 252, 0.75);
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.toggleItem:hover,
+.toggleItem:focus-within {
+  border-color: rgba(37, 99, 235, 0.35);
+  background: rgba(219, 234, 254, 0.6);
+}
+
+.toggleItem input {
+  width: 18px;
+  height: 18px;
+  accent-color: #2563eb;
+}
+
+.toggleItem p {
+  margin: 0;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.toggleItem span {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+.settingsHint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #475569;
+  text-align: right;
+}
+
 .cardLagoon .cardEyebrow,
 .cardMint .cardEyebrow,
 .cardBlush .cardEyebrow {

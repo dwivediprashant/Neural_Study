@@ -80,6 +80,22 @@ export const deleteLecture = async (lectureId) => {
   return data;
 };
 
+export const fetchComments = async (params = {}) => {
+  const { data } = await api.get('/comments', { params });
+  return data;
+};
+
+export const createCommentEntry = async (payload) => {
+  const { data } = await api.post('/comments', payload);
+  return data;
+};
+
+export const resolveCommentEntry = async (commentId, payload) => {
+  if (!commentId) throw new Error('Comment ID is required');
+  const { data } = await api.patch(`/comments/${commentId}/resolve`, payload);
+  return data;
+};
+
 export const fetchTestBySlug = async (slug) => {
   if (!slug) throw new Error('Test slug is required');
   const { data } = await api.get(`/tests/${slug}`);

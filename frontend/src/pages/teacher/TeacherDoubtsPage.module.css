@@ -1,0 +1,349 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.8rem, 3vw, 2.5rem);
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 6vw, 3.75rem) clamp(2.5rem, 6vw, 4rem);
+}
+
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.heroEyebrow {
+  display: inline-block;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #6366f1;
+  margin-bottom: 0.4rem;
+}
+
+.heroTitle {
+  font-size: clamp(1.9rem, 4vw, 2.4rem);
+  margin: 0;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.heroSubtitle {
+  max-width: 40rem;
+  color: #475569;
+  font-size: clamp(1rem, 2.5vw, 1.12rem);
+  line-height: 1.5;
+}
+
+.refreshButton {
+  align-self: flex-start;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(99, 102, 241, 0.25));
+  color: #0f172a;
+  font-weight: 600;
+  padding: 0.65rem 1.6rem;
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease, opacity 120ms ease;
+}
+
+.refreshButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.refreshButton:not(:disabled):hover,
+.refreshButton:not(:disabled):focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(99, 102, 241, 0.25);
+}
+
+.errorBanner {
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: #b91c1c;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filterGroup {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filterButton {
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: 999px;
+  font-weight: 600;
+  padding: 0.55rem 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: border-color 120ms ease, background 150ms ease, color 120ms ease, transform 120ms ease;
+}
+
+.filterButton:hover,
+.filterButton:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(99, 102, 241, 0.45);
+}
+
+.filterButtonActive {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.92), rgba(59, 130, 246, 0.92));
+  color: #f8fafc;
+  border-color: transparent;
+  box-shadow: 0 12px 20px rgba(79, 70, 229, 0.2);
+}
+
+.filterBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.filterButtonActive .filterBadge {
+  background: rgba(248, 250, 252, 0.2);
+}
+
+.emptyState {
+  margin-top: clamp(1rem, 3vw, 2rem);
+  border-radius: clamp(1.2rem, 2.5vw, 1.8rem);
+  background: rgba(15, 23, 42, 0.92);
+  color: rgba(226, 232, 240, 0.96);
+  padding: clamp(2rem, 6vw, 3rem);
+  text-align: center;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.28);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.emptyState p {
+  color: rgba(148, 163, 184, 0.95);
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.commentScrollArea {
+  max-height: clamp(28rem, 63vh, 42rem);
+  overflow-y: auto;
+  padding-right: clamp(0.5rem, 1vw, 0.85rem);
+  margin-right: calc(-1 * clamp(0.5rem, 1vw, 0.85rem));
+  scroll-behavior: smooth;
+}
+
+.commentScrollArea:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.45);
+  outline-offset: 4px;
+}
+
+.commentList {
+  display: grid;
+  gap: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.commentCard {
+  background: #ffffff;
+  border-radius: clamp(1rem, 3vw, 1.6rem);
+  box-shadow: 0 24px 45px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.2rem, 3vw, 1.8rem);
+  gap: 1.2rem;
+}
+
+.cardTop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.metaGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statusPending {
+  background: rgba(250, 204, 21, 0.22);
+  color: #92400e;
+}
+
+.statusSolved {
+  background: rgba(34, 197, 94, 0.18);
+  color: #14532d;
+}
+
+.statGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+}
+
+.statItem {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.statLabel {
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.statValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.bodySection {
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.4rem);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.commentBlock,
+.replyBlock {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.blockLabel {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.commentBlock p {
+  margin: 0;
+  line-height: 1.5;
+  color: #1e293b;
+}
+
+.lectureSubject {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.replyBlock textarea {
+  border-radius: 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+  min-height: 120px;
+  resize: vertical;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.replyBlock textarea:focus-visible {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.replyBlock textarea:disabled {
+  background: rgba(248, 250, 252, 0.6);
+  cursor: not-allowed;
+}
+
+.replyFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.charCount {
+  font-variant-numeric: tabular-nums;
+}
+
+.replyButton {
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.6rem;
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: #0f172a;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 120ms ease;
+}
+
+.replyButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.replyButton:not(:disabled):hover,
+.replyButton:not(:disabled):focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 22px rgba(59, 130, 246, 0.35);
+}
+
+.replyTimestamp {
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+@media (max-width: 720px) {
+  .toolbar {
+    justify-content: flex-start;
+  }
+
+  .filterGroup {
+    gap: 0.5rem;
+  }
+
+  .commentCard {
+    padding: 1.2rem;
+  }
+
+  .bodySection {
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,9 +3,17 @@ import { useTranslation } from "react-i18next";
 import styles from "./Footer.module.css";
 
 const SOCIAL_LINKS = [
-  { id: "youtube", href: "https://www.youtube.com/", icon: "▶" },
-  { id: "telegram", href: "https://t.me/", icon: "✉" },
-  { id: "linkedin", href: "https://www.linkedin.com/", icon: "in" },
+  { id: "youtube", href: "https://github.com/dwivediprashant", icon: "▶" },
+  {
+    id: "telegram",
+    href: "https://dwivediprashant.github.io/portfolio/",
+    icon: "✉",
+  },
+  {
+    id: "linkedin",
+    href: "https://dwivediprashant.github.io/portfolio/",
+    icon: "in",
+  },
 ];
 
 const BADGE_KEYS = ["lowBandwidth", "sync"];
@@ -53,14 +61,22 @@ const Footer = () => {
         <div className={styles.topRow}>
           <section className={styles.brandBlock}>
             <div className={styles.brandRow}>
-              <img src="/logo.svg" alt={t("common.logoAlt")} className={styles.logo} />
+              <img
+                src="/logo.svg"
+                alt={t("common.logoAlt")}
+                className={styles.logo}
+              />
               <div>
                 <p className={styles.brandName}>{t("common.appName")}</p>
-                <p className={styles.brandTagline}>{t("footer.brand.tagline")}</p>
+                <p className={styles.brandTagline}>
+                  {t("footer.brand.tagline")}
+                </p>
               </div>
             </div>
 
-            <p className={styles.description}>{t("footer.brand.description")}</p>
+            <p className={styles.description}>
+              {t("footer.brand.description")}
+            </p>
 
             <div className={styles.badgeRow}>
               {BADGE_KEYS.map((badgeKey) => (
@@ -71,7 +87,9 @@ const Footer = () => {
             </div>
 
             <div className={styles.socialBlock}>
-              <p className={styles.sectionTitle}>{t("footer.brand.social.title")}</p>
+              <p className={styles.sectionTitle}>
+                {t("footer.brand.social.title")}
+              </p>
               <div className={styles.socialIcons}>
                 {SOCIAL_LINKS.map((link) => (
                   <a
@@ -88,7 +106,10 @@ const Footer = () => {
             </div>
           </section>
 
-          <section className={styles.linksGrid} aria-label={t("footer.links.aria")}>
+          <section
+            className={styles.linksGrid}
+            aria-label={t("footer.links.aria")}
+          >
             {LINK_GROUPS.map((group) => (
               <div key={group.id}>
                 <h6 className={styles.sectionTitle}>

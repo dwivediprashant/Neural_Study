@@ -10,6 +10,7 @@ import styles from "./TeacherLayout.module.css";
 const NAV_ITEMS = [
   { to: "/teacher/upload", key: "teacher.nav.upload" },
   { to: "/teacher/uploads", key: "teacher.nav.uploads" },
+  { to: "/teacher/doubts", key: "teacher.nav.doubts" },
   { to: "/teacher/profile", key: "teacher.nav.profile" },
 ];
 

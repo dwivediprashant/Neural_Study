@@ -3,6 +3,7 @@ import { Link, useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import styles from "./ProfilePage.module.css";
+import { SUPPORTED_LANGUAGES } from "../i18n/index.js";
 
 const formatDate = (value) => {
   try {
@@ -17,7 +18,7 @@ const formatDate = (value) => {
 
 function ProfilePage() {
   const outletContext = useOutletContext() ?? {};
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     currentUser,
     profile = {},
@@ -35,6 +36,22 @@ function ProfilePage() {
     rateLecture,
     refreshLectureRating,
   } = outletContext;
+
+  const [wifiOnly, setWifiOnly] = useState(true);
+  const [autoSync, setAutoSync] = useState(true);
+
+  const activeLanguage = useMemo(() => {
+    const raw = i18n.language || i18n.resolvedLanguage || "en";
+    return raw.split("-")[0].toLowerCase();
+  }, [i18n.language, i18n.resolvedLanguage]);
+
+  const handleLanguageSelect = useCallback(
+    (code) => {
+      if (!code || code === activeLanguage) return;
+      i18n.changeLanguage(code);
+    },
+    [i18n, activeLanguage]
+  );
 
   const resolvedProfile = useMemo(() => {
     const base = profile ?? {};
@@ -56,8 +73,10 @@ function ProfilePage() {
 
     return courses.slice(0, 4).map((course) => ({
       id: course._id || course.id,
-      title: course.title || course.name || t("profilePage.courseFallback.title"),
-      exam: course.exam || course.category || t("profilePage.courseFallback.exam"),
+      title:
+        course.title || course.name || t("profilePage.courseFallback.title"),
+      exam:
+        course.exam || course.category || t("profilePage.courseFallback.exam"),
       language:
         course.language ||
         course.languages?.join(", ") ||
@@ -210,7 +229,9 @@ function ProfilePage() {
 
     const formattedDelta =
       typeof testSummary.recentTrendDelta === "number"
-        ? `${testSummary.recentTrendDelta > 0 ? "+" : ""}${testSummary.recentTrendDelta}`
+        ? `${testSummary.recentTrendDelta > 0 ? "+" : ""}${
+            testSummary.recentTrendDelta
+          }`
         : null;
     const scoreHint =
       testSummary.recentTrendKey === "delta"
@@ -219,11 +240,12 @@ function ProfilePage() {
         ? t("profilePage.recentTrend.unchanged")
         : t("profilePage.insights.score.hintFallback");
 
-    const offlineHint = offlineCourseCount > 0
-      ? t("profilePage.insights.offline.hintPlural", {
-          count: offlineCourseCount,
-        })
-      : t("profilePage.insights.offline.hintEmpty");
+    const offlineHint =
+      offlineCourseCount > 0
+        ? t("profilePage.insights.offline.hintPlural", {
+            count: offlineCourseCount,
+          })
+        : t("profilePage.insights.offline.hintEmpty");
 
     return [
       {
@@ -319,7 +341,10 @@ function ProfilePage() {
       return {
         id: lecture.id || lecture._id || `recent-${index}`,
         title: lecture.title || t("teacher.uploads.untitledLecture"),
-        subject: lecture.subject || lecture.exam || t("profilePage.courseFallback.exam"),
+        subject:
+          lecture.subject ||
+          lecture.exam ||
+          t("profilePage.courseFallback.exam"),
         duration: lecture.duration || lecture.durationMinutes || null,
         viewedAt,
         thumbnail: lecture.thumbnail || lecture.thumbnailUrl || null,
@@ -373,7 +398,9 @@ function ProfilePage() {
             </div>
             <div className={styles.heroSummary}>
               <div>
-                <p className={styles.heroEyebrow}>{t("profilePage.hero.eyebrow")}</p>
+                <p className={styles.heroEyebrow}>
+                  {t("profilePage.hero.eyebrow")}
+                </p>
                 <h1 className={styles.heroTitle}>
                   {resolvedProfile.name || t("profilePage.hero.fallbackName")}
                 </h1>
@@ -602,7 +629,10 @@ function ProfilePage() {
                         loading="lazy"
                       />
                     ) : (
-                      <div className={styles.recentLecturePlaceholder} aria-hidden="true">
+                      <div
+                        className={styles.recentLecturePlaceholder}
+                        aria-hidden="true"
+                      >
                         <span>{lecture.subject?.slice(0, 3) ?? "LED"}</span>
                       </div>
                     )}
@@ -620,7 +650,9 @@ function ProfilePage() {
                     {lecture.viewedAt ? (
                       <span className={styles.recentLectureTimestamp}>
                         {t("profilePage.recentLectures.viewed", {
-                          timestamp: new Date(lecture.viewedAt).toLocaleString(),
+                          timestamp: new Date(
+                            lecture.viewedAt
+                          ).toLocaleString(),
                         })}
                       </span>
                     ) : null}
@@ -638,7 +670,9 @@ function ProfilePage() {
                           key={value}
                           type="button"
                           className={`${styles.ratingStar} ${
-                            (lecture.myRating ?? 0) >= value ? styles.ratingStarActive : ""
+                            (lecture.myRating ?? 0) >= value
+                              ? styles.ratingStarActive
+                              : ""
                           }`}
                           onClick={() => handleRateLecture(lecture.id, value)}
                           disabled={!rateLecture || ratingBusyId === lecture.id}
@@ -677,6 +711,66 @@ function ProfilePage() {
               {t("profilePage.cards.recentLectures.empty")}
             </p>
           )}
+        </article>
+
+        <article className={`${styles.card} ${styles.cardSettings}`}>
+          <header className={styles.settingsHeader}>
+            <span className={styles.cardEyebrow}>
+              {t("settings.communityLabel", { defaultValue: "Settings" })}
+            </span>
+            <h2>
+              {t("settings.sectionHeading", { defaultValue: "Settings" })}
+            </h2>
+          </header>
+          <div className={styles.miniSettingsGrid}>
+            <div className={styles.languageRow}>
+              {SUPPORTED_LANGUAGES.map((lang) => {
+                const isActive = activeLanguage === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    type="button"
+                    className={
+                      isActive ? styles.languagePillActive : styles.languagePill
+                    }
+                    onClick={() => handleLanguageSelect(lang.code)}
+                  >
+                    <span aria-hidden="true">
+                      {lang.icon ? `${lang.icon} ` : ""}
+                    </span>
+                    {t(lang.labelKey)}
+                  </button>
+                );
+              })}
+            </div>
+            <div className={styles.toggleRow}>
+              <label className={styles.toggleItem}>
+                <input
+                  type="checkbox"
+                  checked={wifiOnly}
+                  onChange={() => setWifiOnly((value) => !value)}
+                />
+                <div>
+                  <p>{t("settings.syncWifiOnlyLabel")}</p>
+                  <span>{t("settings.syncWifiOnlyHint")}</span>
+                </div>
+              </label>
+              <label className={styles.toggleItem}>
+                <input
+                  type="checkbox"
+                  checked={autoSync}
+                  onChange={() => setAutoSync((value) => !value)}
+                />
+                <div>
+                  <p>{t("settings.autoSyncLabel")}</p>
+                  <span>{t("settings.autoSyncHint")}</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <p className={styles.settingsHint}>
+            {t("settings.moreLanguagesNote")}
+          </p>
         </article>
       </section>
     </section>

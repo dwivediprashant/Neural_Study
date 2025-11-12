@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 import courseRoutes from './routes/courseRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 import lectureRoutes from './routes/lectureRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { initAuth } from './middleware/auth.js';
 import { attachI18n } from './middleware/i18n.js';
@@ -36,5 +37,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/tests', testRoutes);
 app.use('/api/lectures', lectureRoutes);
+app.use('/api/comments', commentRoutes);
 
 export default app;

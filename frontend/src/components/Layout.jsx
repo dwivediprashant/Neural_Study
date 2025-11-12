@@ -50,7 +50,7 @@ const Layout = ({ status, onRefresh, outletContext, errorMessage }) => {
           { to: '/courses', label: 'nav.courses' },
           { to: '/tests', label: 'nav.tests' },
           { to: '/downloads', label: 'nav.downloads' },
-          { to: '/settings', label: 'nav.settings' },
+          { to: '/community', label: 'nav.askDoubt' },
           { to: '/profile', label: 'nav.profile', icon: profileIcon },
         ].filter((item) => currentUser?.role === 'student')}
         actions={

@@ -11,12 +11,13 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import ExploreCoursesPage from './pages/ExploreCoursesPage.jsx';
 import CourseDetailPage from './pages/CourseDetailPage.jsx';
 import DownloadsPage from './pages/DownloadsPage.jsx';
-import SettingsPage from './pages/SettingsPage.jsx';
+import CommunityHubPage from './pages/CommunityHubPage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
 import TeacherLayout from './pages/teacher/TeacherLayout.jsx';
 import TeacherProfilePage from './pages/teacher/TeacherProfilePage.jsx';
 import TeacherUploadLecturePage from './pages/teacher/TeacherUploadLecturePage.jsx';
 import TeacherUploadsPage from './pages/teacher/TeacherUploadsPage.jsx';
+import TeacherDoubtsPage from './pages/teacher/TeacherDoubtsPage.jsx';
 import useCourses from './hooks/useCourses.js';
 import useDownloadsManager from './hooks/useDownloadsManager.js';
 import {
@@ -45,7 +46,69 @@ function App() {
   const [lecturesLoading, setLecturesLoading] = useState(false);
   const [lecturesError, setLecturesError] = useState(null);
   const [recentLectures, setRecentLectures] = useState([]);
+  const RECENT_LECTURE_LIMIT = 8;
+
+  const getRecentLecturesKey = useCallback(() => {
+    if (typeof window === 'undefined') return null;
+    if (currentUser?.role !== 'student' || !currentUser?.id) return null;
+    return `recentLectures:${currentUser.id}`;
+  }, [currentUser?.id, currentUser?.role]);
+
+  const persistRecentLectures = useCallback(
+    (list) => {
+      const key = getRecentLecturesKey();
+      if (!key) return;
+      try {
+        localStorage.setItem(key, JSON.stringify(list.slice(0, RECENT_LECTURE_LIMIT)));
+      } catch (error) {
+        console.warn('Unable to persist recent lectures', error);
+      }
+    },
+    [getRecentLecturesKey]
+  );
+
+  const hydrateRecentLectures = useCallback(() => {
+    const key = getRecentLecturesKey();
+    if (!key) return [];
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.slice(0, RECENT_LECTURE_LIMIT);
+      }
+    } catch (error) {
+      console.warn('Unable to load recent lectures', error);
+    }
+    return [];
+  }, [getRecentLecturesKey]);
+
+  const updateRecentLectures = useCallback(
+    (updater, { persist = true } = {}) => {
+      setRecentLectures((prev) => {
+        const draft = typeof updater === 'function' ? updater(prev) : updater;
+        if (!Array.isArray(draft)) {
+          return prev;
+        }
+        const next = draft.slice(0, RECENT_LECTURE_LIMIT);
+        if (persist) {
+          persistRecentLectures(next);
+        }
+        return next;
+      });
+    },
+    [persistRecentLectures, RECENT_LECTURE_LIMIT]
+  );
   const lectureUploadRef = useRef(null);
+
+  useEffect(() => {
+    if (currentUser?.role === 'student' && currentUser?.id) {
+      const stored = hydrateRecentLectures();
+      setRecentLectures(stored);
+    } else {
+      setRecentLectures([]);
+    }
+  }, [currentUser?.id, currentUser?.role, hydrateRecentLectures]);
 
   const { courses, loading, error, status, refresh } = useCourses({ userId: currentUser?.id });
   const { t } = useTranslation();
@@ -180,7 +243,7 @@ function App() {
               : item
           )
         );
-        setRecentLectures((prev) =>
+        updateRecentLectures((prev) =>
           prev.map((item) =>
             item.id === lectureId
               ? { ...item, ratingAverage: average, ratingCount: count, myRating: rating }
@@ -191,7 +254,7 @@ function App() {
         console.warn('Failed to refresh lecture rating', lectureId, error);
       }
     },
-    []
+    [updateRecentLectures]
   );
 
   const handleLectureViewed = useCallback(
@@ -276,15 +339,15 @@ function App() {
         myRating,
       };
 
-      setRecentLectures((prev) => {
+      updateRecentLectures((prev) => {
         const filtered = prev.filter((item) => item.id !== entry.id);
-        return [entry, ...filtered].slice(0, 8);
+        return [entry, ...filtered];
       });
       if ((entry.ratingAverage === null || Number.isNaN(entry.ratingAverage)) && entry.id) {
         syncLectureRating(entry.id);
       }
     },
-    [lectures, syncLectureRating]
+    [lectures, syncLectureRating, updateRecentLectures]
   );
 
   const handleLectureRated = useCallback(
@@ -304,7 +367,7 @@ function App() {
               : item
           )
         );
-        setRecentLectures((prev) =>
+        updateRecentLectures((prev) =>
           prev.map((item) =>
             item.id === lectureId
               ? {
@@ -330,9 +393,9 @@ function App() {
   const handleSessionExpired = useCallback(() => {
     setCurrentUser(null);
     setTestAttempts([]);
-    setRecentLectures([]);
+    updateRecentLectures(() => [], { persist: false });
     pushToast(t('toast.sessionExpired'), 'warning');
-  }, [pushToast, t]);
+  }, [pushToast, t, updateRecentLectures]);
 
   useEffect(() => {
     window.addEventListener('auth:unauthorized', handleSessionExpired);
@@ -509,7 +572,17 @@ function App() {
         setAuthLoading(false);
       }
     },
-    [pushToast]
+    [pushToast, t, updateRecentLectures]
+  );
+
+  const handleRemoveRecentLecture = useCallback(
+    (lectureId) => {
+      if (!lectureId) return false;
+      updateRecentLectures((prev) => prev.filter((item) => item.id !== lectureId));
+      pushToast(t('communityHub.toast.removed'), 'info');
+      return true;
+    },
+    [updateRecentLectures, pushToast, t]
   );
 
   const handleRegister = useCallback(
@@ -548,9 +621,9 @@ function App() {
     setCurrentUser(null);
     setTestAttempts([]);
     setLectures([]);
-    setRecentLectures([]);
+    updateRecentLectures(() => [], { persist: false });
     pushToast(t('toast.signedOut'), 'info');
-  }, [pushToast, t]);
+  }, [pushToast, t, updateRecentLectures]);
 
   const handleTestAttemptRecorded = useCallback((attemptSummary) => {
     if (!attemptSummary) return;
@@ -627,6 +700,7 @@ function App() {
       refreshDownloads,
       toasts,
       dismissToast,
+      pushToast,
       testAttempts,
       testAttemptsLoading,
       testAttemptsError,
@@ -642,6 +716,7 @@ function App() {
       registerLectureView: handleLectureViewed,
       rateLecture: handleLectureRated,
       refreshLectureRating: syncLectureRating,
+      removeRecentLecture: handleRemoveRecentLecture,
       handleLectureSubmit,
       handleLectureDeleted,
       handleLectureCreated,
@@ -673,6 +748,7 @@ function App() {
       refreshDownloads,
       toasts,
       dismissToast,
+      pushToast,
       testAttempts,
       testAttemptsLoading,
       testAttemptsError,
@@ -736,6 +812,7 @@ function App() {
           <Route path="profile" element={<TeacherProfilePage />} />
           <Route path="upload" element={<TeacherUploadLecturePage />} />
           <Route path="uploads" element={<TeacherUploadsPage />} />
+          <Route path="doubts" element={<TeacherDoubtsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/teacher" replace />} />
       </Routes>
@@ -761,7 +838,7 @@ function App() {
         <Route path="tests/:testId" element={<TestsRunnerPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="downloads" element={<DownloadsPage />} />
-        <Route path="settings" element={<SettingsPage />} />
+        <Route path="community" element={<CommunityHubPage />} />
         <Route path="*" element={<HomePage />} />
       </Route>
     </Routes>

@@ -24,6 +24,75 @@
       "formatKb": "{{value}} KB"
     }
   },
+  "communityHub": {
+    "hero": {
+      "eyebrow": "कम्युनिटी",
+      "title": "कम्युनिटी हब",
+      "subtitle": "अपनी हाल की लेक्चर्स देखें, रेट करें और मेंटर्स को डाउट भेजें ताकि जवाब जल्दी मिले।"
+    },
+    "actions": {
+      "refresh": "कॉमेंट्स रिफ्रेश करें",
+      "refreshing": "रिफ्रेश हो रहा है…"
+    },
+    "toast": {
+      "commentSubmitted": "मेंटोर को भेज दिया!"
+    },
+    "validation": {
+      "commentRequired": "सबमिट करने से पहले मैसेज लिखें।"
+    },
+    "errors": {
+      "loadComments": "अभी कॉमेंट्स लोड नहीं हो पाए।",
+      "submitComment": "कॉमेंट नहीं भेज पाए। कृपया दोबारा प्रयास करें।"
+    },
+    "empty": {
+      "title": "अभी कोई लेक्चर नहीं",
+      "description": "लेक्चर देखें फिर यहाँ से रेट करें और सवाल पूछें।"
+    },
+    "lecture": {
+      "fallbackTitle": "अनटाइटल्ड लेक्चर",
+      "fallbackSubject": "General",
+      "duration": "{{minutes}} मिनट",
+      "viewed": "देखा {{timestamp}}",
+      "thumbnailAlt": "{{title}} का थंबनेल"
+    },
+    "lectures": {
+      "ratingLabel": "रेट करें",
+      "rateAria": "{{title}} को रेट करें",
+      "starAria": "{{count}} स्टार दें",
+      "ratingAverage": "{{rating}} / 5",
+      "ratingNone": "अभी रेटिंग नहीं",
+      "ratingCount": "{{count}} रिव्यू",
+      "ratingCountZero": "पहले आप बनें",
+      "yourRating": "आपने {{rating}}★ दिया",
+      "remove": "सूची से हटाएँ"
+    },
+    "commentForm": {
+      "label": "डाउट या फीडबैक शेयर करें",
+      "placeholder": "जहाँ अटके हैं या क्या पसंद आया, यहाँ लिखें…",
+      "limit": "{{count}} कैरेक्टर बाकी",
+      "cta": "मेंटोर को भेजें",
+      "submitting": "भेजा जा रहा है…"
+    },
+    "comments": {
+      "title": "लेटेस्ट रिप्लाई",
+      "empty": "अभी कोई सवाल नहीं। बातचीत शुरू करें!",
+      "status": {
+        "pending": "रिप्लाई बाकी",
+        "solved": "सॉल्व्ड",
+        "default": "रिप्लाई बाकी"
+      },
+      "ratingLabel": "विद्यार्थी रेटिंग: {{rating}}",
+      "replyLabel": "मेंटोर रिप्लाई"
+    },
+    "filters": {
+      "label": "स्टेटस के आधार पर लेक्चर फ़िल्टर करें",
+      "all": "सभी",
+      "pending": "रिप्लाई का इंतज़ार",
+      "solved": "सॉल्व्ड",
+      "emptyTitle": "यहाँ कुछ नहीं मिला",
+      "emptyDescription": "फ़िल्टर बदलें या कोई नया लेक्चर देखें ताकि वह \"आस्क डाउट\" सूची में दिखाई दे।"
+    }
+  },
   "downloads": {
     "progress": {
       "cachedOffline": "ऑफ़लाइन कैश हो गया",
@@ -149,6 +218,7 @@
     "courses": "कोर्स ब्राउज़ करें",
     "tests": "टेस्ट",
     "downloads": "डाउनलोड",
+    "askDoubt": "डाउट पूछें",
     "settings": "सेटिंग्स",
     "profile": "प्रोफ़ाइल",
     "signOut": "साइन आउट",

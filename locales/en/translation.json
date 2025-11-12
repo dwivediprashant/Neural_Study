@@ -25,11 +25,81 @@
       "bi": "Bilingual"
     }
   },
+  "communityHub": {
+    "hero": {
+      "eyebrow": "Community",
+      "title": "Community hub",
+      "subtitle": "Review your recent lectures, rate them, and send questions to mentors so they can help you faster."
+    },
+    "actions": {
+      "refresh": "Refresh comments",
+      "refreshing": "Refreshing…"
+    },
+    "toast": {
+      "commentSubmitted": "Sent to your mentor!"
+    },
+    "validation": {
+      "commentRequired": "Add a message before submitting."
+    },
+    "errors": {
+      "loadComments": "Unable to load your comments right now.",
+      "submitComment": "Unable to send your comment. Please try again."
+    },
+    "empty": {
+      "title": "No lectures yet",
+      "description": "Watch a lecture to unlock the community space for rating and asking questions."
+    },
+    "lecture": {
+      "fallbackTitle": "Untitled lecture",
+      "fallbackSubject": "General",
+      "duration": "{{minutes}} mins",
+      "viewed": "Viewed {{timestamp}}",
+      "thumbnailAlt": "Thumbnail for {{title}}"
+    },
+    "lectures": {
+      "ratingLabel": "Rate this",
+      "rateAria": "Rate {{title}}",
+      "starAria": "Give {{count}} star{{count, plural, one {} other {s}}}",
+      "ratingAverage": "{{rating}} / 5",
+      "ratingNone": "No rating yet",
+      "ratingCount": "{{count}} review{{count, plural, one {} other {s}}}",
+      "ratingCountZero": "Be first",
+      "yourRating": "You rated {{rating}}★",
+      "remove": "Remove from list"
+    },
+    "commentForm": {
+      "label": "Ask a doubt or share feedback",
+      "placeholder": "Share where you are stuck or what you loved about this lecture…",
+      "limit": "{{count}} characters left",
+      "cta": "Send to mentor",
+      "submitting": "Sending…"
+    },
+    "comments": {
+      "title": "Latest replies",
+      "empty": "No questions yet. Start the conversation!",
+      "status": {
+        "pending": "Pending reply",
+        "solved": "Solved",
+        "default": "Pending"
+      },
+      "ratingLabel": "Student rating: {{rating}}",
+      "replyLabel": "Mentor reply"
+    },
+    "filters": {
+      "label": "Filter lectures by status",
+      "all": "All",
+      "pending": "Waiting for reply",
+      "solved": "Solved",
+      "emptyTitle": "Nothing to show here",
+      "emptyDescription": "Change the filter or watch a new lecture to see it in your Ask Doubt list."
+    }
+  },
   "nav": {
     "home": "Home",
     "courses": "Explore courses",
     "tests": "Tests",
     "downloads": "Downloads",
+    "askDoubt": "Ask doubt",
     "settings": "Settings",
     "profile": "Profile",
     "signOut": "Sign out",
@@ -588,6 +658,7 @@
     "nav": {
       "upload": "Upload lecture",
       "uploads": "My uploads",
+      "doubts": "Doubts",
       "profile": "Profile"
     },
     "uploads": {
