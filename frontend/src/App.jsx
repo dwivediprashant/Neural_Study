@@ -1,25 +1,25 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import Layout from './components/Layout.jsx';
-import CenteredLoader from './components/CenteredLoader.jsx';
-import HomePage from './pages/HomePage.jsx';
-import TestsPage from './pages/TestsPage.jsx';
-import TestsRunnerPage from './pages/TestsRunnerPage.jsx';
-import ProfilePage from './pages/ProfilePage.jsx';
-import ExploreCoursesPage from './pages/ExploreCoursesPage.jsx';
-import CourseDetailPage from './pages/CourseDetailPage.jsx';
-import DownloadsPage from './pages/DownloadsPage.jsx';
-import CommunityHubPage from './pages/CommunityHubPage.jsx';
-import AuthPage from './pages/AuthPage.jsx';
-import TeacherLayout from './pages/teacher/TeacherLayout.jsx';
-import TeacherProfilePage from './pages/teacher/TeacherProfilePage.jsx';
-import TeacherUploadLecturePage from './pages/teacher/TeacherUploadLecturePage.jsx';
-import TeacherUploadsPage from './pages/teacher/TeacherUploadsPage.jsx';
-import TeacherDoubtsPage from './pages/teacher/TeacherDoubtsPage.jsx';
-import useCourses from './hooks/useCourses.js';
-import useDownloadsManager from './hooks/useDownloadsManager.js';
+import Layout from "./components/Layout.jsx";
+import CenteredLoader from "./components/CenteredLoader.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import TestsPage from "./pages/TestsPage.jsx";
+import TestsRunnerPage from "./pages/TestsRunnerPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import ExploreCoursesPage from "./pages/ExploreCoursesPage.jsx";
+import CourseDetailPage from "./pages/CourseDetailPage.jsx";
+import DownloadsPage from "./pages/DownloadsPage.jsx";
+import CommunityHubPage from "./pages/CommunityHubPage.jsx";
+import AuthPage from "./pages/AuthPage.jsx";
+import TeacherLayout from "./pages/teacher/TeacherLayout.jsx";
+import TeacherProfilePage from "./pages/teacher/TeacherProfilePage.jsx";
+import TeacherUploadLecturePage from "./pages/teacher/TeacherUploadLecturePage.jsx";
+import TeacherUploadsPage from "./pages/teacher/TeacherUploadsPage.jsx";
+import TeacherDoubtsPage from "./pages/teacher/TeacherDoubtsPage.jsx";
+import useCourses from "./hooks/useCourses.js";
+import useDownloadsManager from "./hooks/useDownloadsManager.js";
 import {
   fetchTestAttempts,
   fetchCurrentUser,
@@ -31,8 +31,8 @@ import {
   deleteLecture,
   rateLecture as rateLectureApi,
   fetchLectureRatings,
-} from './api/client.js';
-import './App.css';
+} from "./api/client.js";
+import "./App.css";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -49,8 +49,8 @@ function App() {
   const RECENT_LECTURE_LIMIT = 8;
 
   const getRecentLecturesKey = useCallback(() => {
-    if (typeof window === 'undefined') return null;
-    if (currentUser?.role !== 'student' || !currentUser?.id) return null;
+    if (typeof window === "undefined") return null;
+    if (currentUser?.role !== "student" || !currentUser?.id) return null;
     return `recentLectures:${currentUser.id}`;
   }, [currentUser?.id, currentUser?.role]);
 
@@ -59,9 +59,12 @@ function App() {
       const key = getRecentLecturesKey();
       if (!key) return;
       try {
-        localStorage.setItem(key, JSON.stringify(list.slice(0, RECENT_LECTURE_LIMIT)));
+        localStorage.setItem(
+          key,
+          JSON.stringify(list.slice(0, RECENT_LECTURE_LIMIT))
+        );
       } catch (error) {
-        console.warn('Unable to persist recent lectures', error);
+        console.warn("Unable to persist recent lectures", error);
       }
     },
     [getRecentLecturesKey]
@@ -78,7 +81,7 @@ function App() {
         return parsed.slice(0, RECENT_LECTURE_LIMIT);
       }
     } catch (error) {
-      console.warn('Unable to load recent lectures', error);
+      console.warn("Unable to load recent lectures", error);
     }
     return [];
   }, [getRecentLecturesKey]);
@@ -86,7 +89,7 @@ function App() {
   const updateRecentLectures = useCallback(
     (updater, { persist = true } = {}) => {
       setRecentLectures((prev) => {
-        const draft = typeof updater === 'function' ? updater(prev) : updater;
+        const draft = typeof updater === "function" ? updater(prev) : updater;
         if (!Array.isArray(draft)) {
           return prev;
         }
@@ -102,7 +105,7 @@ function App() {
   const lectureUploadRef = useRef(null);
 
   useEffect(() => {
-    if (currentUser?.role === 'student' && currentUser?.id) {
+    if (currentUser?.role === "student" && currentUser?.id) {
       const stored = hydrateRecentLectures();
       setRecentLectures(stored);
     } else {
@@ -110,7 +113,9 @@ function App() {
     }
   }, [currentUser?.id, currentUser?.role, hydrateRecentLectures]);
 
-  const { courses, loading, error, status, refresh } = useCourses({ userId: currentUser?.id });
+  const { courses, loading, error, status, refresh } = useCourses({
+    userId: currentUser?.id,
+  });
   const { t } = useTranslation();
   const {
     downloads,
@@ -135,14 +140,14 @@ function App() {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
-  const pushToast = useCallback((message, tone = 'info', duration = 4000) => {
+  const pushToast = useCallback((message, tone = "info", duration = 4000) => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     setToasts((prev) => [...prev, { id, message, tone, duration }]);
   }, []);
 
   useEffect(() => {
     if (!lastDownloadError) return;
-    pushToast(lastDownloadError, 'warning');
+    pushToast(lastDownloadError, "warning");
     clearLastDownloadError();
   }, [lastDownloadError, pushToast, clearLastDownloadError]);
 
@@ -151,8 +156,10 @@ function App() {
       const success = await saveCourse(course);
       if (success) {
         pushToast(
-          t('toast.courseCached', { title: course.title ?? t('common.appName') }),
-          'success'
+          t("toast.courseCached", {
+            title: course.title ?? t("common.appName"),
+          }),
+          "success"
         );
       }
       return success;
@@ -167,9 +174,9 @@ function App() {
         const course = courses.find((item) => item._id === courseId);
         pushToast(
           course
-            ? t('toast.courseRemoved', { title: course.title })
-            : t('toast.courseRemovedFallback'),
-          'info'
+            ? t("toast.courseRemoved", { title: course.title })
+            : t("toast.courseRemovedFallback"),
+          "info"
         );
       }
       return success;
@@ -181,7 +188,13 @@ function App() {
     async (course, module, moduleKey) => {
       const success = await saveModule(course, module, moduleKey);
       if (success) {
-        pushToast(t('toast.moduleCached', { module: module.name, course: course.title }), 'success');
+        pushToast(
+          t("toast.moduleCached", {
+            module: module.name,
+            course: course.title,
+          }),
+          "success"
+        );
       }
       return success;
     },
@@ -192,7 +205,7 @@ function App() {
     async (course, module, moduleKey) => {
       const success = await removeModule(course, module, moduleKey);
       if (success) {
-        pushToast(t('toast.moduleRemoved', { module: module.name }), 'info');
+        pushToast(t("toast.moduleRemoved", { module: module.name }), "info");
       }
       return success;
     },
@@ -202,10 +215,10 @@ function App() {
   const handleSaveLectureDownload = useCallback(
     async (lecture) => {
       if (!lecture) return false;
-      const title = lecture.title ?? 'Lecture';
+      const title = lecture.title ?? "Lecture";
       const success = await saveLecture(lecture);
       if (success) {
-        pushToast(t('toast.lectureCached', { title }), 'success');
+        pushToast(t("toast.lectureCached", { title }), "success");
       }
       return success;
     },
@@ -218,12 +231,15 @@ function App() {
       const success = await removeLecture(lectureId);
       if (success) {
         const lectureRecord =
-          lectures.find((item) => item._id === lectureId || item.id === lectureId) ||
-          downloads.find((item) => item.id === lectureId);
+          lectures.find(
+            (item) => item._id === lectureId || item.id === lectureId
+          ) || downloads.find((item) => item.id === lectureId);
         const title = lectureRecord?.title;
         pushToast(
-          title ? t('toast.lectureRemoved', { title }) : t('toast.lectureRemovedFallback'),
-          'info'
+          title
+            ? t("toast.lectureRemoved", { title })
+            : t("toast.lectureRemovedFallback"),
+          "info"
         );
       }
       return success;
@@ -239,19 +255,29 @@ function App() {
         setLectures((prev) =>
           prev.map((item) =>
             item.id === lectureId || item._id === lectureId
-              ? { ...item, ratingAverage: average, ratingCount: count, myRating: rating }
+              ? {
+                  ...item,
+                  ratingAverage: average,
+                  ratingCount: count,
+                  myRating: rating,
+                }
               : item
           )
         );
         updateRecentLectures((prev) =>
           prev.map((item) =>
             item.id === lectureId
-              ? { ...item, ratingAverage: average, ratingCount: count, myRating: rating }
+              ? {
+                  ...item,
+                  ratingAverage: average,
+                  ratingCount: count,
+                  myRating: rating,
+                }
               : item
           )
         );
       } catch (error) {
-        console.warn('Failed to refresh lecture rating', lectureId, error);
+        console.warn("Failed to refresh lecture rating", lectureId, error);
       }
     },
     [updateRecentLectures]
@@ -267,13 +293,15 @@ function App() {
         lecture.lectureId ??
         lecture.slug ??
         `recent-${Date.now()}`;
-      const title = lecture.title ?? lecture.name ?? 'Untitled lecture';
+      const title = lecture.title ?? lecture.name ?? "Untitled lecture";
       const subject =
         lecture.subject ??
         lecture.exam ??
         lecture.category ??
-        (Array.isArray(lecture.tags) && lecture.tags.length ? lecture.tags[0] : null) ??
-        'General';
+        (Array.isArray(lecture.tags) && lecture.tags.length
+          ? lecture.tags[0]
+          : null) ??
+        "General";
       const rawDuration =
         lecture.durationMinutes ??
         lecture.duration ??
@@ -283,9 +311,9 @@ function App() {
         null;
 
       let normalizedDuration = null;
-      if (typeof rawDuration === 'number' && Number.isFinite(rawDuration)) {
+      if (typeof rawDuration === "number" && Number.isFinite(rawDuration)) {
         normalizedDuration = Math.max(1, Math.round(rawDuration));
-      } else if (typeof rawDuration === 'string') {
+      } else if (typeof rawDuration === "string") {
         const parsed = Number.parseFloat(rawDuration);
         if (!Number.isNaN(parsed)) {
           normalizedDuration = Math.max(1, Math.round(parsed));
@@ -311,21 +339,18 @@ function App() {
       );
 
       const ratingAverage =
-        typeof lecture.ratingAverage === 'number'
+        typeof lecture.ratingAverage === "number"
           ? lecture.ratingAverage
-          : typeof knownLecture?.ratingAverage === 'number'
+          : typeof knownLecture?.ratingAverage === "number"
           ? knownLecture.ratingAverage
           : null;
       const ratingCount =
-        typeof lecture.ratingCount === 'number'
+        typeof lecture.ratingCount === "number"
           ? lecture.ratingCount
-          : typeof knownLecture?.ratingCount === 'number'
+          : typeof knownLecture?.ratingCount === "number"
           ? knownLecture.ratingCount
           : 0;
-      const myRating =
-        lecture.myRating ??
-        knownLecture?.myRating ??
-        null;
+      const myRating = lecture.myRating ?? knownLecture?.myRating ?? null;
 
       const entry = {
         id,
@@ -343,7 +368,10 @@ function App() {
         const filtered = prev.filter((item) => item.id !== entry.id);
         return [entry, ...filtered];
       });
-      if ((entry.ratingAverage === null || Number.isNaN(entry.ratingAverage)) && entry.id) {
+      if (
+        (entry.ratingAverage === null || Number.isNaN(entry.ratingAverage)) &&
+        entry.id
+      ) {
         syncLectureRating(entry.id);
       }
     },
@@ -352,7 +380,8 @@ function App() {
 
   const handleLectureRated = useCallback(
     async (lectureId, ratingValue) => {
-      if (!lectureId) return { success: false, error: 'Lecture ID is required' };
+      if (!lectureId)
+        return { success: false, error: "Lecture ID is required" };
       try {
         const result = await rateLectureApi(lectureId, ratingValue);
         setLectures((prev) =>
@@ -379,11 +408,12 @@ function App() {
               : item
           )
         );
-        pushToast(t('toast.ratingThanks'), 'success');
+        pushToast(t("toast.ratingThanks"), "success");
         return { success: true, data: result };
       } catch (error) {
-        const message = error.response?.data?.message || t('toast.genericDanger');
-        pushToast(message, 'danger');
+        const message =
+          error.response?.data?.message || t("toast.genericDanger");
+        pushToast(message, "danger");
         return { success: false, error: message };
       }
     },
@@ -394,38 +424,76 @@ function App() {
     setCurrentUser(null);
     setTestAttempts([]);
     updateRecentLectures(() => [], { persist: false });
-    pushToast(t('toast.sessionExpired'), 'warning');
+    pushToast(t("toast.sessionExpired"), "warning");
   }, [pushToast, t, updateRecentLectures]);
 
   useEffect(() => {
-    window.addEventListener('auth:unauthorized', handleSessionExpired);
+    window.addEventListener("auth:unauthorized", handleSessionExpired);
     return () => {
-      window.removeEventListener('auth:unauthorized', handleSessionExpired);
+      window.removeEventListener("auth:unauthorized", handleSessionExpired);
     };
   }, [handleSessionExpired]);
 
   const refreshCurrentUser = useCallback(async () => {
     setAuthLoading(true);
+
+    const isColdStartError = (error) => {
+      const status = error?.response?.status;
+      const code = error?.code;
+      if (status === 502 || status === 503) return true;
+      if (
+        !error.response &&
+        (code === "ERR_NETWORK" || code === "ECONNABORTED")
+      )
+        return true;
+      return false;
+    };
+
+    const withColdStartRetry = async (fn) => {
+      let attempt = 0;
+      const maxAttempts = 3;
+      // Initial attempt + limited retries on cold-start type errors
+      // This helps when Render free-tier is waking the service.
+      while (attempt < maxAttempts) {
+        try {
+          return await fn();
+        } catch (error) {
+          if (!isColdStartError(error) || attempt === maxAttempts - 1) {
+            throw error;
+          }
+
+          if (attempt === 0) {
+            pushToast(t("toast.serverWakingUp"), "info", 8000);
+          }
+
+          // Wait a bit before retrying to give the instance time to wake
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((resolve) => setTimeout(resolve, 4000));
+          attempt += 1;
+        }
+      }
+    };
+
     try {
-      const { user } = await fetchCurrentUser();
+      const { user } = await withColdStartRetry(() => fetchCurrentUser());
       setCurrentUser(user ?? null);
       setAuthError(null);
     } catch (error) {
       if (error.response?.status && error.response.status !== 401) {
-        setAuthError('Unable to verify session');
+        setAuthError("Unable to verify session");
       }
       setCurrentUser(null);
     } finally {
       setAuthLoading(false);
     }
-  }, []);
+  }, [pushToast]);
 
   useEffect(() => {
     refreshCurrentUser();
   }, [refreshCurrentUser]);
 
   const loadTestAttempts = useCallback(async () => {
-    if (!currentUser?.id || currentUser.role !== 'student') {
+    if (!currentUser?.id || currentUser.role !== "student") {
       setTestAttempts([]);
       return;
     }
@@ -436,69 +504,69 @@ function App() {
       setTestAttempts(attempts ?? []);
       setTestAttemptsError(null);
     } catch (error) {
-      console.error('Failed to load test attempts:', error);
-      setTestAttemptsError('Unable to load recent test attempts');
+      console.error("Failed to load test attempts:", error);
+      setTestAttemptsError("Unable to load recent test attempts");
     } finally {
       setTestAttemptsLoading(false);
     }
   }, [currentUser]);
 
   useEffect(() => {
-    if (currentUser?.id && currentUser.role === 'student') {
+    if (currentUser?.id && currentUser.role === "student") {
       loadTestAttempts();
     } else {
       setTestAttempts([]);
     }
   }, [currentUser?.id, currentUser?.role, loadTestAttempts]);
 
-  const loadLectures = useCallback(
-    async ({ mine = false } = {}) => {
-      setLecturesLoading(true);
-      try {
-        const params = mine ? { mine: true } : {};
-        const { lectures: fetchedLectures } = await fetchLectures(params);
-        setLectures(fetchedLectures ?? []);
-        setLecturesError(null);
-      } catch (error) {
-        console.error('Failed to load lectures:', error);
-        const message = error.response?.data?.message || 'Unable to load lectures';
-        setLecturesError(message);
-        setLectures([]);
-      } finally {
-        setLecturesLoading(false);
-      }
-    },
-    []
-  );
+  const loadLectures = useCallback(async ({ mine = false } = {}) => {
+    setLecturesLoading(true);
+    try {
+      const params = mine ? { mine: true } : {};
+      const { lectures: fetchedLectures } = await fetchLectures(params);
+      setLectures(fetchedLectures ?? []);
+      setLecturesError(null);
+    } catch (error) {
+      console.error("Failed to load lectures:", error);
+      const message =
+        error.response?.data?.message || "Unable to load lectures";
+      setLecturesError(message);
+      setLectures([]);
+    } finally {
+      setLecturesLoading(false);
+    }
+  }, []);
 
-  const handleLectureCreated = useCallback(
-    (lecture) => {
-      if (!lecture) return;
-      setLectures((prev) => {
-        const existing = prev.find((item) => item.id === lecture.id || item._id === lecture.id);
-        if (existing) {
-          return prev.map((item) => (item.id === lecture.id || item._id === lecture.id ? lecture : item));
-        }
-        return [lecture, ...prev];
-      });
-      if (lectureUploadRef.current) {
-        lectureUploadRef.current.reset();
+  const handleLectureCreated = useCallback((lecture) => {
+    if (!lecture) return;
+    setLectures((prev) => {
+      const existing = prev.find(
+        (item) => item.id === lecture.id || item._id === lecture.id
+      );
+      if (existing) {
+        return prev.map((item) =>
+          item.id === lecture.id || item._id === lecture.id ? lecture : item
+        );
       }
-    },
-    []
-  );
+      return [lecture, ...prev];
+    });
+    if (lectureUploadRef.current) {
+      lectureUploadRef.current.reset();
+    }
+  }, []);
 
   const handleLectureSubmit = useCallback(
     async (payload) => {
       try {
         const { lecture } = await createLecture(payload);
         handleLectureCreated(lecture);
-        pushToast(t('toast.lectureUploadSuccess'), 'success');
+        pushToast(t("toast.lectureUploadSuccess"), "success");
         return { success: true, lecture };
       } catch (error) {
-        const message = error.response?.data?.message || t('toast.genericDanger');
+        const message =
+          error.response?.data?.message || t("toast.genericDanger");
         setLecturesError(message);
-        pushToast(message, 'danger');
+        pushToast(message, "danger");
         return { success: false, error: message };
       }
     },
@@ -508,16 +576,21 @@ function App() {
   const handleLectureDeleted = useCallback(
     async (lectureId) => {
       if (!lectureId) {
-        return { success: false, error: 'Lecture ID is required' };
+        return { success: false, error: "Lecture ID is required" };
       }
       try {
         await deleteLecture(lectureId);
-        setLectures((prev) => prev.filter((lecture) => lecture.id !== lectureId && lecture._id !== lectureId));
-        pushToast(t('toast.lectureRemovedSuccess'), 'info');
+        setLectures((prev) =>
+          prev.filter(
+            (lecture) => lecture.id !== lectureId && lecture._id !== lectureId
+          )
+        );
+        pushToast(t("toast.lectureRemovedSuccess"), "info");
         return { success: true };
       } catch (error) {
-        const message = error.response?.data?.message || t('toast.genericDanger');
-        pushToast(message, 'danger');
+        const message =
+          error.response?.data?.message || t("toast.genericDanger");
+        pushToast(message, "danger");
         return { success: false, error: message };
       }
     },
@@ -530,7 +603,7 @@ function App() {
       return;
     }
 
-    if (currentUser.role === 'teacher') {
+    if (currentUser.role === "teacher") {
       loadLectures({ mine: true });
     } else {
       loadLectures();
@@ -544,29 +617,29 @@ function App() {
         const { user } = await loginUser(credentials);
         setCurrentUser(user ?? null);
         setAuthError(null);
-        const firstName = user?.name?.split(' ')[0] ?? t('common.appName');
-        pushToast(t('toast.welcomeBack', { name: firstName }), 'success');
-        if (user?.role === 'student') {
+        const firstName = user?.name?.split(" ")[0] ?? t("common.appName");
+        pushToast(t("toast.welcomeBack", { name: firstName }), "success");
+        if (user?.role === "student") {
           setTestAttemptsLoading(true);
           try {
             const { attempts } = await fetchTestAttempts({ limit: 5 });
             setTestAttempts(attempts ?? []);
             setTestAttemptsError(null);
           } catch (error) {
-            console.error('Failed to load test attempts after login:', error);
-            setTestAttemptsError('Unable to load recent test attempts');
+            console.error("Failed to load test attempts after login:", error);
+            setTestAttemptsError("Unable to load recent test attempts");
           } finally {
             setTestAttemptsLoading(false);
           }
           loadLectures();
-        } else if (user?.role === 'teacher') {
+        } else if (user?.role === "teacher") {
           loadLectures({ mine: true });
         }
         return { success: true };
       } catch (error) {
-        const message = error.response?.data?.message || t('toast.loginFailed');
+        const message = error.response?.data?.message || t("toast.loginFailed");
         setAuthError(message);
-        pushToast(message, 'danger');
+        pushToast(message, "danger");
         return { success: false, error: message };
       } finally {
         setAuthLoading(false);
@@ -578,8 +651,10 @@ function App() {
   const handleRemoveRecentLecture = useCallback(
     (lectureId) => {
       if (!lectureId) return false;
-      updateRecentLectures((prev) => prev.filter((item) => item.id !== lectureId));
-      pushToast(t('communityHub.toast.removed'), 'info');
+      updateRecentLectures((prev) =>
+        prev.filter((item) => item.id !== lectureId)
+      );
+      pushToast(t("communityHub.toast.removed"), "info");
       return true;
     },
     [updateRecentLectures, pushToast, t]
@@ -592,18 +667,19 @@ function App() {
         const { user } = await registerUser(payload);
         setCurrentUser(user ?? null);
         setAuthError(null);
-        pushToast(t('toast.accountCreated'), 'success');
+        pushToast(t("toast.accountCreated"), "success");
         setTestAttempts([]);
-        if (user?.role === 'teacher') {
+        if (user?.role === "teacher") {
           loadLectures({ mine: true });
         } else {
           loadLectures();
         }
         return { success: true };
       } catch (error) {
-        const message = error.response?.data?.message || t('toast.accountCreateFailed');
+        const message =
+          error.response?.data?.message || t("toast.accountCreateFailed");
         setAuthError(message);
-        pushToast(message, 'danger');
+        pushToast(message, "danger");
         return { success: false, error: message };
       } finally {
         setAuthLoading(false);
@@ -616,29 +692,32 @@ function App() {
     try {
       await logoutUser();
     } catch (error) {
-      console.error('Failed to log out:', error);
+      console.error("Failed to log out:", error);
     }
     setCurrentUser(null);
     setTestAttempts([]);
     setLectures([]);
     updateRecentLectures(() => [], { persist: false });
-    pushToast(t('toast.signedOut'), 'info');
+    pushToast(t("toast.signedOut"), "info");
   }, [pushToast, t, updateRecentLectures]);
 
-  const handleTestAttemptRecorded = useCallback((attemptSummary) => {
-    if (!attemptSummary) return;
-    setTestAttempts((prev) => {
-      const filtered = prev.filter((entry) => entry.id !== attemptSummary.id);
-      return [attemptSummary, ...filtered].slice(0, 5);
-    });
-    pushToast(
-      t('toast.testFinished', {
-        title: attemptSummary.title ?? attemptSummary.testId,
-        percent: Math.round(attemptSummary.percent ?? 0),
-      }),
-      'success'
-    );
-  }, [pushToast, t]);
+  const handleTestAttemptRecorded = useCallback(
+    (attemptSummary) => {
+      if (!attemptSummary) return;
+      setTestAttempts((prev) => {
+        const filtered = prev.filter((entry) => entry.id !== attemptSummary.id);
+        return [attemptSummary, ...filtered].slice(0, 5);
+      });
+      pushToast(
+        t("toast.testFinished", {
+          title: attemptSummary.title ?? attemptSummary.testId,
+          percent: Math.round(attemptSummary.percent ?? 0),
+        }),
+        "success"
+      );
+    },
+    [pushToast, t]
+  );
 
   const combinedStatus = useMemo(
     () => ({
@@ -648,7 +727,13 @@ function App() {
       downloadCount: downloads.length,
       lectureCount: lectures.length,
     }),
-    [status, downloadsLoading, lecturesLoading, downloads.length, lectures.length]
+    [
+      status,
+      downloadsLoading,
+      lecturesLoading,
+      downloads.length,
+      lectures.length,
+    ]
   );
 
   const combinedError = error || downloadsError || authError || lecturesError;
@@ -656,7 +741,7 @@ function App() {
   const handleRefresh = useCallback(() => {
     refresh();
     refreshDownloads();
-    if (currentUser?.role === 'teacher') {
+    if (currentUser?.role === "teacher") {
       loadLectures({ mine: true });
     } else {
       loadLectures();
@@ -692,9 +777,18 @@ function App() {
       progress,
       downloadsStats: {
         total: downloads.length,
-        sizeMB: downloads.reduce((sum, item) => sum + (item.totalSizeMB || 0), 0),
-        assetsCached: downloads.reduce((sum, item) => sum + (item.cachedAssets?.length || 0), 0),
-        assetsFailed: downloads.reduce((sum, item) => sum + (item.failedAssets?.length || 0), 0),
+        sizeMB: downloads.reduce(
+          (sum, item) => sum + (item.totalSizeMB || 0),
+          0
+        ),
+        assetsCached: downloads.reduce(
+          (sum, item) => sum + (item.cachedAssets?.length || 0),
+          0
+        ),
+        assetsFailed: downloads.reduce(
+          (sum, item) => sum + (item.failedAssets?.length || 0),
+          0
+        ),
         lastUpdated: downloads[0]?.savedAt,
       },
       refreshDownloads,
@@ -794,7 +888,7 @@ function App() {
     );
   }
 
-  if (currentUser.role === 'teacher') {
+  if (currentUser.role === "teacher") {
     return (
       <Routes>
         <Route

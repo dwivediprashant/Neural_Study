@@ -569,7 +569,8 @@
     "lectureRemovedSuccess": "Lecture removed successfully.",
     "genericDanger": "Something went wrong.",
     "downloadWarning": "{{message}}",
-    "dismiss": "Dismiss notification"
+    "dismiss": "Dismiss notification",
+    "serverWakingUp": "Warming up the server. This can take 10–20 seconds on the first load."
   },
   "auth": {
     "loginBadge": "Login",

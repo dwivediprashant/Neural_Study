@@ -248,7 +248,8 @@
     "lectureRemovedSuccess": "लेक्चर सफलतापूर्वक हटाया गया।",
     "genericDanger": "कुछ गलत हो गया।",
     "downloadWarning": "{{message}}",
-    "dismiss": "सूचना बंद करें"
+    "dismiss": "सूचना बंद करें",
+    "serverWakingUp": "सर्वर को शुरू किया जा रहा है। पहली बार लोड होने में 10–20 सेकंड लग सकते हैं।"
   },
   "auth": {
     "loginBadge": "लॉगिन",
